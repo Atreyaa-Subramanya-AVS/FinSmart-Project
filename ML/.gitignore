@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.pytest_cache/
+
+# VSCode settings
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# Log files
+*.log
+
+# FastAPI auto-reload artifacts
+*.db
+*.sqlite3
+
+# Model files
+*.h5
+*.pkl
+*.joblib
+
+# Data files
+*.csv
+*.tsv
+*.json
+*.xlsx
+*.xls
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Environment config
+.env
+.env.*
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# Node stuff (if using React frontend with FastAPI backend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

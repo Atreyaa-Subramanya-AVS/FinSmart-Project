@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+pydantic
+yfinance==0.2.55

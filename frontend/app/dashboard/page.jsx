@@ -5,7 +5,6 @@ import Profile from "@/components/Profile";
 import VerticalTab from "@/components/VerticalTabs";
 import Link from "next/link";
 import React from "react";
-import Dashboard_Bg from "../../public/images/dashboard_bg.jpg"
 import Details from "@/components/Dashboard Components/Details";
 
 const Dashboard = () => {
@@ -28,7 +27,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="h-auto">
+      <div className="h-auto bg-black">
         <VerticalTab
           tabComponents={{
             "tab-1": <Home />,

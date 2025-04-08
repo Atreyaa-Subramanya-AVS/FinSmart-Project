@@ -1,3 +1,4 @@
+// server.js
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -7,11 +8,13 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios")
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// ✅ Middleware
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(
   session({
@@ -23,20 +26,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Connect MongoDB (Atlas)
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected successfully!"))
-  .catch((err) => console.error(`❌ MongoDB Connection Error: ${err.message}`));
-// ✅ User Schema & Model
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error(`MongoDB Connection Error: ${err.message}`));
+
 const UserSchema = new mongoose.Schema({
   googleId: { type: String, unique: true },
   username: { type: String, required: true, unique: true },
 });
-
 const User = mongoose.model("User", UserSchema);
 
-// ✅ Google OAuth Setup
 passport.use(
   new GoogleStrategy(
     {
@@ -47,7 +47,6 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
-
         if (!user) {
           user = new User({
             googleId: profile.id,
@@ -55,7 +54,6 @@ passport.use(
           });
           await user.save();
         }
-
         return done(null, user);
       } catch (err) {
         return done(err, null);
@@ -73,12 +71,10 @@ passport.deserializeUser(async (id, done) => {
   done(null, user);
 });
 
-// ✅ Google OAuth Routes
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
-
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
@@ -88,11 +84,9 @@ app.get(
     res.redirect("http://localhost:3000/dashboard");
   }
 );
-
 app.get("/auth/user", (req, res) => {
   res.json(req.user || null);
 });
-
 app.get("/auth/logout", (req, res) => {
   req.logout((err) => {
     if (err) return next(err);
@@ -100,6 +94,79 @@ app.get("/auth/logout", (req, res) => {
   });
 });
 
-// ✅ Start Express Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// POST /chat - Multi-turn chat handler
+// app.post("/api/chat", async (req, res) => {
+//   const { history } = req.body;
+
+//   if (!history || !Array.isArray(history) || history.length === 0) {
+//     return res.status(400).json({ error: "History is required" });
+//   }
+
+//   try {
+//     console.log("Received history:", JSON.stringify(history, null, 2));
+
+//     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+//     const chat = model.startChat({ history });
+
+//     const latestUserMessage = history[history.length - 1].parts[0].text;
+//     console.log("Sending message to Gemini:", latestUserMessage);
+
+//     const result = await chat.sendMessage(latestUserMessage);
+//     const response = await result.response;
+//     const reply = response.text();
+
+//     console.log("Gemini reply:", reply);
+
+//     res.json({ reply });
+//   } catch (err) {
+//     console.error("Gemini API error:", err); // full error log
+//     res.status(500).json({ error: "Failed to generate reply" });
+//   }
+// });
+
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+app.post("/api/chat", async (req, res) => {
+  const { history } = req.body;
+
+  if (!history || !Array.isArray(history) || history.length === 0) {
+    return res.status(400).json({ error: "History is required" });
+  }
+
+  try {
+    const payload = {
+      contents: history,
+      generationConfig: {
+        temperature: 0.9,
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048,
+        stopSequences: [],
+      },
+    };
+
+    const response = await axios.post(GEMINI_ENDPOINT, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const reply =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response";
+
+    res.json({ reply });
+  } catch (err) {
+    console.error("Gemini API error:", err?.response?.data || err.message);
+    res.status(500).json({ error: "Failed to generate reply" });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("FinSmart API + Gemini is running");
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});

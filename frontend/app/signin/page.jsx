@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation"; // Correct import for Next.js App Router (13+)
+import { useRouter } from "next/navigation";
 import EmailInput from "@/components/comp-10";
 import SignInUI from "@/components/comp-122";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import signin from "../../public/images/signin.jpg";
 import Image from "next/image";
 
 const Page = () => {
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   const [option, setOption] = useState("Login");
   const [name, setName] = useState("");
@@ -18,7 +18,7 @@ const Page = () => {
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault(); 
     console.log("Name: ",name);
     console.log("Email:", email);
     console.log("Password:", password);
@@ -46,7 +46,6 @@ const Page = () => {
           />
         </div>
 
-        {/* ✅ Form to handle input fields */}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-center h-max w-1/2 mx-auto max-lg:w-full xl:my-auto"
@@ -74,7 +73,6 @@ const Page = () => {
             </div>
           </div>
 
-          {/* Show Username field only for Register */}
           {option === "Register" && (
             <EmailInput
               placeholder="User Name"
@@ -96,14 +94,12 @@ const Page = () => {
             className="mt-3"
           />
 
-          {/* Password Input */}
           <PasswordStrengthIndicator
             option={option}
             password={password}
             setPassword={setPassword}
           />
 
-          {/* Submit Button */}
           <div className="flex justify-center my-6">
             <Button type="submit" className="px-6 py-2">
               Sign In

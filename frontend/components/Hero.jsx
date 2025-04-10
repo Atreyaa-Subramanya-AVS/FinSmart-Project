@@ -11,11 +11,10 @@ const Hero = () => {
       <div className="hero-content relative md:max-w-screen-2xl w-full mx-auto h-fit max-md:-mt-24">
         <div className="absolute z-10 top-40 max-md:mt-4 ml-8 max-md:ml-4">
           <h1 className="relative scale-y-100 text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl pr-1 z-30 max-w-2xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tighter leading-[0.9] font-bold pb-2">
-            Everything App <br /> for your teams
+            Everything App <br /> for your investments
           </h1>
           <p className="relative z-30 max-md:max-w-[15rem] text-gray-100 mt-5 text-xs md:text-sm lg:text-base 2xl:text-lg max-w-lg max-md:text-sm max-md:mt-2">
-            Meco, an open-source platform, serves as an all-in-one replacement
-            of Linear, Jira, Slack, and Notion.
+          FinSmart, leveraging Yahoo Finance with AI for smarter stock insights.
           </p>
           <Link href={"/dashboard"}>
             <button className="relative py-3 px-8 mt-10 overflow-hidden rounded-full border border-white/60 bg-[#d1d1d1] space-x-1 lg:px-12 lg:mt-18 max-sm:text-xs max-sm:px-6 max-sm:scale-75 max-sm:mt-5 max-sm:-ml-6">

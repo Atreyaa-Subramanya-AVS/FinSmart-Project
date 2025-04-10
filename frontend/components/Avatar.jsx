@@ -17,10 +17,10 @@ export default function AvatarDashboard() {
         <div className="space-y-0.5">
           <HoverCardTrigger asChild>
             <p className="text-xs  font-medium text-ellipsis">
-                Keith Kennedy
+                Kruthik K
             </p>
           </HoverCardTrigger>
-          <p className="text-muted-foreground text-xs">@k.kennedy</p>
+          <p className="text-muted-foreground text-xs">@k.kruthik</p>
         </div>
       </div>
       

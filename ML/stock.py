@@ -1,4 +1,3 @@
-from fastapi import FastAPI, WebSocket
 import asyncio
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -9,6 +8,7 @@ import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 import math
 import uvicorn
+from fastapi import FastAPI, WebSocket
 from sklearn.metrics import mean_squared_error
 from fastapi.middleware.cors import CORSMiddleware
 

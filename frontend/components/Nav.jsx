@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import Logo from "../public/valorant-seeklogo.svg";
+import Logo2 from "../public/valorant-2.svg"
 import Link from "next/link";
 
 const Nav = () => {
@@ -32,13 +33,21 @@ const Nav = () => {
         >
           <div className="flex gap-12 items-center justify-between">
             <div className="inline-flex justify-center items-center gap-2">
+              {!isScrolled ?
               <Image
-                src={Logo}
+              src={Logo}
+              className="bg-transparent"
+              alt="logo"
+              width={50}
+              height={50} 
+            />:
+            <Image
+                src={Logo2}
                 className="bg-transparent"
                 alt="logo"
                 width={50}
                 height={50} 
-              />
+              />}
               <Link href={"/"}>
                 <h1
                   className={`font-bold text-lg ${
@@ -75,7 +84,7 @@ const Nav = () => {
                 height="14"
                 viewBox="0 0 36 36"
                 fill="none"
-                className={`${isScrolled ? "text-black" : "text-white"}`}
+                className={`fill-current ${isScrolled ? "text-black" : "text-white"}`}
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path

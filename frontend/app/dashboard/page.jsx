@@ -20,7 +20,7 @@ const Dashboard = () => {
             </Link>
           </div>
           <div className="max-sm:hidden">
-            <h1 className="whitespace-nowrap">Welcome, User!</h1>
+            <h1 className="whitespace-nowrap">Welcome, Kruthik!</h1>
           </div>
           <div>
             <Profile />

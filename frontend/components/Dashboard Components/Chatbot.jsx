@@ -104,7 +104,7 @@ const Chatbot = () => {
           </div>
         ))}
         {loading && (
-          <div className="flex justify-center my-2 self-start bg-gray-700 text-white p-2 rounded-md">
+          <div className="flex justify-center my-2 self-start bg-gray-700 text-white p-3 rounded-md">
             <l-leapfrog size="30" speed="2.5" color="#12c2e9"></l-leapfrog>
           </div>
         )}

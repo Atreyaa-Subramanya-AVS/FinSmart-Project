@@ -1,0 +1,198 @@
+{
+  "_id": "66164f3eec7f123456789abc",
+  "balanceTracker": {
+    "currentBalance": 24051,
+    "totalBalance": 45000,
+    "lastUpdated": "2025-04-10T12:00:00Z"
+  },
+  "moneyInMoneyOut": {
+    "moneyIn": 25000,
+    "moneyOut": 15000,
+    "previousBalance": 20000
+  },
+  "spendingSaving": {
+    "spending": 20000,
+    "saving": 25000,
+    "spendingVsSavingRatio": "44:56"
+  },
+  "moneyDistributionMoneyIn": {
+    "moneyIn": 52300,
+    "previousBalance": 32500
+  },
+  "moneyDistribution": [
+    {
+      "category": "Expenses",
+      "amount": 26000,
+      "percentage": 43.26,
+      "color": "hsl(var(--chart-1))"
+    },
+    {
+      "category": "Bills",
+      "amount": 10100,
+      "percentage": 16.8,
+      "color": "hsl(var(--chart-2))"
+    },
+    {
+      "category": "Debts",
+      "amount": 4300,
+      "percentage": 7.15,
+      "color": "hsl(var(--chart-3))"
+    },
+    {
+      "category": "Savings",
+      "amount": 15000,
+      "percentage": 24.96,
+      "color": "hsl(var(--chart-4))"
+    },
+    {
+      "category": "Others",
+      "amount": 4700,
+      "percentage": 7.82,
+      "color": "hsl(var(--chart-5))"
+    }
+  ],
+  "expectedIncome": {
+    "title": "Expected Income",
+    "moneyIn": 60100,
+    "expected": 80100,
+    "progressPercentage": 60
+  },
+  "expectedBudget": {
+    "title": "Expected Budget",
+    "expenses": 26000,
+    "budget": 38700,
+    "progressPercentage": 60
+  },
+  "billsBudget": {
+    "title": "Bills Budget",
+    "bills": 10100,
+    "budget": 20100,
+    "progressPercentage": 60
+  },
+  "debtsPaymentGoal": {
+    "title": "Debts Payment Goal",
+    "debtsPaid": 4300,
+    "goal": 5600,
+    "progressPercentage": 60
+  },
+  "savingsGoal": {
+    "title": "Savings Goal",
+    "moneySaved": 20680,
+    "goal": 24748,
+    "progressPercentage": 60
+  },
+  "miscellaneousExpenses": {
+    "title": "MiscellaneousExpenses",
+    "expenses": 7450,
+    "budget": 20000
+  },
+  "incomeSources": {
+    "title": "Income Sources",
+    "sources": [
+      { "source": "Salary", "amount": 35000 },
+      { "source": "Freelancing", "amount": 15000 },
+      { "source": "Investments", "amount": 10100 }
+    ],
+    "total": 60100
+  },
+
+  "expenseCategories": [
+    {
+      "category": "Rent",
+      "amount": 6000,
+      "color": "hsl(var(--chart-1))"
+    },
+    {
+      "category": "Healthcare",
+      "amount": 3900,
+      "color": "hsl(var(--chart-2))"
+    },
+    {
+      "category": "Subscriptions",
+      "amount": 1800,
+      "color": "hsl(var(--chart-3))"
+    },
+    {
+      "category": "Dining Out",
+      "amount": 3200,
+      "color": "hsl(var(--chart-4))"
+    },
+    {
+      "category": "Travel",
+      "amount": 5400,
+      "color": "hsl(var(--chart-5))"
+    },
+    {
+      "category": "Others",
+      "amount": 5700,
+      "color": "hsl(var(--chart-6))"
+    }
+  ],
+
+  "billsCategories": [
+    {
+      "category": "Rent",
+      "amount": 4000,
+      "percentage": 39.6,
+      "color": "#FF6384"
+    },
+    {
+      "category": "Electricity",
+      "amount": 1800,
+      "percentage": 17.8,
+      "color": "#36A2EB"
+    },
+    {
+      "category": "Internet",
+      "amount": 1300,
+      "percentage": 12.9,
+      "color": "#FFCE56"
+    },
+    {
+      "category": "Groceries",
+      "amount": 3000,
+      "percentage": 29.7,
+      "color": "#4BC0C0"
+    }
+  ],
+  "debtsCategories": [
+    {
+      "category": "Credit Card",
+      "amount": 2000,
+      "percentage": 46.5,
+      "color": "#9966FF"
+    },
+    {
+      "category": "Loan EMI",
+      "amount": 1300,
+      "percentage": 30.2,
+      "color": "#FF9F40"
+    },
+    {
+      "category": "Car Installment",
+      "amount": 1000,
+      "percentage": 23.3,
+      "color": "#FFCD56"
+    }
+  ],
+
+  "incomeSourcesGraph": [
+    { "source": "Employment", "amount": 40000 },
+    { "source": "Side Hustle", "amount": 10000 },
+    { "source": "YouTube", "amount": 7000 },
+    { "source": "Freelance Projects", "amount": 8000 },
+    { "source": "Affiliate Marketing", "amount": 5000 }
+  ],
+
+  "investmentDistributionGraph": [
+    { "type": "Mutual Funds", "amount": 12000 },
+    { "type": "SIP", "amount": 8000 },
+    { "type": "Fixed Deposits", "amount": 6000 },
+    { "type": "Stocks", "amount": 10000 },
+    { "type": "Cryptocurrency", "amount": 5000 }
+  ],
+
+  "notes": "Focus on increasing savings ratio next month and reduce entertainment spending.",
+  "createdAt": "2025-04-10T11:58:00Z",
+  "updatedAt": "2025-04-10T12:01:00Z"
+}

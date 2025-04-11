@@ -19,14 +19,6 @@ export default function Component() {
         <RiGoogleFill className="opacity-60" size={16} aria-hidden="true" />
         Login with Google
       </Button>
-
-      <Button 
-        onClick={handleGitHubLogin} 
-        className="bg-[#333333] text-white flex items-center gap-2 hover:bg-[#333333]/90"
-      >
-        <RiGithubFill className="opacity-60" size={16} aria-hidden="true" />
-        Login with GitHub
-      </Button>
     </div>
   );
 }

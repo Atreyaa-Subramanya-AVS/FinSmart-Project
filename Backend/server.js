@@ -1,4 +1,3 @@
-// server.js
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -8,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const GitHubStrategy = require("passport-github2").Strategy;
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 
@@ -31,18 +29,16 @@ app.use(passport.session());
 // MONGOOSE CONNECTION
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected successfully!"))
-  .catch((err) => console.error(`❌ MongoDB Connection Error: ${err.message}`));
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error(`MongoDB Connection Error: ${err.message}`));
 
 // USER MODEL
 const UserSchema = new mongoose.Schema({
   googleId: { type: String, unique: true, sparse: true },
-  githubId: { type: String, unique: true, sparse: true },
   username: { type: String, required: true, unique: true },
 });
 const User = mongoose.model("User", UserSchema);
 
-// ✅ GOOGLE STRATEGY
 passport.use(
   new GoogleStrategy(
     {
@@ -68,32 +64,6 @@ passport.use(
   )
 );
 
-// ✅ GITHUB STRATEGY
-passport.use(
-  new GitHubStrategy(
-    {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/github/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ githubId: profile.id });
-        if (!user) {
-          user = new User({
-            githubId: profile.id,
-            username: profile.username,
-          });
-          await user.save();
-        }
-        return done(null, user);
-      } catch (err) {
-        return done(err, null);
-      }
-    }
-  )
-);
-
 // PASSPORT SERIALIZE/DESERIALIZE
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -103,18 +73,7 @@ passport.deserializeUser(async (id, done) => {
   done(null, user);
 });
 
-// // ✅ GOOGLE ROUTES
-// app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-// app.get(
-//   "/auth/google/callback",
-//   passport.authenticate("google", {
-//     failureRedirect: "http://localhost:3000/login",
-//   }),
-//   (req, res) => {
-//     res.redirect("http://localhost:3000/dashboard");
-//   }
-// );
-
+app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
@@ -126,35 +85,6 @@ app.get(
   }
 );
 
-
-
-// // ✅ GITHUB ROUTES
-// app.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
-// app.get(
-//   "/auth/github/callback",
-//   passport.authenticate("github", {
-//     failureRedirect: "http://localhost:3000/login",
-//     session: false,
-//   }),
-//   (req, res) => {
-//     res.redirect("http://localhost:3000/dashboard");
-//   }
-// );
-
-app.get(
-  "/auth/github/callback",
-  passport.authenticate("github", {
-    failureRedirect: "http://localhost:3000/login",
-    session: false,
-  }),
-  (req, res) => {
-    const username = req.user?.username;
-    res.redirect(`http://localhost:3000/dashboard?username=${encodeURIComponent(username)}`);
-  }
-);
-
-
-// ✅ AUTH HELPERS
 app.get("/auth/user", (req, res) => {
   res.json(req.user || null);
 });
@@ -165,7 +95,6 @@ app.get("/auth/logout", (req, res) => {
   });
 });
 
-// ✅ GEMINI CHAT API
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
 app.post("/api/chat", async (req, res) => {
@@ -203,12 +132,64 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// ✅ BASIC ROUTE
-app.get("/", (req, res) => {
-  res.send("🌟 FinSmart API + Gemini is running!");
+
+app.post("/api/recommend", async (req, res) => {
+  const { Data } = req.body;
+
+  console.log("Received Data:", Data);
+
+  // Format a prompt tailored to financial analysis
+  const prompt = `
+  Analyze the following financial details and provide detailed recommendations tailored to the user's financial goals.
+
+  Include:
+  - Monthly budgeting suggestions
+  - Investment planning
+  - Savings goals
+  - Debt reduction strategies (if applicable)
+  - Suggestions for long-term financial stability
+
+  User Financial Data:
+  ${JSON.stringify(Data, null, 2)}
+  `;
+
+  try {
+    const geminiRes = await fetch(GEMINI_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      }),
+    });
+
+    const geminiData = await geminiRes.json();
+
+    const generatedText =
+      geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Could not generate financial advice.";
+
+    res.json({ response: generatedText });
+  } catch (error) {
+    console.error("Error calling Gemini:", error);
+    res.status(500).json({ error: "Failed to fetch financial recommendation." });
+  }
 });
 
-// ✅ START SERVER
+
+app.get("/", (req, res) => {
+  res.send("FinSmart API + Gemini is running!");
+});
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

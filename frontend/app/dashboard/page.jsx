@@ -31,7 +31,7 @@ const Dashboard = () => {
             </Link>
           </div>
           <div className="max-sm:hidden">
-            <h1 className="whitespace-nowrap">Welcome, User!</h1>
+            <h1 className="whitespace-nowrap">Welcome, Atreyaa Avs!</h1>
           </div>
           <div>
             <Profile username={username} email={email} />

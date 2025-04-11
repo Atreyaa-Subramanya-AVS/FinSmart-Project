@@ -5,6 +5,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { leapfrog } from "ldrs";
+import ReactMarkdown from "react-markdown";
+
 
 const Ldrs = dynamic(() => import("ldrs").then((mod) => mod.leapfrog), {
   ssr: false,
@@ -100,7 +102,7 @@ const Chatbot = () => {
                 : "bg-gray-700 text-white self-start"
             }`}
           >
-            {msg.text}
+            <ReactMarkdown>{msg.text}</ReactMarkdown>
           </div>
         ))}
         {loading && (

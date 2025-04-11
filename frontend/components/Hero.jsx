@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import Link from "next/link";
-import HeroImage from "../public/images/finbgfinal.png"
+import HeroImage from "../public/images/finbgfinal.png";
 
 const Hero = () => {
   return (
@@ -14,7 +14,9 @@ const Hero = () => {
             Everything App <br /> for your investments
           </h1>
           <p className="relative z-30 max-md:max-w-[15rem] text-gray-100 mt-5 text-xs md:text-sm lg:text-base 2xl:text-lg max-w-lg max-md:text-sm max-md:mt-2">
-          FinSmart, leveraging Yahoo Finance with AI for smarter stock insights.
+            FinSmart leverages the power of AI and real-time data from Yahoo
+            Finance to deliver deeper insights, smarter predictions, and better
+            investment decisions.
           </p>
           <Link href={"/dashboard"}>
             <button className="relative py-3 px-8 mt-10 overflow-hidden rounded-full border border-white/60 bg-[#d1d1d1] space-x-1 lg:px-12 lg:mt-18 max-sm:text-xs max-sm:px-6 max-sm:scale-75 max-sm:mt-5 max-sm:-ml-6">
@@ -40,38 +42,42 @@ const Hero = () => {
         </div>
         <div className="relative overflow-hidden">
           <div className="relative pb-20">
-            {/* <video
+            <video
               autoPlay
               muted
               loop
               className="z-0 pt-52 max-lg:pt-44 max-sm:pt-52 scale-150 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.7]"
               src="/videos/hero.mp4"
-            ></video> */}
-            <Image src={HeroImage} className="z-0 max-lg:pt-0 max-lg:left-24 max-sm:pt-24 max-sm:scale-125 scale-125 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.4] max-md:pt-20 left-48 top-[7rem] pb-32" alt="Hero"/>
-            <div className="rounded-md">
-              {/* <Image src={Illustration} className="absolute -bottom-5 ml-8 mb-5  md:-bottom-20 md:left-[1.5%]" alt="hero-illustration" height={1000} width={1000} /> */}
-            </div>
+            ></video>
+            {/* <Image src={HeroImage} className="z-0 max-lg:pt-0 max-lg:left-24 max-sm:pt-24 max-sm:scale-125 scale-125 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.4] max-md:pt-20 left-48 top-[7rem] pb-32" alt="Hero"/>
+            <div className="rounded-md"> */}
+            {/* <Image src={Illustration} className="absolute -bottom-5 ml-8 mb-5  md:-bottom-20 md:left-[1.5%]" alt="hero-illustration" height={1000} width={1000} /> */}
           </div>
         </div>
-        <div className="text-white py-12 px-3 xl:ml-5">
-          <h1 className="text-slate-400 ">
-            Everything you need for productive team work:
-          </h1>
-          <div className=" flex gap-3">
-            {[
-              "Team Planner",
-              "Project Management",
-              "Virtual Office",
-              "Chat",
-              "Documents",
-              "Inbox",
-            ].map((elem, indx) => (
-              <div key={indx} className="flex justify-center items-center font-semibold">
-                {elem}
-                {indx !== 5 && <div className="bg-slate-300 ml-2 p-[2px] my-3 rounded-full"></div>}
-              </div>
-            ))}
-          </div>
+      </div>
+      <div className="text-white py-12 px-3 xl:ml-5">
+        <h1 className="text-slate-400 ">
+          Everything you need for productive team work:
+        </h1>
+        <div className=" flex gap-3">
+          {[
+            "Team Planner",
+            "Project Management",
+            "Virtual Office",
+            "Chat",
+            "Documents",
+            "Inbox",
+          ].map((elem, indx) => (
+            <div
+              key={indx}
+              className="flex justify-center items-center font-semibold"
+            >
+              {elem}
+              {indx !== 5 && (
+                <div className="bg-slate-300 ml-2 p-[2px] my-3 rounded-full"></div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

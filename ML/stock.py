@@ -11,6 +11,7 @@ import uvicorn
 from fastapi import FastAPI, WebSocket
 from sklearn.metrics import mean_squared_error
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -26,15 +27,37 @@ app.add_middleware(
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     await websocket.send_text("Waiting for stock name...")
-    
+
     try:
         # Receive stock name
         stock_name = await websocket.receive_text()
         await websocket.send_text(f"Received stock: {stock_name}")
 
+        ticker = yf.Ticker(stock_name)
+        news_items = ticker.news
+
+        if news_items:
+            await websocket.send_text("Recent news headlines:")
+            for item in news_items:
+                content = item.get('content', {})
+                title = content.get('title', 'N/A')
+                summary = content.get('summary', 'N/A')
+                pub_date = content.get('pubDate', 'N/A')
+                link = content.get('clickThroughUrl', {}).get('url', 'N/A')
+
+                data = {
+                    'title': title,
+                    'summary': summary,
+                    'pub_date': pub_date,
+                    'link': link
+                }
+
+                await websocket.send_text(json.dumps(data))
+        else:
+            await websocket.send_text("No news found for this stock.")
+
         # Setup & Fetch
         await websocket.send_text("Fetching stock data...")
-        ticker = yf.Ticker(stock_name)
         data = ticker.history(period="5y")
 
         if data.empty:
@@ -69,6 +92,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
         # Train Model
         await websocket.send_text("Training model...")
+
         model = tf.keras.Sequential()
         model.add(tf.keras.layers.LSTM(50, return_sequences=True, input_shape=(100, 1)))
         model.add(tf.keras.layers.LSTM(50, return_sequences=True))
@@ -76,13 +100,26 @@ async def websocket_endpoint(websocket: WebSocket):
         model.add(tf.keras.layers.Dense(1))
         model.compile(loss='mean_squared_error', optimizer='adam')
 
+        # Live Epoch Callback
         class EpochCallback(tf.keras.callbacks.Callback):
+            def __init__(self, websocket, loop):
+                super().__init__()
+                self.websocket = websocket
+                self.loop = loop
+
             def on_epoch_end(self, epoch, logs=None):
                 message = f"Training epoch {epoch+1}/100, loss: {logs['loss']:.4f}"
-                asyncio.create_task(websocket.send_text(message))
+                asyncio.run_coroutine_threadsafe(self.websocket.send_text(message), self.loop)
 
-        model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=64, verbose=0,
-                  callbacks=[EpochCallback()])
+        loop = asyncio.get_event_loop()
+        model.fit(
+            X_train, y_train,
+            validation_data=(X_test, y_test),
+            epochs=100,
+            batch_size=64,
+            verbose=0,
+            callbacks=[EpochCallback(websocket, loop)]
+        )
 
         # Predictions
         await websocket.send_text("Making predictions...")
@@ -162,6 +199,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         await websocket.send_text(f"Error occurred: {str(e)}")
         await websocket.close()
+
 
 if __name__ == "__main__":
     uvicorn.run("stock:app", host="127.0.0.1", port=8080, reload=True)

@@ -17,10 +17,10 @@ export default function AvatarDashboard({ username = "Atreyaa", email = "avs@gma
         <div className="space-y-0.5">
           <HoverCardTrigger asChild>
             <p className="text-xs  font-medium text-ellipsis">
-                Kruthik K
+                Atreyaa Avs
             </p>
           </HoverCardTrigger>
-          <p className="text-muted-foreground text-xs">@k.kruthik</p>
+          <p className="text-muted-foreground text-xs">avs@gmail.com</p>
         </div>
       </div>
     </HoverCard>

@@ -59,7 +59,7 @@ const Nav = () => {
               </Link>
             </div>
             <div className="hidden lg:flex gap-8">
-              {["Pricing", "Resources", "Community"].map((elem, index) => (
+              {["Pricing", "Community", "Contact Us"].map((elem, index) => (
                 <button
                   key={index}
                   className={`relative ${

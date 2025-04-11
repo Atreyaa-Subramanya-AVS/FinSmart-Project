@@ -1,5 +1,11 @@
 {
   "_id": "66164f3eec7f123456789abc",
+  "goals": {
+    "Goal1" : "Pay Off Credit Card Debt",
+    "Goal2" : "Buy a Car",
+    "Goal3" : "Plan for Retirement",
+    "Goal4" : "Create a Legacy or Inheritance Fund"
+  },
   "balanceTracker": {
     "currentBalance": 24051,
     "totalBalance": 45000,

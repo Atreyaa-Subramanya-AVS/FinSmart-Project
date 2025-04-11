@@ -56,12 +56,14 @@ const Illustration = () => {
         <div className="max-w-screen-xl h-full mx-auto px-12">
           <div className="text-white pt-32">
             <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl pr-1 z-30 max-w-3xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tighter pb-2 font-bold">
-              Sync with GitHub. <br /> Both Ways.
+              Analyze. Predict. Invest. <br /> For the{" "}
+              <span className="text-red-500 -mx-1 -ml-4 leading-none">❤️</span>
+              of India
             </h1>
             <p className="max-w-screen-md text-slate-300 text-balance pt-2 pb-12">
-              Manage your tasks efficiently with Meco's bidirectional GitHub
-              synchronization. Use Meco as an advanced front-end for GitHub
-              Issues and GitHub Projects.
+              Make smarter investments with FinSmart’s AI-powered Indian stock
+              analysis. Use FinSmart as your intelligent front-end for market
+              trends, predictions, and portfolio insights.
             </p>
           </div>
           <div className="h-fit p-1 2xl:p-[0.375rem] overflow-hidden relative rounded-md">
@@ -81,7 +83,7 @@ const Illustration = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 grid-rows-2 text-white pt-28 gap-3">
+          {/* <div className="grid grid-cols-3 grid-rows-2 text-white pt-28 gap-3">
             {Ills.map((elem) => (
               <div
                 key={elem.id}
@@ -108,7 +110,7 @@ const Illustration = () => {
                 <p className="text-slate-400">{elem.Para}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,30 +1,25 @@
 import yfinance as yf
+from datetime import datetime
 
-# Get data for an Indian stock (e.g., Reliance Industries)
-# NSE symbols need `.NS` suffix (BSE symbols use `.BO`)
-stock = yf.Ticker("RELIANCE.NS")
+ticker = yf.Ticker("SBIN.NS")
 
-# Company Info
-# info = stock.info
-# print("Company Info:")
-# print(info)
-print(stock.news)
+news_items = ticker.news
+print(news_items)
 
-# # Recent stock price history
-# hist = stock.history(period="1mo")
-# print("\nPrice History:")
-# print(hist)
+# Check if news exists and has expected keys
 
-# # Financials
-# print("\nIncome Statement:")
-# print(stock.financials)
+# Assuming your data is stored in a variable called `data`
+# For example: data = [...]  # your big JSON array
 
-# print("\nBalance Sheet:")
-# print(stock.balance_sheet)
+for item in news_items:
+    content = item.get('content', {})
+    title = content.get('title', 'N/A')
+    summary = content.get('summary', 'N/A')
+    pub_date = content.get('pubDate', 'N/A')
+    link = content.get('clickThroughUrl', {}).get('url', 'N/A')
 
-# print("\nCash Flow:")
-# print(stock.cashflow)
-
-# # Actions like Dividends and Splits
-# print("\nCorporate Actions:")
-# print(stock.actions)
+    print("Title:", title)
+    print("\nSummary:", summary)
+    print("\nPublished:", pub_date)
+    print("\nLink:", link)
+    print("───────────────────────────────")

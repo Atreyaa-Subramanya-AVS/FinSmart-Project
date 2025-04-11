@@ -211,7 +211,7 @@ const ML = () => {
             </div>
           ) : (
             <div className="mt-4 max-w-screen-md mx-auto max-lg:px-12 flex flex-col">
-              <div className="flex gap-3 items-center border-b-[1px] border-[#ccc]">
+              {/* <div className="flex gap-3 items-center border-b-[1px] border-[#ccc]">
                 <Image
                   className="inline-flex self-center pb-1"
                   src={robotIcon}
@@ -222,7 +222,7 @@ const ML = () => {
                 <h1 className="inline-flex self-center text-xl">
                   AI Insights:
                 </h1>
-              </div>
+              </div> */}
               <p className="min-h-32 my-5 whitespace-pre-wrap">{aiInsights}</p>
               <div className="flex flex-col gap-3 items-center">
                 <div className="flex w-full gap-3 justify-start border-b-[1px] border-[#ccc]">

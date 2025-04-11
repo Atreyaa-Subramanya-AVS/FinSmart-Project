@@ -183,7 +183,7 @@ export default function Home() {
           <DebtsCategories />
         </div>
       </div>
-      <DashboardAI />
+      {/* <DashboardAI /> */}
       {/* )} */}
     </div>
   );

@@ -5,9 +5,10 @@ import EmailInput from "@/components/comp-10";
 import SignInUI from "@/components/comp-122";
 import { Button } from "@/components/ui/button";
 import PasswordStrengthIndicator from "@/components/password";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import signin from "../../public/images/signin.jpg";
 import Image from "next/image";
+import { toast } from "sonner"; // make sure to install `sonner`
 
 const Page = () => {
   const router = useRouter();
@@ -17,12 +18,52 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
-    console.log("Name: ",name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    router.push("/dashboard"); // Navigate to Dashboard
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("username");
+    if (loggedInUser) {
+      router.push("/dashboard");
+    }
+  }, [router]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Replace this with your real backend API
+      const res = await fetch("http://localhost:3001/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          option,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      // Save data to localStorage
+      localStorage.setItem("username", data.username || name);
+      localStorage.setItem("email", data.email || email);
+
+      toast.success(`Welcome back, ${data.username || name}!`);
+
+      router.push("/dashboard");
+    } catch (err) {
+      toast.error(err.message || "Authentication failed.");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    toast("You’ve been logged out!");
+    router.push("/");
   };
 
   return (
@@ -84,7 +125,6 @@ const Page = () => {
             />
           )}
 
-          {/* Email Input */}
           <EmailInput
             placeholder="Email"
             type="email"
@@ -102,9 +142,10 @@ const Page = () => {
 
           <div className="flex justify-center my-6">
             <Button type="submit" className="px-6 py-2">
-              Sign In
+              {option}
             </Button>
           </div>
+
           <SignInUI />
         </form>
       </div>

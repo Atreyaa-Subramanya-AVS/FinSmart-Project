@@ -4,9 +4,9 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 
-export default function AvatarDashboard() {
+export default function AvatarDashboard({ username = "Atreyaa", email = "avs@gmail.com" }) {
   return (
-    (<HoverCard>
+    <HoverCard>
       <div className="flex items-center gap-3 mb-1">
         <img
           className="shrink-0 rounded-full"
@@ -23,7 +23,6 @@ export default function AvatarDashboard() {
           <p className="text-muted-foreground text-xs">@k.kruthik</p>
         </div>
       </div>
-      
-    </HoverCard>)
+    </HoverCard>
   );
 }

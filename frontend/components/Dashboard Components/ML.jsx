@@ -22,7 +22,7 @@ const ML = () => {
   const [loadingDataFromAPI, setLoadingDataFromAPI] = useState("Done");
 
   const fetchAIInsights = (stockName) => {
-    const socket = new WebSocket("ws://127.0.0.1:8080/ws/progress");
+    const socket = new WebSocket("ws://127.0.0.12:8080/ws/progress");
 
     socket.onopen = () => {
       console.log("WebSocket connected");

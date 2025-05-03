@@ -9,8 +9,18 @@ export default {
   theme: {
   	extend: {
   		animation: {
-  			'spin-slow': 'spin 5s ease-in-out infinite'
+  			'spin-slow': 'spin 5s ease-in-out infinite',
+			'heartbeat': 'heartbeat 1.5s ease-in-out infinite'
   		},
+		keyframes:{
+			heartbeat: {
+				'0%, 100%': { transform: 'scale(1)' },
+				'14%': { transform: 'scale(1.3)' },
+				'28%': { transform: 'scale(1)' },
+				'42%': { transform: 'scale(1.3)' },
+				'70%': { transform: 'scale(1)' },
+			  },
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

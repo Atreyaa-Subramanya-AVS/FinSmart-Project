@@ -25,33 +25,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function Profile() {
+export default function Profile({ username, email, profilePicture }) {
   const router = useRouter();
-  const [username, setUsername] = useState("Atreyaa AVS");
-  const [email, setEmail] = useState("avs@gmail.com");
-
-  useEffect(() => {
-    const storedName = localStorage.getItem("username");
-    const storedEmail = localStorage.getItem("email");
-    if (storedName) setUsername(storedName);
-    if (storedEmail) setEmail(storedEmail);
-  }, []);
+  
+  console.log(profilePicture);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="dark">
         <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
           <Avatar>
-            <AvatarImage src="./avatar.jpg" alt="Profile image" />
+            {/* Use the profile picture passed as a prop */}
+            <AvatarImage className="light" src={profilePicture} alt="Profile image" />
             <AvatarFallback>{username?.[0] ?? "U"}</AvatarFallback>
           </Avatar>
-          <ChevronDownIcon size={16} className="opacity-60" aria-hidden="true" />
+          <ChevronDownIcon
+            size={16}
+            className="opacity-60"
+            aria-hidden="true"
+          />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="max-w-64">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
-          <span className="text-foreground truncate text-sm font-medium">
+          <span className="text-foreground truncate text-sm font-medium overflow-hidden text-ellipsis max-w-[150px]">
             {username}
           </span>
           <span className="text-muted-foreground truncate text-xs font-normal">
@@ -92,16 +90,15 @@ export default function Profile() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-  onClick={() => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("email");
-    window.location.href = "/signin"; // 🔁 Redirect to login page
-  }}
->
-  <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
-  <span>Logout</span>
-</DropdownMenuItem>
-
+          onClick={() => {
+            localStorage.removeItem("username");
+            localStorage.removeItem("email");
+            window.location.href = "/signin"; // 🔁 Redirect to login page
+          }}
+        >
+          <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
+          <span>Logout</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

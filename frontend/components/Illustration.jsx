@@ -52,16 +52,16 @@ const Illustration = () => {
 
   return (
     <div className="w-full bg-[#111111]">
-      <div className="h-fit pb-32 2xl:pb-56 max-w-screen-lg 2xl:max-w-screen-2xl mx-auto">
+      <div className="h-fit pb-32 max-md:pb-16 2xl:pb-56 max-w-screen-lg 2xl:max-w-screen-2xl mx-auto">
         <div className="max-w-screen-xl h-full mx-auto px-12">
-          <div className="text-white pt-32">
-            <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl pr-1 z-30 max-w-3xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tighter pb-2 font-bold">
+          <div className="text-white pt-32 max-md:pt-16">
+            <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl 2xl:text-8xl pr-1 z-30 max-w-3xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tighter pb-2 font-bold">
               Analyze. Predict. Invest. <br /> For the{" "}
-              <span className="text-red-500 -mx-1 -ml-4 leading-none">❤️</span>
+              <span className="text-red-500 -mx-1 -ml-4 leading-none max-md:mx-[0.1px] animate-heartbeat">❤️</span>
               of India
             </h1>
             <p className="max-w-screen-md text-slate-300 text-balance pt-2 pb-12">
-              Make smarter investments with FinSmart’s AI-powered Indian stock
+              Make smarter investments with FinSmart's AI-powered Indian stock
               analysis. Use FinSmart as your intelligent front-end for market
               trends, predictions, and portfolio insights.
             </p>
@@ -70,7 +70,7 @@ const Illustration = () => {
             <div
               className="absolute inset-0 before:content-[''] before:absolute 
                 before:w-[250%] before:h-[250%] before:-left-3/4 before:-top-3/4 
-                before:bg-[repeating-conic-gradient(transparent,#ffb25e,transparent,#fff,#fff,transparent,green,green,transparent)] 
+                before:bg-[repeating-conic-gradient(transparent,#ffb25e,#ffb25e,transparent,#fff,#fff,transparent,green,green,transparent)] 
                 before:animate-spin-slow"
             ></div>
 

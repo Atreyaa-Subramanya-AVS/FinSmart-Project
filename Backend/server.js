@@ -2,23 +2,22 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${GEMINI_API_KEY}`;
 
-// MIDDLEWARE
+// Middleware
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(
   session({
-    secret: process.env.JWT_SECRET || "mysecret",
+    secret: process.env.JWT_SECRET || "defaultsecret",
     resave: false,
     saveUninitialized: true,
   })
@@ -26,19 +25,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// MONGOOSE CONNECTION
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected successfully!"))
-  .catch((err) => console.error(`MongoDB Connection Error: ${err.message}`));
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB error:", err.message));
 
-// USER MODEL
+// User schema and model
 const UserSchema = new mongoose.Schema({
   googleId: { type: String, unique: true, sparse: true },
   username: { type: String, required: true, unique: true },
 });
 const User = mongoose.model("User", UserSchema);
 
+// Google OAuth setup
 passport.use(
   new GoogleStrategy(
     {
@@ -48,46 +48,73 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        console.log("Google Profile:", profile); // Debug the profile data
+
+        const email = profile._json.email;
+        const profilePicture = profile._json.picture; // Correctly get the picture from _json
+
         let user = await User.findOne({ googleId: profile.id });
+
         if (!user) {
-          user = new User({
+          user = await User.create({
             googleId: profile.id,
             username: profile.displayName,
+            email: email,
+            profilePicture: profilePicture // Store the profile picture correctly
           });
-          await user.save();
+        } else {
+          // If the user exists, you can update the profile picture if it hasn't been set
+          user.profilePicture = user.profilePicture || profilePicture;
+          user.email = email; // update the email if necessary
         }
-        return done(null, user);
+
+        done(null, user);
       } catch (err) {
-        return done(err, null);
+        console.error("Google Strategy Error:", err);
+        done(err, null);
       }
     }
   )
 );
 
-// PASSPORT SERIALIZE/DESERIALIZE
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   const user = await User.findById(id);
   done(null, user);
 });
 
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findById(id);
+  done(null, user);
+});
+
+// Google Auth routes
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "http://localhost:3000/login",
   }),
   (req, res) => {
-    const username = req.user?.username;
-    res.redirect(`http://localhost:3000/dashboard?username=${encodeURIComponent(username)}`);
+    const { username, email, profilePicture } = req.user; // Extract from the user object
+    console.log("Redirecting with:", { username, email, profilePicture }); // Debugging line
+    res.redirect(
+      `http://localhost:3000/dashboard?username=${encodeURIComponent(
+        username
+      )}&email=${encodeURIComponent(email)}&picture=${encodeURIComponent(
+        profilePicture
+      )}`
+    );
   }
 );
 
-app.get("/auth/user", (req, res) => {
-  res.json(req.user || null);
-});
+app.get("/auth/user", (req, res) => res.json(req.user || null));
 app.get("/auth/logout", (req, res) => {
   req.logout((err) => {
     if (err) return res.status(500).json({ error: "Logout failed" });
@@ -95,36 +122,31 @@ app.get("/auth/logout", (req, res) => {
   });
 });
 
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
+// Gemini Chat Endpoint
 app.post("/api/chat", async (req, res) => {
   const { history } = req.body;
-
   if (!history || !Array.isArray(history) || history.length === 0) {
     return res.status(400).json({ error: "History is required" });
   }
 
   try {
-    const payload = {
-      contents: history,
-      generationConfig: {
-        temperature: 0.9,
-        topK: 1,
-        topP: 1,
-        maxOutputTokens: 2048,
-        stopSequences: [],
+    const response = await axios.post(
+      GEMINI_ENDPOINT,
+      {
+        contents: history,
+        generationConfig: {
+          temperature: 0.9,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 2048,
+          stopSequences: [],
+        },
       },
-    };
-
-    const response = await axios.post(GEMINI_ENDPOINT, payload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      { headers: { "Content-Type": "application/json" } }
+    );
 
     const reply =
       response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
-
     res.json({ reply });
   } catch (err) {
     console.error("Gemini API error:", err?.response?.data || err.message);
@@ -132,13 +154,13 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-
+// Gemini Financial Recommendation Endpoint
 app.post("/api/recommend", async (req, res) => {
   const { Data } = req.body;
+  if (!Data) {
+    return res.status(400).json({ error: "No financial data provided" });
+  }
 
-  console.log("Received Data:", Data);
-
-  // Format a prompt tailored to financial analysis
   const prompt = `
   Analyze the following financial details and provide detailed recommendations tailored to the user's financial goals.
 
@@ -154,12 +176,9 @@ app.post("/api/recommend", async (req, res) => {
   `;
 
   try {
-    const geminiRes = await fetch(GEMINI_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const response = await axios.post(
+      GEMINI_ENDPOINT,
+      {
         contents: [
           {
             parts: [
@@ -169,27 +188,36 @@ app.post("/api/recommend", async (req, res) => {
             ],
           },
         ],
-      }),
-    });
-
-    const geminiData = await geminiRes.json();
+        generationConfig: {
+          temperature: 0.9,
+          topK: 1,
+          topP: 1,
+          maxOutputTokens: 2048,
+        },
+      },
+      { headers: { "Content-Type": "application/json" } }
+    );
 
     const generatedText =
-      geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Could not generate financial advice.";
-
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
     res.json({ response: generatedText });
   } catch (error) {
-    console.error("Error calling Gemini:", error);
-    res.status(500).json({ error: "Failed to fetch financial recommendation." });
+    console.error(
+      "Gemini Recommendation Error:",
+      error?.response?.data || error.message
+    );
+    res
+      .status(500)
+      .json({ error: "Failed to fetch financial recommendation." });
   }
 });
 
-
+// Default route
 app.get("/", (req, res) => {
   res.send("FinSmart API + Gemini is running!");
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

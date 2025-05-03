@@ -45,7 +45,7 @@ const CircleProgressBar = ({
           r={radius}
           strokeWidth={strokeWidth}
           className={clsx(
-            "fill-none [stroke-linecap:round] [stroke-linejoin:round]",
+            "fill-none",
             strokeClass
           )}
           style={{
@@ -56,7 +56,7 @@ const CircleProgressBar = ({
           transform={`rotate(-90 ${normalizedRadius} ${normalizedRadius})`}
         />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm font-semibold text-white">
+      <div className="absolute inset-0 flex items-center justify-center text-md font-bold text-white">
         {percentage}%
       </div>
     </div>

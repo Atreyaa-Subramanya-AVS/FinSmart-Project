@@ -1,204 +1,230 @@
 {
-  "_id": "66164f3eec7f123456789abc",
-  "goals": {
-    "Goal1" : "Pay Off Credit Card Debt",
-    "Goal2" : "Buy a Car",
-    "Goal3" : "Plan for Retirement",
-    "Goal4" : "Create a Legacy or Inheritance Fund"
-  },
-  "balanceTracker": {
-    "currentBalance": 24051,
-    "totalBalance": 45000,
-    "lastUpdated": "2025-04-10T12:00:00Z"
-  },
-  "moneyInMoneyOut": {
-    "moneyIn": 25000,
-    "moneyOut": 15000,
-    "previousBalance": 20000
-  },
-  "spendingSaving": {
-    "spending": 20000,
-    "saving": 25000,
-    "spendingVsSavingRatio": "44:56"
-  },
-  "moneyDistributionMoneyIn": {
-    "moneyIn": 52300,
-    "previousBalance": 32500
-  },
-  "moneyDistribution": [
-    {
-      "category": "Expenses",
-      "amount": 26000,
-      "percentage": 43.26,
-      "color": "hsl(var(--chart-1))"
-    },
-    {
-      "category": "Bills",
-      "amount": 10100,
-      "percentage": 16.8,
-      "color": "hsl(var(--chart-2))"
-    },
-    {
-      "category": "Debts",
-      "amount": 4300,
-      "percentage": 7.15,
-      "color": "hsl(var(--chart-3))"
-    },
-    {
-      "category": "Savings",
-      "amount": 15000,
-      "percentage": 24.96,
-      "color": "hsl(var(--chart-4))"
-    },
-    {
-      "category": "Others",
-      "amount": 4700,
-      "percentage": 7.82,
-      "color": "hsl(var(--chart-5))"
-    }
-  ],
-  "expectedIncome": {
-    "title": "Expected Income",
-    "moneyIn": 60100,
-    "expected": 80100,
-    "progressPercentage": 60
-  },
-  "expectedBudget": {
-    "title": "Expected Budget",
-    "expenses": 26000,
-    "budget": 38700,
-    "progressPercentage": 60
-  },
-  "billsBudget": {
-    "title": "Bills Budget",
-    "bills": 10100,
-    "budget": 20100,
-    "progressPercentage": 60
-  },
-  "debtsPaymentGoal": {
-    "title": "Debts Payment Goal",
-    "debtsPaid": 4300,
-    "goal": 5600,
-    "progressPercentage": 60
-  },
-  "savingsGoal": {
-    "title": "Savings Goal",
-    "moneySaved": 20680,
-    "goal": 24748,
-    "progressPercentage": 60
-  },
-  "miscellaneousExpenses": {
-    "title": "MiscellaneousExpenses",
-    "expenses": 7450,
-    "budget": 20000
-  },
-  "incomeSources": {
-    "title": "Income Sources",
-    "sources": [
-      { "source": "Salary", "amount": 35000 },
-      { "source": "Freelancing", "amount": 15000 },
-      { "source": "Investments", "amount": 10100 }
+  "Sample Data 1": {
+    "goals": [
+      { "Goal": "Emergency Fund", "Value": 10000 },
+      { "Goal": "Vacation to Japan", "Value": 8000 },
+      { "Goal": "Start a Small Business", "Value": 20000 }
     ],
-    "total": 60100
+    "balanceTracker": {
+      "currentBalance": 12000,
+      "totalAmount": 35000
+    },
+    "moneyInMoneyOut": {
+      "moneyIn": 30000,
+      "moneyOut": 18000,
+      "previousBalance": 23000
+    },
+    "moneyDistribution": [
+      { "category": "Expenses", "amount": 14000, "color": "hsl(var(--chart-1))" },
+      { "category": "Bills", "amount": 8700, "color": "hsl(var(--chart-2))" },
+      { "category": "Debts", "amount": 2900, "color": "hsl(var(--chart-3))" },
+      { "category": "Savings", "amount": 9800, "color": "hsl(var(--chart-4))" },
+      { "category": "Investments", "amount": 6400, "color": "hsl(var(--chart-5))" },
+      { "category": "Others", "amount": 1200, "color": "hsl(var(--chart-6))" }
+    ],
+    "expectedIncome": {
+      "moneyIn": 31000,
+      "expected": 47000
+    },
+    "expectedBudget": {
+      "expenses": 18000,
+      "budget": 39000
+    },
+    "billsBudget": {
+      "bills": 9100,
+      "budget": 16000
+    },
+    "debtsPaymentGoal": {
+      "debtsPaid": 3200,
+      "goal": 5000
+    },
+    "savingsGoal": {
+      "moneySaved": 8700,
+      "goal": 12000
+    },
+    "miscellaneousExpenses": {
+      "expenses": 4300,
+      "budget": 9000
+    },
+    "expenseCategories": [
+      { "category": "Groceries", "amount": 4500, "color": "hsl(var(--chart-1))" },
+      { "category": "Pet Supplies", "amount": 900, "color": "hsl(var(--chart-2))" },
+      { "category": "Gym Membership", "amount": 1100, "color": "hsl(var(--chart-3))" },
+      { "category": "Streaming Services", "amount": 600, "color": "hsl(var(--chart-4))" },
+      { "category": "Dining", "amount": 2500, "color": "hsl(var(--chart-5))" },
+      { "category": "Home Repairs", "amount": 3400, "color": "hsl(var(--chart-6))" },
+      { "category": "Childcare", "amount": 1800, "color": "hsl(var(--chart-7))" }
+    ],
+    "billsCategories": [
+      { "category": "Water", "amount": 1200, "color": "hsl(var(--chart-1))" },
+      { "category": "Electricity", "amount": 1500, "color": "hsl(var(--chart-2))" },
+      { "category": "Internet", "amount": 1000, "color": "hsl(var(--chart-3))" },
+      { "category": "Mobile Plan", "amount": 600, "color": "hsl(var(--chart-4))" },
+      { "category": "Car Insurance", "amount": 2400, "color": "hsl(var(--chart-5))" }
+    ],
+    "debtsCategories": [
+      { "category": "Student Loan", "amount": 1800, "color": "hsl(var(--chart-1))" },
+      { "category": "Car Loan", "amount": 2000, "color": "hsl(var(--chart-2))" },
+      { "category": "Mortgage", "amount": 3000, "color": "hsl(var(--chart-3))" }
+    ],
+    "incomeSourcesGraph": [
+      { "source": "Salary", "amount": 25000 },
+      { "source": "Real Estate", "amount": 6000 },
+      { "source": "Dividends", "amount": 3000 },
+      { "source": "Consulting", "amount": 4500 }
+    ],
+    "investmentDistributionGraph": [
+      { "type": "Mutual Funds", "amount": 5000 },
+      { "type": "REITs", "amount": 4000 },
+      { "type": "Cryptocurrency", "amount": 1500 },
+      { "type": "Government Bonds", "amount": 2000 },
+      { "type": "NFTs", "amount": 300 }
+    ],
+    "notes": "Allocate more funds to bonds and consider dropping the NFT investment."
   },
 
-  "expenseCategories": [
-    {
-      "category": "Rent",
-      "amount": 6000,
-      "color": "hsl(var(--chart-1))"
+  "Sample Data 2": {
+    "goals": [
+      { "Goal": "Wedding Fund", "Value": 15000 },
+      { "Goal": "New Laptop", "Value": 50000 },
+      { "Goal": "Down Payment for House", "Value": 40000 },
+      { "Goal": "Emergency Pet Fund", "Value": 3000 }
+    ],
+    "balanceTracker": {
+      "currentBalance": 8000,
+      "totalAmount": 24000
     },
-    {
-      "category": "Healthcare",
-      "amount": 3900,
-      "color": "hsl(var(--chart-2))"
+    "moneyInMoneyOut": {
+      "moneyIn": 21000,
+      "moneyOut": 16000,
+      "previousBalance": 19000
     },
-    {
-      "category": "Subscriptions",
-      "amount": 1800,
-      "color": "hsl(var(--chart-3))"
+    "moneyDistribution": [
+      { "category": "Expenses", "amount": 11000, "color": "hsl(var(--chart-1))" },
+      { "category": "Bills", "amount": 6500, "color": "hsl(var(--chart-2))" },
+      { "category": "Debts", "amount": 3600, "color": "hsl(var(--chart-3))" },
+      { "category": "Savings", "amount": 4000, "color": "hsl(var(--chart-4))" },
+      { "category": "Insurance", "amount": 2100, "color": "hsl(var(--chart-5))" }
+    ],
+    "expectedIncome": {
+      "moneyIn": 28000,
+      "expected": 34000
     },
-    {
-      "category": "Dining Out",
-      "amount": 3200,
-      "color": "hsl(var(--chart-4))"
+    "expectedBudget": {
+      "expenses": 12000,
+      "budget": 22000
     },
-    {
-      "category": "Travel",
-      "amount": 5400,
-      "color": "hsl(var(--chart-5))"
+    "billsBudget": {
+      "bills": 7000,
+      "budget": 11000
     },
-    {
-      "category": "Others",
-      "amount": 5700,
-      "color": "hsl(var(--chart-6))"
-    }
-  ],
+    "debtsPaymentGoal": {
+      "debtsPaid": 2000,
+      "goal": 3000
+    },
+    "savingsGoal": {
+      "moneySaved": 4300,
+      "goal": 7000
+    },
+    "miscellaneousExpenses": {
+      "expenses": 1900,
+      "budget": 4000
+    },
+    "expenseCategories": [
+      { "category": "Shopping", "amount": 3100, "color": "hsl(var(--chart-1))" },
+      { "category": "Books", "amount": 700, "color": "hsl(var(--chart-2))" },
+      { "category": "Music Subscriptions", "amount": 500, "color": "hsl(var(--chart-3))" },
+      { "category": "Alcohol", "amount": 900, "color": "hsl(var(--chart-4))" },
+      { "category": "Taxi", "amount": 2000, "color": "hsl(var(--chart-5))" },
+      { "category": "Events", "amount": 1300, "color": "hsl(var(--chart-6))" }
+    ],
+    "billsCategories": [
+      { "category": "Phone Bill", "amount": 1200, "color": "hsl(var(--chart-1))" },
+      { "category": "Cable TV", "amount": 900, "color": "hsl(var(--chart-2))" },
+      { "category": "Home Security", "amount": 800, "color": "hsl(var(--chart-3))" }
+    ],
+    "debtsCategories": [
+      { "category": "Credit Card", "amount": 1600, "color": "hsl(var(--chart-1))" },
+      { "category": "Pay Later Loans", "amount": 2000, "color": "hsl(var(--chart-2))" }
+    ],
+    "incomeSourcesGraph": [
+      { "source": "Freelancing", "amount": 9000 },
+      { "source": "Blogging", "amount": 2000 },
+      { "source": "Stock Trading", "amount": 4000 },
+      { "source": "Grants", "amount": 3000 }
+    ],
+    "investmentDistributionGraph": [
+      { "type": "ETFs", "amount": 2000 },
+      { "type": "Crypto", "amount": 2500 },
+      { "type": "Savings Account", "amount": 1000 }
+    ],
+    "notes": "Look into high-interest savings accounts for the emergency fund."
+  },
 
-  "billsCategories": [
-    {
-      "category": "Rent",
-      "amount": 4000,
-      "percentage": 39.6,
-      "color": "#FF6384"
+  "Sample Data 3": {
+    "goals": [
+      { "Goal": "Buy a Bike", "Value": 5000 },
+      { "Goal": "Skill Development Courses", "Value": 8500 }
+    ],
+    "balanceTracker": {
+      "currentBalance": 1500,
+      "totalAmount": 6000
     },
-    {
-      "category": "Electricity",
-      "amount": 1800,
-      "percentage": 17.8,
-      "color": "#36A2EB"
+    "moneyInMoneyOut": {
+      "moneyIn": 6500,
+      "moneyOut": 4000,
+      "previousBalance": 4000
     },
-    {
-      "category": "Internet",
-      "amount": 1300,
-      "percentage": 12.9,
-      "color": "#FFCE56"
+    "moneyDistribution": [
+      { "category": "Expenses", "amount": 2800, "color": "hsl(var(--chart-1))" },
+      { "category": "Bills", "amount": 1700, "color": "hsl(var(--chart-2))" },
+      { "category": "Savings", "amount": 1400, "color": "hsl(var(--chart-3))" }
+    ],
+    "expectedIncome": {
+      "moneyIn": 7000,
+      "expected": 10000
     },
-    {
-      "category": "Groceries",
-      "amount": 3000,
-      "percentage": 29.7,
-      "color": "#4BC0C0"
-    }
-  ],
-  "debtsCategories": [
-    {
-      "category": "Credit Card",
-      "amount": 2000,
-      "percentage": 46.5,
-      "color": "#9966FF"
+    "expectedBudget": {
+      "expenses": 2500,
+      "budget": 6000
     },
-    {
-      "category": "Loan EMI",
-      "amount": 1300,
-      "percentage": 30.2,
-      "color": "#FF9F40"
+    "billsBudget": {
+      "bills": 1600,
+      "budget": 3000
     },
-    {
-      "category": "Car Installment",
-      "amount": 1000,
-      "percentage": 23.3,
-      "color": "#FFCD56"
-    }
-  ],
-
-  "incomeSourcesGraph": [
-    { "source": "Employment", "amount": 40000 },
-    { "source": "Side Hustle", "amount": 10000 },
-    { "source": "YouTube", "amount": 7000 },
-    { "source": "Freelance Projects", "amount": 8000 },
-    { "source": "Affiliate Marketing", "amount": 5000 }
-  ],
-
-  "investmentDistributionGraph": [
-    { "type": "Mutual Funds", "amount": 12000 },
-    { "type": "SIP", "amount": 8000 },
-    { "type": "Fixed Deposits", "amount": 6000 },
-    { "type": "Stocks", "amount": 10000 },
-    { "type": "Cryptocurrency", "amount": 5000 }
-  ],
-
-  "notes": "Focus on increasing savings ratio next month and reduce entertainment spending.",
-  "createdAt": "2025-04-10T11:58:00Z",
-  "updatedAt": "2025-04-10T12:01:00Z"
+    "debtsPaymentGoal": {
+      "debtsPaid": 0,
+      "goal": 0
+    },
+    "savingsGoal": {
+      "moneySaved": 1000,
+      "goal": 2000
+    },
+    "miscellaneousExpenses": {
+      "expenses": 900,
+      "budget": 1500
+    },
+    "expenseCategories": [
+      { "category": "Gaming", "amount": 700, "color": "hsl(var(--chart-1))" },
+      { "category": "Online Courses", "amount": 1200, "color": "hsl(var(--chart-2))" },
+      { "category": "Software Subscriptions", "amount": 900, "color": "hsl(var(--chart-3))" }
+    ],
+    "billsCategories": [
+      { "category": "Electricity", "amount": 800, "color": "hsl(var(--chart-1))" },
+      { "category": "WiFi", "amount": 900, "color": "hsl(var(--chart-2))" }
+    ],
+    "debtsCategories": [
+      { "category": "Mortgage", "amount": 1800, "color": "hsl(var(--chart-1))" }
+    ],
+    "incomeSourcesGraph": [
+      { "source": "Part-time Job", "amount": 3000 },
+      { "source": "Tutoring", "amount": 2000 },
+      { "source": "App Dev Projects", "amount": 1500 }
+    ],
+    "investmentDistributionGraph": [
+      { "type": "Crypto", "amount": 700 },
+      { "type": "Stock Portfolio", "amount": 800 }
+    ],
+    "notes": "Increase earnings via app development and lower gaming expenses."
+  }
 }

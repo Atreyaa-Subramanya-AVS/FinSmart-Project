@@ -1,0 +1,165 @@
+{
+    "goals": [
+      { "Goal": "Pay off Credit Card Debt", "Value": 5000 },
+      { "Goal": "Buy A Car", "Value": 12000 },
+      { "Goal": "Plan for Retirement", "Value": 15000 },
+      { "Goal": "Create a Legacy or Inheritance Fund", "Value": 13000 }
+    ],
+    "balanceTracker": {
+      "currentBalance": 25000,
+      "totalBalance": 45000
+    },
+    "moneyInMoneyOut": {
+      "moneyIn": 25000,
+      "moneyOut": 15000,
+      "previousBalance": 20000
+    },
+    "moneyDistribution": [
+      {
+        "category": "Expenses",
+        "amount": 15000,
+        "color": "hsl(var(--chart-1))"
+      },
+      {
+        "category": "Bills",
+        "amount": 10100,
+        "color": "hsl(var(--chart-2))"
+      },
+      {
+        "category": "Debts",
+        "amount": 4300,
+        "color": "hsl(var(--chart-3))"
+      },
+      {
+        "category": "Savings",
+        "amount": 15000,
+        "color": "hsl(var(--chart-4))"
+      },
+      {
+        "category": "Others",
+        "amount": 4700,
+        "color": "hsl(var(--chart-5))"
+      }
+    ],
+    "expectedIncome": {
+      "moneyIn": 45100,
+      "expected": 80100
+    },
+    "expectedBudget": {
+      "expenses": 16000,
+      "budget": 38700
+    },
+    "billsBudget": {
+      "bills": 12750,
+      "budget": 20100
+    },
+    "debtsPaymentGoal": {
+      "debtsPaid": 4300,
+      "goal": 5600
+    },
+    "savingsGoal": {
+      "moneySaved": 20680,
+      "goal": 24748
+    },
+    "miscellaneousExpenses": {
+      "expenses": 12781,
+      "budget": 20000
+    },
+    "expenseCategories": [
+      {
+        "category": "Rent",
+        "amount": 12000,
+        "color": "hsl(var(--chart-1))"
+      },
+      {
+        "category": "Healthcare",
+        "amount": 3900,
+        "color": "hsl(var(--chart-2))"
+      },
+      {
+        "category": "Subscriptions",
+        "amount": 1800,
+        "color": "hsl(var(--chart-3))"
+      },
+      {
+        "category": "Dining Out",
+        "amount": 3200,
+        "color": "hsl(var(--chart-4))"
+      },
+      {
+        "category": "Travel",
+        "amount": 5400,
+        "color": "hsl(var(--chart-5))"
+      },
+      {
+        "category": "Others",
+        "amount": 5700,
+        "color": "hsl(var(--chart-6))"
+      }
+    ],
+  
+    "billsCategories": [
+      {
+        "category": "Rent",
+        "amount": 4000,
+        "color": "hsl(var(--chart-1))"
+      },
+      {
+        "category": "Electricity",
+        "amount": 1800,
+        "color": "hsl(var(--chart-2))"
+      },
+      {
+        "category": "Internet",
+        "amount": 1300,
+        "color": "hsl(var(--chart-3))"
+      },
+      {
+        "category": "Groceries",
+        "amount": 1000,
+        "color": "hsl(var(--chart-4))"
+      }
+    ],
+  
+    "debtsCategories": [
+      {
+        "category": "Credit Card",
+        "amount": 2000,
+        "color": "hsl(var(--chart-1))"
+      },
+      {
+        "category": "Loan EMI",
+        "amount": 1300,
+        "color": "hsl(var(--chart-2))"
+      },
+      {
+        "category": "Gold Loan",
+        "amount": 2300,
+        "color": "hsl(var(--chart-3))"
+      },
+      {
+        "category": "Car Installment",
+        "amount": 4000,
+        "color": "hsl(var(--chart-4))"
+      }
+    ],
+  
+    "incomeSourcesGraph": [
+      { "source": "Employment", "amount": 40000 },
+      { "source": "Side Hustle", "amount": 10000 },
+      { "source": "YouTube", "amount": 7000 },
+      { "source": "Freelance Projects", "amount": 8000 },
+      { "source": "Affiliate Marketing", "amount": 5000 }
+    ],
+  
+    "investmentDistributionGraph": [
+      { "type": "Mutual Funds", "amount": 12000 },
+      { "type": "SIP", "amount": 8000 },
+      { "type": "Fixed Deposits", "amount": 6000 },
+      { "type": "Stocks", "amount": 10000 },
+      { "type": "Cryptocurrency", "amount": 5000 }
+    ],
+  
+    "notes": "Focus on increasing savings ratio next month and reduce entertainment spending."
+  }
+  

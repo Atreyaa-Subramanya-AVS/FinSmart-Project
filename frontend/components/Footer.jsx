@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React from "react";
 import bgImage from "../public/images/footer-bg.jpg";
+import bgImageSmall from "../public/images/footersmall-bg.jpg";
 // import bgVideo from '../public/videos/footerVid.mp4';
 import passionImg from "../public/images/passion.svg";
 import Link from "next/link";
@@ -16,17 +17,18 @@ const Footer = () => {
         <Image
           src={bgImage}
           alt="Footer-Bg"
-          className="w-full h-full object-cover z-0"
+          className="w-full h-full object-cover z-0 hidden md:block"
         />
-        <div className="absolute top-1/4 left-1/2 2xl:-mt-4 2xl:-ml-20 z-0">
-          <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl pr-1 z-30 max-w-xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-wide font-semibold leading-[0.9]">
+        <Image src={bgImageSmall} alt="FooterSmall-Bg" className="w-full h-full object-cover z-0 block md:hidden"/>
+        <div className="absolute top-[40%] left-1/3 sm:top-1/2 sm:left-[35%] md:top-[7%] xl:top-[15%] xl:left-1/2 2xl:-mt-4 2xl:-ml-20 z-0">
+          <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl pr-1 z-30 max-w-xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tight font-semibold leading-[0.9]">
             Join the <br /> Movement
           </h1>
           <p className="max-w-md text-balance mt-3 lg:text-sm 2xl:text-base">
-            Unlock the future of productivity with Meco. Remember, this journey
+            Unlock the future of finance with FinSmart. Remember, this journey
             is just getting started.
           </p>
-          <Link href={"/dashboard"}>
+          <Link href={"/dashboard?refresh=true"}>
             <button className="relative py-2 px-8 mt-5 2xl:mt-10 overflow-hidden rounded-full border border-white/60 bg-[#d1d1d1] space-x-1 lg:px-10 lg:mt-18 max-sm:text-xs max-sm:px-6">
               <div className="absolute top-1/2 h-[103px] w-[204px] translate-x-1/4 -translate-y-1/2 bg-[radial-gradient(43.3%_44.23%_at_50%_49.51%,_#FFFFF7_29%,_#FFFACD_48.5%,_#F4D2BF_60.71%,rgba(214,211,210,0.00)_100%)] blur-[5px]"></div>
               <h1 className="z-10 relative text-sm flex text-black font-bold">
@@ -48,17 +50,17 @@ const Footer = () => {
             </button>
           </Link>
         </div>
-        <div className="flex justify-center items-center lg:mx-auto whitespace-nowrap -mt-10 gap-6 2xl:gap-12">
+        <div className="flex justify-center items-center lg:mx-auto whitespace-nowrap gap-6 2xl:gap-12 max-w-screen-lg px-12 mt-24 md:-mt-10 pt-5 py-2">
           <div>
             <p className="text-slate-500 text-sm 2xl:text-base">
-              Copyright &copy; 2025 Meco Labs. All rights reserved.
+              Copyright &copy; 2025 FinSmart. All rights reserved.
             </p>
           </div>
-          <div className="flex gap-5 text-gray-300 text-sm 2xl:text-base">
+          <div className="flex gap-5 text-gray-300 text-sm 2xl:text-base max-md:hidden">
             <p>Terms of Service</p>
             <p>Privacy Policy</p>
           </div>
-          <div className="flex gap-5">
+          <div className="flex gap-5 max-md:hidden">
             <svg
               width="14"
               height="14"
@@ -116,7 +118,7 @@ const Footer = () => {
               ></path>
             </svg>
           </div>
-          <div className="text-gray-400 flex justify-center items-center text-sm 2xl:text-base">
+          <div className="text-gray-400 flex justify-center items-center text-sm 2xl:text-base max-sm:hidden sm:flex">
             <Image
               src="/images/passion.svg"
               alt="Passion"
@@ -124,7 +126,7 @@ const Footer = () => {
               height={34}
               className="scale-150"
             />
-            <p>Made with Passion and Meco</p>
+            <p>Made with Passion and FinSmart</p>
           </div>
         </div>
         {/* <video src={"../public/videos/footerVid.mp4"} autoPlay loop muted className='absolute inset-0'></video> */}

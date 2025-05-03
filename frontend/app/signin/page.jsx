@@ -8,7 +8,8 @@ import PasswordStrengthIndicator from "@/components/password";
 import React, { useState, useEffect } from "react";
 import signin from "../../public/images/signin.jpg";
 import Image from "next/image";
-import { toast } from "sonner"; // make sure to install `sonner`
+import toast, { Toaster } from "react-hot-toast";
+import signinBG from "../../public/images/signinBG.png";
 
 const Page = () => {
   const router = useRouter();
@@ -17,68 +18,84 @@ const Page = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [allow, setAllow] = useState(false);
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("username");
-    if (loggedInUser) {
-      router.push("/dashboard");
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const loggedInUser = localStorage.getItem("username");
+  //   if (loggedInUser) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (option === "Register" && !allow) {
+      toast.error("Please use a stronger password.");
+      return;
+    }
+
+    const endpoint =
+      option === "Register"
+        ? "http://localhost:5000/auth/local/register"
+        : "http://localhost:5000/auth/local/login";
+
+    const payload =
+      option === "Register"
+        ? { username: name, email, password }
+        : { email, password };
+
     try {
-      // Replace this with your real backend API
-      const res = await fetch("http://localhost:3001/auth", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          option,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message || "Login failed");
+      if (!res.ok) throw new Error(data.message || `${option} failed`);
 
-      // Save data to localStorage
+      // Save to localStorage (optional or adjust to use JWT/session)
       localStorage.setItem("username", data.username || name);
       localStorage.setItem("email", data.email || email);
 
-      toast.success(`Welcome back, ${data.username || name}!`);
+      toast.success(
+        option === "Register"
+          ? `Welcome, ${data.username || name}! 🎉`
+          : `Welcome back, ${data.username || name}!`
+      );
 
-      router.push("/dashboard");
+      // Redirect to dashboard
+      router.push("/dashboard?refresh=true");
     } catch (err) {
       toast.error(err.message || "Authentication failed.");
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("username");
-    localStorage.removeItem("email");
-    toast("You’ve been logged out!");
-    router.push("/");
-  };
-
   return (
     <div className="h-fit w-full flex justify-center items-center text-white">
-      <div className="absolute top-0 left-0 w-full h-[150%] lg:h-[150%] xl:h-screen flex -z-10 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
+      <Toaster />
+      <div
+        className="absolute top-0 left-0 w-full h-[150%] xl:h-screen flex -z-10 brightness-90"
+        style={{
+          backgroundImage: `url(${signinBG.src})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      ></div>
 
-      <div className="wrapper absolute max-md:top-3/4 top-3/4 xl:top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-screen-lg w-3/4 px-12 py-4 border border-dashed lg:flex justify-between gap-12">
+      <div className="wrapper absolute max-md:top-3/4 top-3/4 xl:top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-screen-lg w-3/4 px-12 py-4 border border-dashed lg:flex justify-between gap-12 bg-[rgba(0,0,0,0.5)] rounded-md">
         <div className="w-1/2 max-lg:w-full flex flex-col gap-2">
-          <h1 className="text-center text-5xl font-semibold mt-3 tracking-tight">
+          <h1 className="text-center text-5xl font-bold mt-3 tracking-tight">
             {option}
           </h1>
-          <p className="text-sm max-w-screen-md text-center my-4">
-            {option} and take control of your investments with real-time market
-            data, AI-driven stock insights, and a personalized dashboard—smart
-            investing starts here!
+          <p className="text-sm text-center my-4 font-light">
+            {option} to access real-time market data, AI-powered insights, and a
+            personalized dashboard.
           </p>
           <Image
             src={signin}
@@ -138,12 +155,17 @@ const Page = () => {
             option={option}
             password={password}
             setPassword={setPassword}
+            setAllow={setAllow}
           />
 
           <div className="flex justify-center my-6">
             <Button type="submit" className="px-6 py-2">
               {option}
             </Button>
+          </div>
+
+          <div className="text-sm text-center text-neutral-300 mb-2">
+            Or continue with
           </div>
 
           <SignInUI />

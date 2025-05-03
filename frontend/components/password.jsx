@@ -3,22 +3,27 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check, Eye, EyeOff, X } from "lucide-react";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, useEffect } from "react";
 
-export default function PasswordStrengthIndicator({ option, password,setPassword }) {
+export default function PasswordStrengthIndicator({
+  setAllow,
+  option,
+  password,
+  setPassword,
+}) {
   const id = useId();
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
-  const checkStrength = (pass) => {
-    const requirements = [
-      { regex: /.{8,}/, text: "At least 8 characters" },
-      { regex: /[0-9]/, text: "At least 1 number" },
-      { regex: /[a-z]/, text: "At least 1 lowercase letter" },
-      { regex: /[A-Z]/, text: "At least 1 uppercase letter" },
-    ];
+  const requirements = [
+    { regex: /.{8,}/, text: "At least 8 characters" },
+    { regex: /[0-9]/, text: "At least 1 number" },
+    { regex: /[a-z]/, text: "At least 1 lowercase letter" },
+    { regex: /[A-Z]/, text: "At least 1 uppercase letter" },
+  ];
 
+  const checkStrength = (pass) => {
     return requirements.map((req) => ({
       met: req.regex.test(pass),
       text: req.text,
@@ -27,9 +32,22 @@ export default function PasswordStrengthIndicator({ option, password,setPassword
 
   const strength = checkStrength(password || "");
 
+  const totalRequirements = requirements.length;
+
   const strengthScore = useMemo(() => {
     return strength.filter((req) => req.met).length;
   }, [strength]);
+
+  useEffect(() => {
+    setAllow(strengthScore === totalRequirements);
+  }, [strengthScore, totalRequirements, setAllow]);
+
+  const getStrengthText = (score) => {
+    if (score === 0) return "Enter a password";
+    if (score < totalRequirements - 1) return "Weak password";
+    if (score === totalRequirements - 1) return "Medium password";
+    return "Strong password";
+  };
 
   const getStrengthColor = (score) => {
     if (score === 0) return "bg-border";
@@ -37,13 +55,6 @@ export default function PasswordStrengthIndicator({ option, password,setPassword
     if (score <= 2) return "bg-orange-500";
     if (score === 3) return "bg-amber-500";
     return "bg-emerald-500";
-  };
-
-  const getStrengthText = (score) => {
-    if (score === 0) return "Enter a password";
-    if (score <= 2) return "Weak password";
-    if (score === 3) return "Medium password";
-    return "Strong password";
   };
 
   return (
@@ -118,13 +129,13 @@ export default function PasswordStrengthIndicator({ option, password,setPassword
                 ) : (
                   <X
                     size={16}
-                    className="text-muted-foreground/80"
+                    className="text-neutral-200"
                     aria-hidden="true"
                   />
                 )}
                 <span
                   className={`text-xs  ${
-                    req.met ? "text-emerald-400" : "text-neutral-400"
+                    req.met ? "text-emerald-400" : "text-neutral-200"
                   }`}
                 >
                   {req.text}

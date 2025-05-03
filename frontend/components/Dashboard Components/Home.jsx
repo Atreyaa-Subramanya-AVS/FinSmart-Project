@@ -1,13 +1,18 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Loading_Dashboard from "./Loading_Dashboard";
 import {
   ArrowUpDown,
   Banknote,
+  BanknoteIcon,
   ChartPie,
   Coins,
+  CoinsIcon,
   HandCoins,
+  PiggyBank,
+  Pizza,
+  ReceiptIndianRupee,
   ShoppingBag,
   Triangle,
 } from "lucide-react";
@@ -21,6 +26,8 @@ import {
   LabelList,
   XAxis,
   Label,
+  Cell,
+  ResponsiveContainer,
 } from "recharts";
 
 import {
@@ -40,8 +47,8 @@ import {
 
 import CircleProgressBar from "./CircleProgressBar";
 import DashboardAI from "./DashboardAI";
-import Data from "./dummy.json";
-
+import Data from "./dummy2.json";
+import clsx from "clsx";
 
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -76,30 +83,6 @@ const chartConfig = {
     color: "hsl(var(--chart-5))",
   },
 };
-
-const chartData2 = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
-
-const chartConfig2 = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(0,0%,100%)",
-  },
-};
-
-const chartData3 = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 200, fill: "var(--color-other)" },
-];
 
 const chartConfig3 = {
   visitors: {
@@ -144,14 +127,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className=" min-h-[89vh] bg-[#333] rounded-lg">
+    <div className="min-h-[89vh] bg-[#333] rounded-lg overflow-x-hidden">
       {/* {isLoading ? (
         <div className="flex w-full justify-center items-center h-[89svh]">
           <Loading_Dashboard />
         </div>
       ) : ( */}
       <div className="grid grid-cols-3 gap-2 max-lg:grid-cols-2 pb-4">
-        <div className="w-full max-lg:col-span-2 max-lg:px-6">
+        <div className="w-full max-lg:col-span-3 max-lg:px-6 max-w-screen-md mx-auto">
           <BalanceTracker />
           <MoneyInMoneyOut />
           <p className="inline-flex gap-2 justify-center w-full text-sm items-center mt-2">
@@ -161,26 +144,35 @@ export default function Home() {
           <SpendingSaving />
         </div>
         {/* -------- Money Distribution ------ */}
-        <MoneyDistribution />
+        <div className="max-lg:w-full col-span-2 max-lg:col-span-3 max-lg:p-4">
+          <MoneyDistribution />
+        </div>
         {/* -------- End of Money Distribution ------ */}
-        <ExpectedIncome className="p-2" />
-        <ExpectedBudget />
-        <BillsBudget />
-        <DebtsPaymentGoal />
-        <SavingsGoal />
-        <MiscellaneousExpenses />
-        <div className="col-span-3 grid grid-cols-2 gap-4 px-2">
+        <div className="grid grid-cols-3 col-span-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+          <ExpectedIncome className="p-2" />
+          <ExpectedBudget />
+          <BillsBudget />
+          <DebtsPaymentGoal />
+          <SavingsGoal />
+          <MiscellaneousExpenses />
+        </div>
+        <div className="col-span-3 grid grid-cols-2 gap-4 px-2 max-md:grid-cols-1">
           <IncomeSources className="bg-[#444] h-fit" />
           <InvestmentDistribution className="bg-[#444] h-fit" />
         </div>
-        <div className="p-2">
-          <ExpenseCategories className="" />
-        </div>
-        <div className="p-2">
-          <BillsCategories />
-        </div>
-        <div className="p-2">
-          <DebtsCategories />
+        <div className="grid grid-cols-3 col-span-3 max-lg:grid-cols-2 max-md:grid-cols-1">
+          <div className="p-2">
+            <ExpenseCategories className="" />
+          </div>
+          <div className="p-2">
+            <BillsCategories />
+          </div>
+          <div className="p-2">
+            <DebtsCategories />
+          </div>
+          <div className="col-span-3 max-md:col-span-1 max-lg:col-span-2 max-lg:p-4 mx-auto bg-black md:px-12 py-3 rounded-md my-5 max-lg:w-[80%]">
+            <Notes />
+          </div>
         </div>
       </div>
       {/* <DashboardAI /> */}
@@ -253,145 +245,178 @@ const MoneyInMoneyOut = () => (
 );
 
 //Done
-const SpendingSaving = () => (
-  <div className="flex bg-[#444] justify-between px-4 py-3 m-2 rounded-md w-full">
-    <div className="flex flex-col">
-      <p className="text-red-500">You are spending</p>
-      <p className="font-bold text-xl">
-        {(
-          (Data.spendingSaving.spending / Data.balanceTracker.totalBalance) *
-          100
-        ).toFixed(1)}
-        %
-      </p>
-      <p className="text-sm text-neutral-400">of your income</p>
-    </div>
-    <div className="flex flex-col">
-      <p className="text-green-500">You are saving</p>
-      <p className="font-bold text-xl">
-        {(
-          (Data.spendingSaving.saving / Data.balanceTracker.totalBalance) *
-          100
-        ).toFixed(1)}
-        %
-      </p>
-      <p className="text-sm text-neutral-400">of your income</p>
-    </div>
-  </div>
-);
-
-//Done
-const ExpectedIncome = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
-        <h1 className="pb-2 inline-flex text-lg font-bold">Expected Income</h1>
-      </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Money In:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.expectedIncome.moneyIn)}
-          </p>
-        </div>
-
-        {/* Expected */}
-        <div>
-          <p className="text-md">Expected:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.expectedIncome.expected)}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
-        <CircleProgressBar
-          percentage={(
-            (Data.expectedIncome.moneyIn / Data.expectedIncome.expected) *
-            100
-          ).toFixed(1)}
-          strokeColor="#019D45"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none text-balance">
-          Income under expected{" "}
-          <span>
-            {formatRupees(
-              Data.expectedIncome.expected - Data.expectedIncome.moneyIn
-            )}
-          </span>
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
-    </div>
-  </div>
-);
-
-//Done
-const ExpectedBudget = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
-        <h1 className="pb-2 inline-flex text-lg font-bold">Expected Budget</h1>
-      </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Expenses:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.expectedBudget.expenses)}
-          </p>
-        </div>
-
-        {/* Expected */}
-        <div>
-          <p className="text-md">Budget:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.expectedBudget.budget)}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
-        <CircleProgressBar
-          percentage={(
-            (Data.expectedBudget.expenses / Data.expectedBudget.budget) *
-            100
-          ).toFixed(1)}
-          strokeColor="#019D45"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none">
-          Expenses in Budget{" "}
-          {formatRupees(Data.expectedBudget.budget - Data.expectedBudget.bills)}
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
-    </div>
-  </div>
-);
-
-const MoneyDistribution = () => {
-  const moneyDistribution = Data.moneyDistribution;
+const SpendingSaving = () => {
+  const spending = Data.moneyInMoneyOut.moneyOut;
+  const saving = Data.moneyInMoneyOut.moneyIn - spending;
+  const total = Data.balanceTracker.totalBalance || 1; // Avoid division by 0
 
   return (
-    <div className="grid col-span-2 m-2 relative">
-      <div className="flex justify-between flex-1 bg-black rounded-md">
+    <div className="flex bg-[#444] justify-between px-4 py-3 m-2 rounded-md w-full">
+      <div className="flex flex-col">
+        <p className="text-red-500">You are spending</p>
+        <p className="font-bold text-xl">
+          {((spending / total) * 100).toFixed(1)}%
+        </p>
+        <p className="text-sm text-neutral-400">of your income</p>
+      </div>
+      <div className="flex flex-col">
+        <p className="text-green-500">You are saving</p>
+        <p className="font-bold text-xl">
+          {((saving / total) * 100).toFixed(1)}%
+        </p>
+        <p className="text-sm text-neutral-400">of your income</p>
+      </div>
+    </div>
+  );
+};
+
+//Done
+const ExpectedIncome = () => {
+  const income = Data.expectedIncome.moneyIn;
+  const expected = Data.expectedIncome.expected;
+  const isIncomeUnderExpected = income < expected;
+
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div
+          className={`flex gap-1 ${
+            isIncomeUnderExpected ? "" : "items-center"
+          }`}
+        >
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                isIncomeUnderExpected
+                  ? "fill-red-500"
+                  : "rotate-0 fill-green-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">
+            Expected Income
+          </h1>
+        </div>
+        <div className="flex justify-between w-full">
+          {/* Money In */}
+          <div>
+            <p className="text-md">Money In:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(income)}
+            </p>
+          </div>
+
+          {/* Expected */}
+          <div>
+            <p className="text-md">Expected:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(expected)}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={Math.min((income / expected) * 100, 100).toFixed(1)}
+            strokeColor="hsl(var(--chart-1))"
+            className="contrast-200"
+            circleWidth={100}
+          />
+        </div>
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none text-balance">
+            Income {isIncomeUnderExpected ? "under" : "over"} expected{" "}
+            <span>{formatRupees(Math.abs(expected - income))}</span>
+          </p>
+        </div>
+      </div>
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <BanknoteIcon />
+      </div>
+    </div>
+  );
+};
+
+//Done
+const ExpectedBudget = () => {
+  const expenses = Data.expectedBudget.expenses;
+  const budget = Data.expectedBudget.budget;
+  const isExpensesUnderBudget = expenses <= budget;
+
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div className={`flex gap-1 ${isExpensesUnderBudget ? "" : ""}`}>
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                isExpensesUnderBudget
+                  ? "fill-green-500 rotate-0"
+                  : "fill-red-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">
+            Expected Budget
+          </h1>
+        </div>
+        <div className="flex justify-between w-full">
+          {/* Expenses */}
+          <div>
+            <p className="text-md">Expenses:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(expenses)}
+            </p>
+          </div>
+
+          {/* Budget */}
+          <div>
+            <p className="text-md">Budget:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(budget)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={Math.min((expenses / budget) * 100, 100).toFixed(1)}
+            strokeColor="hsl(var(--chart-4))"
+            className="contrast-200"
+            circleWidth={100}
+          />
+        </div>
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none">
+            Expenses {isExpensesUnderBudget ? "under" : "over"} budget{" "}
+            <span>{formatRupees(Math.abs(budget - expenses))}</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <Pizza />
+      </div>
+    </div>
+  );
+};
+
+//Done
+const MoneyDistribution = () => {
+  const moneyDistribution = Data.moneyDistribution;
+  const totalAmount = moneyDistribution.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
+
+  return (
+    <div className="grid lg:col-span-2 m-2 relative">
+      <div className="flex justify-between flex-1 bg-black rounded-md max-md:flex-col">
         <div className="m-4 text-lg text-[#ccc] relative">
           <p className="font-bold">Money Distribution</p>
           <div className="flex text-white my-4 gap-4 whitespace-nowrap">
@@ -400,16 +425,14 @@ const MoneyDistribution = () => {
               <p>Previous Balance:</p>
             </div>
             <div>
-              <p className="">
-                {formatRupees(Data.moneyDistributionMoneyIn.moneyIn)}
-              </p>
+              <p className="">{formatRupees(Data.moneyInMoneyOut.moneyIn)}</p>
               <p className="border-b-2 border-[#ccc]">
-                {formatRupees(Data.moneyDistributionMoneyIn.previousBalance)}
+                {formatRupees(Data.moneyInMoneyOut.previousBalance)}
               </p>
               <p>
                 {formatRupees(
-                  Data.moneyDistributionMoneyIn.moneyIn -
-                    Data.moneyDistributionMoneyIn.previousBalance
+                  Data.moneyInMoneyOut.moneyIn -
+                    Data.moneyInMoneyOut.previousBalance
                 )}
               </p>
             </div>
@@ -420,26 +443,34 @@ const MoneyDistribution = () => {
               {moneyDistribution.map((item, index) => (
                 <div
                   key={index}
-                  className={`flex gap-3 justify-between ${
+                  className={`grid grid-cols-3 gap-3 justify-between ${
                     index === moneyDistribution.length - 1
                       ? "border-b-2 border-[#ccc]"
                       : ""
                   }`}
                 >
-                  <p>{item.percentage}%</p>
-                  <p className="inline-flex justify-center items-center -mt-[0.4rem] gap-1">
+                  <p className="">{((item.amount / totalAmount) * 100).toFixed(2)}%</p>
+
+                  <p className="inline-flex justify-start items-center -mt-[0.4rem] gap-1 -ml-2">
                     <span
-                      className="p-1 rounded-full my-4 inline-block"
+                      className="p-1 rounded-lg mt-5 my-4 inline-block"
                       style={{ backgroundColor: item.color }}
                     ></span>
                     {item.category}
                   </p>
+
                   <p>₹ {item.amount.toLocaleString()}</p>
                 </div>
               ))}
+
               <div className="flex justify-between w-full">
                 <p>100%</p>
-                <p>₹ 60,100</p>
+                <p>
+                  ₹{" "}
+                  {moneyDistribution
+                    .reduce((sum, item) => sum + item.amount, 0)
+                    .toLocaleString()}
+                </p>
               </div>
             </div>
           </div>
@@ -466,11 +497,15 @@ const MoneyDistribution = () => {
                     content={<ChartTooltipContent hideLabel />}
                   />
                   <Pie
-                    data={chartData}
-                    dataKey="visitors"
-                    nameKey="browser"
+                    data={Data.moneyDistribution}
+                    dataKey="amount"
+                    nameKey="category"
                     innerRadius={40}
-                  />
+                  >
+                    {Data.moneyDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
                 </PieChart>
               </ChartContainer>
             </CardContent>
@@ -494,7 +529,15 @@ const BillsBudget = () => (
   <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
     <div className="flex flex-col justify-between w-full p-2 rounded-md">
       <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
+        <Triangle
+          className={clsx(
+            `scale-75 rotate-180 pb-1 border-none stroke-none ${
+              Data.billsBudget.bills > Data.billsBudget.budget
+                ? "fill-red-500"
+                : "rotate-0 fill-green-500"
+            }`
+          )}
+        />
         <h1 className="pb-2 inline-flex text-lg font-bold">Bills Budget</h1>
       </div>
       <div className="flex justify-between w-full">
@@ -516,13 +559,14 @@ const BillsBudget = () => (
       </div>
     </div>
     <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
+      <div className="md:col-span-1 w-fit max-md:mt-5">
         <CircleProgressBar
           percentage={(
             (Data.billsBudget.bills / Data.billsBudget.budget) *
             100
           ).toFixed(1)}
-          strokeColor="#019D45"
+          strokeColor="hsl(var(--chart-11))"
+          className="contrast-200"
           circleWidth={100}
         />
       </div>
@@ -535,217 +579,259 @@ const BillsBudget = () => (
       </div>
     </div>
     <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
+      <ReceiptIndianRupee />
     </div>
   </div>
 );
 
 //Done
-const DebtsPaymentGoal = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
-        <h1 className="pb-2 inline-flex text-lg font-bold">
-          Debts Payment Goal
-        </h1>
-      </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Debts Paid:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.debtsPaymentGoal.debtsPaid)}
-          </p>
-        </div>
+const DebtsPaymentGoal = () => {
+  const debtsPaid = Data.debtsPaymentGoal.debtsPaid;
+  const goal = Data.debtsPaymentGoal.goal;
+  const isDebtsPaidUnderGoal = debtsPaid < goal;
 
-        {/* Expected */}
-        <div>
-          <p className="text-md">Goal:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.debtsPaymentGoal.goal)}
-          </p>
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div
+          className={`flex gap-1 ${!isDebtsPaidUnderGoal && "items-center"}`}
+        >
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                isDebtsPaidUnderGoal
+                  ? "fill-red-500"
+                  : "rotate-0 fill-green-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">
+            Debts Payment Goal
+          </h1>
+        </div>
+        <div className="flex justify-between w-full">
+          {/* Debts Paid */}
+          <div>
+            <p className="text-md">Debts Paid:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(debtsPaid)}
+            </p>
+          </div>
+
+          {/* Goal */}
+          <div>
+            <p className="text-md">Goal:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(goal)}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
-        <CircleProgressBar
-          percentage={(
-            (Data.debtsPaymentGoal.debtsPaid / Data.debtsPaymentGoal.goal) *
-            100
-          ).toFixed(1)}
-          strokeColor="#019D45"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none">
-          Debts Unpaid{" "}
-          {formatRupees(
-            Data.debtsPaymentGoal.goal - Data.debtsPaymentGoal.debtsPaid
-          )}
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
-    </div>
-  </div>
-);
 
-const SavingsGoal = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
-        <h1 className="pb-2 inline-flex text-lg font-bold">Savings Goal</h1>
-      </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Money Saved:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.savingsGoal.moneySaved)}
-          </p>
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={Math.min((debtsPaid / goal) * 100, 100).toFixed(1)}
+            strokeColor="hsl(var(--chart-12))"
+            className="contrast-200"
+            circleWidth={100}
+          />
         </div>
-
-        {/* Expected */}
-        <div>
-          <p className="text-md">Goal:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.savingsGoal.goal)}
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none">
+            Debts {isDebtsPaidUnderGoal ? "unpaid" : "over"} goal{" "}
+            <span>{formatRupees(Math.abs(goal - debtsPaid))}</span>
           </p>
         </div>
       </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
-        <CircleProgressBar
-          percentage={(
-            (Data.savingsGoal.moneySaved / Data.savingsGoal.goal) *
-            100
-          ).toFixed(1)}
-          strokeColor="#019D45"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none">
-          Savings under Goal{" "}
-          {formatRupees(Data.savingsGoal.goal - Data.savingsGoal.moneySaved)}
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
-    </div>
-  </div>
-);
 
-const MiscellaneousExpenses = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle className="scale-75 rotate-180 pb-1 border-none stroke-none fill-red-500" />
-        <h1 className="pb-2 inline-flex text-lg font-bold">Misc. Expenses</h1>
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <HandCoins />
       </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Expenses:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.miscellaneousExpenses.expenses)}
-          </p>
+    </div>
+  );
+};
+
+//Done
+const SavingsGoal = () => {
+  const moneySaved = Data.savingsGoal.moneySaved;
+  const goal = Data.savingsGoal.goal;
+  const isSavingsUnderGoal = moneySaved < goal;
+
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div className={`flex gap-1 ${!isSavingsUnderGoal && "items-center"}`}>
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                isSavingsUnderGoal ? "fill-red-500" : "rotate-0 fill-green-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">Savings Goal</h1>
         </div>
+        <div className="flex justify-between w-full">
+          {/* Money Saved */}
+          <div>
+            <p className="text-md">Money Saved:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(moneySaved)}
+            </p>
+          </div>
 
-        {/* Expected */}
-        <div>
-          <p className="text-md">Budget:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.miscellaneousExpenses.budget)}
-          </p>
+          {/* Goal */}
+          <div>
+            <p className="text-md">Goal:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(goal)}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit">
-        <CircleProgressBar
-          percentage={(
-            (Data.miscellaneousExpenses.expenses /
-              Data.miscellaneousExpenses.budget) *
-            100
-          ).toFixed(1)}
-          strokeColor="#019D45"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none">
-          Misc. Costs{" "}
-          {formatRupees(
-            Data.miscellaneousExpenses.budget -
-              Data.miscellaneousExpenses.expenses
-          )}
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <HandCoins />
-    </div>
-  </div>
-);
 
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={Math.min((moneySaved / goal) * 100, 100).toFixed(1)}
+            strokeColor="hsl(var(--chart-14))"
+            className="contrast-200"
+            circleWidth={100}
+          />
+        </div>
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none">
+            Savings {isSavingsUnderGoal ? "under" : "over"} goal{" "}
+            {formatRupees(Math.abs(goal - moneySaved))}
+          </p>
+        </div>
+      </div>
+
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <PiggyBank />
+      </div>
+    </div>
+  );
+};
+
+//Done
+const MiscellaneousExpenses = () => {
+  const expenses = Data.miscellaneousExpenses.expenses;
+  const budget = Data.miscellaneousExpenses.budget;
+  const isOverBudget = expenses > budget;
+
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div className={`flex gap-1 ${!isOverBudget && ""}`}>
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                isOverBudget ? "fill-red-500" : "rotate-0 fill-green-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">Misc. Expenses</h1>
+        </div>
+        <div className="flex justify-between w-full">
+          <div>
+            <p className="text-md">Expenses:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(expenses)}
+            </p>
+          </div>
+          <div>
+            <p className="text-md">Budget:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(budget)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={Math.min((expenses / budget) * 100, 100).toFixed(1)}
+            strokeColor="hsl(var(--chart-20))"
+            className="contrast-200"
+            circleWidth={100}
+          />
+        </div>
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none">
+            Misc. Costs {isOverBudget ? "over" : "under"} budget{" "}
+            {formatRupees(Math.abs(budget - expenses))}
+          </p>
+        </div>
+      </div>
+
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <CoinsIcon />
+      </div>
+    </div>
+  );
+};
+
+//Done
 const IncomeSources = ({ className }) => {
   const chartData = Data?.incomeSourcesGraph || [];
 
   return (
-    <Card className={className}>
+    <Card className={`${className}`}>
       <CardHeader>
         <CardTitle className="text-lg">Income Sources</CardTitle>
         <CardDescription>Graph of all Income Sources</CardDescription>
       </CardHeader>
       <CardContent>
-        <BarChart
-          width={600}
-          height={300}
-          data={chartData}
-          className="w-32"
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-        >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis
-            dataKey="source"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={10}
-            interval={0}
-            angle={-45}
-            textAnchor="end"
-            height={60}
-          />
-          <Bar
-            dataKey="amount"
-            fill="hsl(var(--chart-3))"
-            radius={[8, 8, 0, 0]}
-          >
-            <LabelList
-              dataKey="amount"
-              position="top"
-              offset={10}
-              className="fill-foreground"
-              fontSize={12}
-            />
-          </Bar>
-        </BarChart>
+        <div className="w-full">
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            >
+              <CartesianGrid vertical={false} strokeDasharray="5 5" />
+              <XAxis
+                dataKey="source"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+                tick={{
+                  fill: "#eee",
+                  fontSize: 12,
+                  fontWeight: "bold",
+                }}
+              />
+              <Bar
+                dataKey="amount"
+                fill="hsl(var(--chart-3))"
+                radius={[8, 8, 0, 0]}
+              >
+                <LabelList
+                  dataKey="amount"
+                  position="top"
+                  offset={10}
+                  className="fill-foreground"
+                  fontSize={12}
+                  fontWeight={"500"}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );
 };
 
+//Done
 const InvestmentDistribution = ({ className }) => {
   const chartData = Data?.investmentDistributionGraph || [];
 
@@ -756,55 +842,55 @@ const InvestmentDistribution = ({ className }) => {
         <CardDescription>Graph of all Investment Distributions</CardDescription>
       </CardHeader>
       <CardContent>
-        <BarChart
-          width={600}
-          height={300}
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-        >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis
-            dataKey="type"
-            tickLine={false}
-            axisLine={false}
-            tickMargin={10}
-            interval={0}
-            angle={-30}
-            textAnchor="end"
-            height={60}
-          />
-          
-          <Bar
-            dataKey="amount"
-            fill="hsl(var(--chart-4))"
-            radius={[8, 8, 0, 0]}
-          >
-            <LabelList
-              dataKey="amount"
-              position="top"
-              offset={10}
-              className="fill-foreground"
-              fontSize={12}
-            />
-          </Bar>
-        </BarChart>
+        <div className="w-full">
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            >
+              <CartesianGrid vertical={false} strokeDasharray="5 5" />
+
+              <XAxis
+                dataKey="type"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
+                interval={0}
+                angle={-45}
+                height={60}
+                textAnchor="end"
+                tick={{
+                  fill: "#eee",
+                  fontSize: 12,
+                  fontWeight: "bold",
+                }}
+              />
+
+              <Bar
+                dataKey="amount"
+                fill="hsl(var(--chart-4))"
+                radius={[8, 8, 0, 0]}
+              >
+                <LabelList
+                  dataKey="amount"
+                  position="top"
+                  offset={10}
+                  className="fill-foreground"
+                  fontSize={12}
+                  fontWeight={"500"}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );
 };
 
 const ExpenseCategories = ({ className }) => {
-  const total = Data.expectedBudget.expenses;
-  const expenseCategoriesData = Data.expenseCategories.map((item) => ({
-    ...item,
-    percentage: (item.amount / total) * 100,
-  }));
-
-  const expenseCategoriesPie = expenseCategoriesData.map((item) => ({
-    browser: item.category,
-    visitors: item.amount,
-    fill: item.color,
-  }));
+  const expenseCategories = Data.expenseCategories;
+  const total = expenseCategories.reduce((sum, item) => sum + item.amount, 0);
 
   return (
     <Card className={`${className} flex flex-col h-full bg-[#222]`}>
@@ -812,6 +898,7 @@ const ExpenseCategories = ({ className }) => {
         <CardTitle>Expense Categories</CardTitle>
         <CardDescription>Distribution:</CardDescription>
       </CardHeader>
+
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig3}
@@ -823,12 +910,15 @@ const ExpenseCategories = ({ className }) => {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={expenseCategoriesPie}
-              dataKey="visitors"
-              nameKey="browser"
+              data={expenseCategories}
+              dataKey="amount"
+              nameKey="category"
               innerRadius={60}
               strokeWidth={5}
             >
+              {expenseCategories.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -848,7 +938,7 @@ const ExpenseCategories = ({ className }) => {
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 10}
+                          y={viewBox.cy + 10}
                           className="fill-foreground text-3xl font-bold"
                         >
                           ₹{total.toLocaleString("en-IN")}
@@ -862,22 +952,24 @@ const ExpenseCategories = ({ className }) => {
           </PieChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center justify-between gap-2 font-medium leading-none w-full">
           <div className="space-y-2">
-            {expenseCategoriesData.map((item, index) => (
+            {expenseCategories.map((item, index) => (
               <p key={index} className="flex items-center gap-2">
                 <span
                   className="inline-block w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span>{item.percentage.toFixed(1)}%</span> {item.category}
+                <span>{((item.amount / total) * 100).toFixed(1)}%</span>
+                {item.category}
               </p>
             ))}
           </div>
 
           <div className="space-y-2">
-            {expenseCategoriesData.map((item, index) => (
+            {expenseCategories.map((item, index) => (
               <p key={index}>₹ {item.amount.toLocaleString("en-IN")}</p>
             ))}
           </div>
@@ -887,8 +979,11 @@ const ExpenseCategories = ({ className }) => {
   );
 };
 
+//Done
 const BillsCategories = ({ className }) => {
   const billsCategoriesData = Data.billsCategories;
+  const total = billsCategoriesData.reduce((sum, item) => sum + item.amount, 0);
+
   const billsCategoriesPie = billsCategoriesData.map((item) => ({
     browser: item.category,
     visitors: item.amount,
@@ -901,6 +996,7 @@ const BillsCategories = ({ className }) => {
         <CardTitle>Bills Categories</CardTitle>
         <CardDescription>Distribution:</CardDescription>
       </CardHeader>
+
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig3}
@@ -937,10 +1033,10 @@ const BillsCategories = ({ className }) => {
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 10}
+                          y={viewBox.cy + 10}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          ₹{Data.billsBudget.bills.toLocaleString("en-IN")}
+                          ₹{total.toLocaleString("en-IN")}
                         </tspan>
                       </text>
                     );
@@ -951,6 +1047,7 @@ const BillsCategories = ({ className }) => {
           </PieChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center justify-between gap-2 font-medium leading-none w-full">
           <div className="space-y-2">
@@ -960,7 +1057,8 @@ const BillsCategories = ({ className }) => {
                   className="inline-block w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span>{item.percentage.toFixed(1)}%</span> {item.category}
+                <span>{((item.amount / total) * 100).toFixed(1)}%</span>
+                {item.category}
               </p>
             ))}
           </div>
@@ -975,8 +1073,11 @@ const BillsCategories = ({ className }) => {
   );
 };
 
+//Done
 const DebtsCategories = ({ className }) => {
   const debtsCategoriesData = Data.debtsCategories;
+  const total = debtsCategoriesData.reduce((sum, item) => sum + item.amount, 0);
+
   const debtsCategoriesPie = debtsCategoriesData.map((item) => ({
     browser: item.category,
     visitors: item.amount,
@@ -1025,7 +1126,7 @@ const DebtsCategories = ({ className }) => {
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 10}
+                          y={viewBox.cy + 10}
                           className="fill-foreground text-3xl font-bold"
                         >
                           ₹
@@ -1051,7 +1152,8 @@ const DebtsCategories = ({ className }) => {
                   className="inline-block w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 ></span>
-                <span>{item.percentage.toFixed(1)}%</span> {item.category}
+                <span>{((item.amount / total) * 100).toFixed(1)}%</span>
+                {item.category}
               </p>
             ))}
           </div>
@@ -1063,5 +1165,13 @@ const DebtsCategories = ({ className }) => {
         </div>
       </CardFooter>
     </Card>
+  );
+};
+
+const Notes = ({ className }) => {
+  return (
+    <div className="cols-span-1 md:col-span-2 lg:col-span-3 ">
+      <h1>{Data.notes}</h1>
+    </div>
   );
 };

@@ -31,7 +31,7 @@ const Nav = () => {
             isScrolled ? "max-w-screen-lg" : "max-w-screen-2xl"
           } mx-auto items-center gap-20 whitespace-nowrap text-sm max-sm:mx-auto md:text-base`}
         >
-          <div className="flex gap-12 items-center justify-between">
+          <div className="flex gap-12 items-center justify-between px-2">
             <div className="inline-flex justify-center items-center gap-2">
               {!isScrolled ?
               <Image
@@ -77,8 +77,8 @@ const Nav = () => {
               ))}
             </div>
           </div>
-          <div className="flex lg:pl-16 md:gap-6 pr-8 justify-center items-center max-sm:-mx-10">
-            <button className="inline-flex justify-center items-center gap-2 max-md:hidden">
+          <div className="flex lg:pl-16 md:gap-6 pr-8 justify-center items-center max-sm:-mx-10 max-sm:gap-1 max-md:gap-7 max-sm:pr-12 max-md:pr-6">
+            <button className="inline-flex justify-center items-center gap-2 max-md:hidden max-md:text-base">
               <svg
                 width="14"
                 height="14"
@@ -95,7 +95,7 @@ const Nav = () => {
                 ></path>
               </svg>
               <Link
-                href={"https://github.com/Atreyaa-Subramanya-AVS/FinSmart"}
+                href={"https://github.com/Atreyaa-Subramanya-AVS/FinSmart-Project"}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -105,12 +105,12 @@ const Nav = () => {
               </Link>
             </button>
             <Link href={"/signin"}>
-              <button className="py-1 px-4 border rounded-lg transition-all max-sm:scale-75 bg-black text-white max-md:px-7 max-md:py-2">
+              <button className="py-1 px-4 border rounded-lg transition-all max-sm:scale-75 bg-black text-white max-md:px-4 max-sm:py-2 max-sm:text-base">
                 Sign In
               </button>
             </Link>
-            <Link href={"/dashboard"}>
-              <button className="py-1 px-4 border rounded-lg transition-all max-md:-ml-4 max-sm:scale-75 bg-white text-black max-md:px-7 max-md:py-2 flex items-center">
+            <Link href={"/dashboard?refresh=true"}>
+              <button className="py-1 px-4 border rounded-lg transition-all max-md:-ml-4 max-sm:scale-75 bg-white text-black max-md:px-3 max-sm:py-1 flex items-center max-sm:text-base">
                 Get Started
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -6,7 +6,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { leapfrog } from "ldrs";
 import ReactMarkdown from "react-markdown";
-
+import remarkGfm from "remark-gfm";
 
 const Ldrs = dynamic(() => import("ldrs").then((mod) => mod.leapfrog), {
   ssr: false,
@@ -34,7 +34,7 @@ const Chatbot = () => {
     if (!input.trim()) return;
 
     const newUserMessage = { role: "User", text: input };
-    const updatedMessages = [...messages, newUserMessage];
+    const updatedMessages = [...messages, newUserMessage ];
 
     setMessages(updatedMessages);
     setInput("");
@@ -102,7 +102,7 @@ const Chatbot = () => {
                 : "bg-gray-700 text-white self-start"
             }`}
           >
-            <ReactMarkdown>{msg.text}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
           </div>
         ))}
         {loading && (

@@ -223,7 +223,7 @@ const ML = () => {
                   AI Insights:
                 </h1>
               </div> */}
-              <p className="min-h-32 my-5 whitespace-pre-wrap">{aiInsights}</p>
+              {/* <p className="min-h-32 my-5 whitespace-pre-wrap">{aiInsights}</p> */}
               <div className="flex flex-col gap-3 items-center">
                 <div className="flex w-full gap-3 justify-start border-b-[1px] border-[#ccc]">
                   <Image

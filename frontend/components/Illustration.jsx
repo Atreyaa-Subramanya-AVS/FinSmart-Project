@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
-import illImg from "../public/images/hero-illustration.jpg";
+import illImg from "../public/MainIll.png";
 import ill1 from "../public/images/ill-1.svg";
 import ill2 from "../public/images/ill-2.svg";
 import ill3 from "../public/images/ill-3.svg";

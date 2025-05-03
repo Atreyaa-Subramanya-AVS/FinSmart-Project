@@ -54,7 +54,7 @@ const Nav = () => {
                     isScrolled ? "text-black" : "text-white"
                   }`}
                 >
-                  Meco
+                  FinSmart
                 </h1>
               </Link>
             </div>

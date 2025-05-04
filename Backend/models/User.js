@@ -6,6 +6,8 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String }, // only for traditional login
   profilePicture: { type: String }, // From Google
+  otp: {type: String},
+  otpExpires: {type: Date},
 });
 
 module.exports = mongoose.model("User", UserSchema);

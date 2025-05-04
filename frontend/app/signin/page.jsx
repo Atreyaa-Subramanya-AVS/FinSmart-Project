@@ -5,34 +5,47 @@ import EmailInput from "@/components/comp-10";
 import SignInUI from "@/components/comp-122";
 import { Button } from "@/components/ui/button";
 import PasswordStrengthIndicator from "@/components/password";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import signin from "../../public/images/signin.jpg";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import signinBG from "../../public/images/signinBG.png";
+import SigninOTP from "@/components/SigninOTP";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 
 const Page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [option, setOption] = useState("Login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [allow, setAllow] = useState(false);
+  const [showOTPScreen, setShowOTPScreen] = useState(false);
+  const [googleLogin, setGoogleLogin] = useState(false);
 
-  // useEffect(() => {
-  //   const loggedInUser = localStorage.getItem("username");
-  //   if (loggedInUser) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    const showOTPParam = searchParams.get("showOTP");
+    if (showOTPParam === "true") {
+      setShowOTPScreen(true);
+
+      // Clean the URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("showOTP");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (option === "Register" && !allow) {
-      toast.error("Please use a stronger password.");
-      return;
+    if (!googleLogin) {
+      if (option === "Register" && !allow) {
+        toast.error("Please use a stronger password.");
+        return;
+      }
     }
 
     const endpoint =
@@ -58,7 +71,6 @@ const Page = () => {
 
       if (!res.ok) throw new Error(data.message || `${option} failed`);
 
-      // Save to localStorage (optional or adjust to use JWT/session)
       localStorage.setItem("username", data.username || name);
       localStorage.setItem("email", data.email || email);
 
@@ -68,10 +80,34 @@ const Page = () => {
           : `Welcome back, ${data.username || name}!`
       );
 
-      // Redirect to dashboard
       router.push("/dashboard?refresh=true");
     } catch (err) {
-      toast.error(err.message || "Authentication failed.");
+      if(!googleLogin){
+        toast.error(err.message || "Authentication failed.");
+      }
+    }
+  };
+
+  const resendOTP = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/auth/otp/resend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }), // Use the email from the form or state
+      });
+
+      console.log("Resend OTP: ", email);
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to resend OTP");
+      }
+
+      toast.success("OTP resent successfully!");
+    } catch (err) {
+      toast.error(err.message || "Failed to resend OTP.");
     }
   };
 
@@ -104,72 +140,103 @@ const Page = () => {
           />
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col justify-center h-max w-1/2 mx-auto max-lg:w-full xl:my-auto"
-        >
-          <div className="option-wrapper bg-neutral-200 w-fit mx-auto p-2 rounded-md max-lg:mt-6">
-            <div className="options flex justify-center">
-              <Button
-                type="button"
-                onClick={() => setOption("Login")}
-                className={`bg-neutral-300 text-black hover:bg-neutral-100 rounded-r-none ${
-                  option === "Login" && "bg-white"
-                }`}
+        <div className="relative w-1/2 max-lg:w-full overflow-hidden min-h-1/2 my-auto">
+          <AnimatePresence mode="wait">
+            {!showOTPScreen ? (
+              <motion.form
+                key="form"
+                onSubmit={handleSubmit}
+                initial={{ x: 0, opacity: 1 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -300, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col justify-center h-max w-full"
               >
-                Login
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setOption("Register")}
-                className={`bg-neutral-300 text-black hover:bg-neutral-100 rounded-l-none ${
-                  option === "Register" && "bg-white"
-                }`}
-              >
-                Register
-              </Button>
-            </div>
-          </div>
+                <div className="option-wrapper bg-neutral-200 w-fit mx-auto p-2 rounded-md max-lg:mt-6">
+                  <div className="options flex justify-center">
+                    <Button
+                      type="button"
+                      onClick={() => setOption("Login")}
+                      className={`bg-neutral-300 text-black hover:bg-neutral-100 rounded-r-none ${
+                        option === "Login" && "bg-white"
+                      }`}
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={() => setOption("Register")}
+                      className={`bg-neutral-300 text-black hover:bg-neutral-100 rounded-l-none ${
+                        option === "Register" && "bg-white"
+                      }`}
+                    >
+                      Register
+                    </Button>
+                  </div>
+                </div>
 
-          {option === "Register" && (
-            <EmailInput
-              placeholder="User Name"
-              type="text"
-              required
-              className="mt-3"
-              value={name}
-              onChange={setName}
-            />
-          )}
+                {option === "Register" && (
+                  <EmailInput
+                    placeholder="User Name"
+                    type="text"
+                    required
+                    className="mt-3"
+                    value={name}
+                    onChange={setName}
+                  />
+                )}
 
-          <EmailInput
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={setEmail}
-            required
-            className="mt-3"
-          />
+                <EmailInput
+                  placeholder="Email"
+                  type="email"
+                  value={email}
+                  onChange={setEmail}
+                  required
+                  className="mt-3"
+                />
 
-          <PasswordStrengthIndicator
-            option={option}
-            password={password}
-            setPassword={setPassword}
-            setAllow={setAllow}
-          />
+                <PasswordStrengthIndicator
+                  option={option}
+                  password={password}
+                  setPassword={setPassword}
+                  setAllow={setAllow}
+                />
 
-          <div className="flex justify-center my-6">
-            <Button type="submit" className="px-6 py-2">
-              {option}
-            </Button>
-          </div>
+                <div className="flex justify-center my-6">
+                  <Button type="submit" className="px-6 py-2">
+                    {option}
+                  </Button>
+                </div>
 
-          <div className="text-sm text-center text-neutral-300 mb-2">
-            Or continue with
-          </div>
+                <div className="text-sm text-center text-neutral-300 mb-2">
+                  Or continue with
+                </div>
 
-          <SignInUI />
-        </form>
+                <SignInUI setGoogleLogin={setGoogleLogin} />
+              </motion.form>
+            ) : (
+              <div className="relative flex items-center justify-center bg-neutral-700 p-5 rounded-md max-lg:mt-12 max-lg:mb-5">
+                <motion.div
+                  key="otp"
+                  initial={{ x: 300, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 300, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full my-auto"
+                >
+                  <div className="flex flex-col gap-3 w-full">
+                    <h1 className="text-xl md:text-2xl xl:text-3xl font-semibold text-center underline">
+                      Enter OTP
+                    </h1>
+                    <SigninOTP setEmailToParent={setEmail} showOTP={showOTPScreen} />
+
+
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

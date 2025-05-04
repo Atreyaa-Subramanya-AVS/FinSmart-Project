@@ -90,7 +90,7 @@ const Details = () => {
   };
 
   return (
-    <div className="relative z-50 max-w-screen-lg bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">
+    <div className="relative z-50 max-w-screen-lg xl:max-w-screen-xl bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">
       <div className="flex justify-between items-center text-4xl tracking-tight font-semibold border-b-2 overflow-x-hidden">
         <h1 className="pt-2 pb-5">Details</h1>
         <DashboardDropDown setSampleData={setSampleData} />

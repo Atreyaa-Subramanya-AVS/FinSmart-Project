@@ -46,12 +46,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Check if user data is already in localStorage
-    if (profilePicture) {
-      localStorage.setItem("username", "");
-      localStorage.setItem("email", "");
-      localStorage.setItem("profilePicture", username);
-    }
-
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
     const storedPicture = localStorage.getItem("profilePicture");
@@ -62,9 +56,9 @@ const Dashboard = () => {
     if (storedPicture) setProfilePicture(storedPicture);
 
     // If data is not in localStorage, fetch from the backend
-    if (!storedUsername || !storedEmail || !storedPicture) {
+    // if (!storedUsername || !storedEmail || !storedPicture) {
       fetchUserData();
-    }
+    // }
 
     // Handle refresh query parameter
     const url = new URL(window.location.href);
@@ -106,7 +100,7 @@ const Dashboard = () => {
               </span>
             </h1>
           </div>
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-center cursor-pointer">
             <Profile
               username={username}
               email={email}

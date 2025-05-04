@@ -5,7 +5,7 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 
-require("./config/passport");
+require("./config/passport");  // Make sure you set up passport strategies in this file
 
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -14,39 +14,49 @@ const recommendRoutes = require("./routes/recommendRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(express.json());
-// app.use(router);
+// CORS configuration for local development (adjust origin for production)
+app.use(cors({ 
+  origin: "http://localhost:3000", // Frontend URL (adjust for production)
+  credentials: true 
+}));
 
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// Session configuration
 app.use(
   session({
-    secret: process.env.JWT_SECRET || "defaultsecret",
+    secret: process.env.JWT_SECRET || "defaultsecret",  // Use environment variable for secret
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
   })
 );
 
+// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
+// MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI)  // Use Mongo URI from environment
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB error:", err.message));
 
-app.use("/auth", authRoutes); // This line is sufficient for authentication routes
-app.use("/api", chatRoutes);
-app.use("/api", recommendRoutes);
+// Routes
+app.use("/auth", authRoutes);  // Authentication routes
+app.use("/api", chatRoutes);   // Chat-related routes
+app.use("/api", recommendRoutes);  // Recommendation-related routes
 
+// Local authentication routes
 const localAuthRoutes = require("./routes/localAuth");
-
 app.use("/auth/local", localAuthRoutes);
 
-
+// Default route for health check
 app.get("/", (req, res) => {
   res.send("FinSmart API + Gemini is running!");
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -10,7 +10,7 @@ import { Toaster, toast } from "react-hot-toast";
 const FinancialAnalysis = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [responseData, setResponseData] = useState("");
-  const [generatingAnalysis,setGeneratingAnalysis] = useState(false);
+  const [generatingAnalysis, setGeneratingAnalysis] = useState(false);
   const textAreaRef = useRef(null);
   const ID = localStorage.getItem("ID");
   const [data, setData] = useState();
@@ -62,7 +62,7 @@ const FinancialAnalysis = () => {
         .trim()
     );
   };
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       const stored = sessionStorage.getItem("financialAnalysisResponse");
@@ -78,7 +78,7 @@ const FinancialAnalysis = () => {
   const handleClick = async () => {
     const userMessage = textAreaRef.current?.value || "";
     setGeneratingAnalysis(true);
-
+  
     const fetchRecommendation = async () => {
       const response = await axios.post("http://localhost:5000/api/recommend", {
         Data: data,
@@ -90,8 +90,8 @@ const FinancialAnalysis = () => {
       sessionStorage.setItem("financialAnalysisResponse", formatted);
       return formatted;
     };
-
-    toast.promise(
+  
+    await toast.promise(
       fetchRecommendation(),
       {
         loading: "Analyzing your data...",
@@ -107,8 +107,9 @@ const FinancialAnalysis = () => {
         },
       }
     );
+  
     setGeneratingAnalysis(false);
-  };
+  };  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -146,7 +147,11 @@ const FinancialAnalysis = () => {
 
           <div className="text-white text-xl font-semibold p-2 flex justify-center items-center w-full h-full">
             <div>
-              <Button onClick={handleClick} disabled={generatingAnalysis}>{generatingAnalysis ? "Generating..." : "Generate Financial Plan"}</Button>
+              <Button onClick={handleClick} disabled={generatingAnalysis}>
+                {generatingAnalysis
+                  ? "Generating..."
+                  : "Generate Financial Plan"}
+              </Button>
             </div>
           </div>
 

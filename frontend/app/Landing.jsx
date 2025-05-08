@@ -181,7 +181,7 @@ const Landing = () => {
                   height={80}
                   className="mx-auto"
                 />
-                <h1 className="w-full h-full flex justify-center items-end font-serif font-semibold text-xl text-center my-2">
+                <h1 className="w-full h-full flex justify-center items-end font-serif font-semibold text-xl 2xl:text-3xl text-center my-2">
                   <div>
                     <span className="font-extrabold text-4xl tracking-tight">
                       FinSmart

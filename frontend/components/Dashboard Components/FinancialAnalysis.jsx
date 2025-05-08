@@ -10,6 +10,7 @@ import { Toaster, toast } from "react-hot-toast";
 const FinancialAnalysis = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [responseData, setResponseData] = useState("");
+  const [generatingAnalysis,setGeneratingAnalysis] = useState(false);
   const textAreaRef = useRef(null);
   const ID = localStorage.getItem("ID");
   const [data, setData] = useState();
@@ -76,6 +77,7 @@ const FinancialAnalysis = () => {
 
   const handleClick = async () => {
     const userMessage = textAreaRef.current?.value || "";
+    setGeneratingAnalysis(true);
 
     const fetchRecommendation = async () => {
       const response = await axios.post("http://localhost:5000/api/recommend", {
@@ -105,6 +107,7 @@ const FinancialAnalysis = () => {
         },
       }
     );
+    setGeneratingAnalysis(false);
   };
 
   const handleKeyDown = (e) => {
@@ -142,8 +145,8 @@ const FinancialAnalysis = () => {
           </div>
 
           <div className="text-white text-xl font-semibold p-2 flex justify-center items-center w-full h-full">
-            <div onClick={handleClick}>
-              <Button>Generate Financial Plan</Button>
+            <div>
+              <Button onClick={handleClick} disabled={generatingAnalysis}>{generatingAnalysis ? "Generating..." : "Generate Financial Plan"}</Button>
             </div>
           </div>
 

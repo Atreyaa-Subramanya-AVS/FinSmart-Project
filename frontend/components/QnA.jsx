@@ -61,7 +61,7 @@ const Feat = () => {
           <h1 className="text-[#000] text-5xl md:text-6xl lg:text-6xl xl:text-8xl tracking-tighter leading-[0.9] font-bold pb-2 text-center">
             Future of <span className="underline pointer-events-none">Investing</span> is Here!
           </h1>
-          <p className="text-lg lg:text-xl 2xl:text-3xl text-neutral-600 mt-5 text-center">
+          <p className="text-lg lg:text-xl 2xl:text-2xl text-neutral-600 mt-5 text-center">
             AI Insights, Stock Market Trends & Smart Insights to Supercharge Your
             Portfolio!
           </p>

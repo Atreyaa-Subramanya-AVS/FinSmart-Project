@@ -20,7 +20,7 @@ const Footer = () => {
           className="w-full h-full object-cover z-0 hidden md:block"
         />
         <Image src={bgImageSmall} alt="FooterSmall-Bg" className="w-full h-full object-cover z-0 block md:hidden"/>
-        <div className="absolute top-[40%] left-1/3 sm:top-1/2 sm:scale-125 md:scale-100 sm:left-[35%] md:top-[12%] md:left-1/2 xl:top-[15%] xl:left-1/2 2xl:-mt-4 2xl:-ml-20 2xl:top-[20%] z-0">
+        <div className="absolute top-[40%] left-1/3 sm:top-1/2 sm:scale-125 md:scale-100 sm:left-[35%] md:top-[12%] md:left-1/2 xl:top-[15%] xl:left-1/2 2xl:-mt-4 2xl:-ml-20 2xl:top-[25%] z-0">
           <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl pr-1 z-30 max-w-xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tight font-semibold leading-[0.9]">
             Join the <br /> Movement
           </h1>

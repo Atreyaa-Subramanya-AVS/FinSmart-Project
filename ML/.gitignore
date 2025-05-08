@@ -47,6 +47,7 @@ dist/
 # Environment config
 .env
 .env.*
+.env.local
 
 # Coverage reports
 htmlcov/

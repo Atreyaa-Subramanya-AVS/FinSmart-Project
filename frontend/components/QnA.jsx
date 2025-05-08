@@ -1,63 +1,76 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
-import qnaBg from "../public/images/qna-bg.jpg";
+import { LineChart, Brain, Wallet, PieChart, Star, Shield } from "lucide-react";
 import { HoverEffect } from "./ui/card-hover-effect";
+import LoadingBg from "@/public/LoadBG.webp";
+import Image from "next/image";
 
 const Feat = () => {
-  const dummyItems = [
+  const finSmartFeatures = [
     {
-      title: "Feature One",
-      description: "This is the first feature description.",
-      link: "/feature-1",
+      title: "Real-Time Stock Trends",
+      description: "Stay ahead with live market movements and recent news.",
+      icon: <LineChart className="h-8 w-8 text-primary" />,
     },
     {
-      title: "Feature Two",
-      description: "This is the second feature description.",
-      link: "/feature-2",
+      title: "AI-Powered Predictions",
+      description:
+        "Harness ML models to forecast market trends and price shifts.",
+      icon: <Brain className="h-8 w-8 text-primary" />,
     },
     {
-      title: "Feature Three",
-      description: "This is the third feature description.",
-      link: "/feature-3",
+      title: "Smart Budget Planner",
+      description:
+        "Track income, expenses, and set monthly financial goals easily.",
+      icon: <Wallet className="h-8 w-8 text-primary" />,
     },
     {
-      title: "Feature Four",
-      description: "This is the fourth feature description.",
-      link: "/feature-4",
+      title: "Investment Distribution",
+      description:
+        "Visualize and optimize your asset allocation across sectors.",
+      icon: <PieChart className="h-8 w-8 text-primary" />,
     },
     {
-      title: "Feature Five",
-      description: "This is the fifth feature description.",
-      link: "/feature-5",
+      title: "Personalized Financial Plans",
+      description:
+        "Get AI-curated finance plans based on your goals and how to acheive it!",
+      icon: <Star className="h-8 w-8 text-primary" />,
     },
     {
-      title: "Feature Six",
-      description: "This is the sixth feature description.",
-      link: "/feature-6",
+      title: "Secure Portfolio Tracking",
+      description:
+        "Manage and monitor your holdings with end-to-end encryption.",
+      icon: <Shield className="h-8 w-8 text-primary" />,
     },
   ];
 
   return (
     <div className="relative h-fit">
-      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:2rem_2rem]"></div>
+      <Image
+        src={LoadingBg}
+        alt="Loading Image"
+        className="z-0 absolute h-full w-screen object-cover"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:2rem_2rem] brightness-90"></div>
       <div className="container mx-auto px-4 py-24">
         <div className="flex justify-center items-center flex-col">
-          <h1 className="relative scale-y-100 text-[#4d535e] text-4xl md:text-5xl lg:text-6xl xl:text-7xl pr-1 z-30 bg-gradient-to-br from-gray-300 from-30% via-[#6b7280] via-80% to-[#d9dcec] bg-clip-text text-transparent tracking-tighter leading-[0.9] font-bold pb-2">
-            Future of Investing is Here!
+          <h1 className="text-[#000] text-5xl md:text-6xl lg:text-6xl xl:text-7xl tracking-tighter leading-[0.9] font-bold pb-2 text-center">
+            Future of <span className="underline pointer-events-none">Investing</span> is Here!
           </h1>
-
-          <p className="text-xl text-neutral-400">
-            AI Insights, Real-Time Trends & Smart Picks to Supercharge Your
+          <p className="text-lg lg:text-xl text-neutral-600 mt-5 text-center max-w-3xl">
+            AI Insights, Stock Market Trends & Smart Insights to Supercharge Your
             Portfolio!
           </p>
         </div>
-        <div className="grid  mt-16 max-w-screen-lg mx-auto">
-          <HoverEffect items={dummyItems} className={""} />
+
+        <div className="max-w-screen-lg mx-auto">
+          <HoverEffect items={finSmartFeatures} />
         </div>
       </div>
-      <div className="relative"></div>
     </div>
   );
 };

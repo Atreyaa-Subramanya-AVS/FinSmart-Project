@@ -10,13 +10,11 @@ import math
 import uvicorn
 from fastapi import FastAPI, WebSocket
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_percentage_error
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import json
 import concurrent.futures
 import pandas as pd
-
 
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -81,52 +79,43 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.send_text(f"Data successfully loaded for {stock_name}. Shape: {data.shape}")
         print(data.head())
 
-        df1 = data.reset_index()['Close']
+        df1 = data[['Open', 'High', 'Low', 'Close']].copy()  # Use OHLC data
         scaler = MinMaxScaler(feature_range=(0, 1))
-        df1 = scaler.fit_transform(np.array(df1).reshape(-1, 1))
+        df1_scaled = scaler.fit_transform(df1)
 
         await websocket.send_text("Splitting and preparing dataset...")
-        training_size = int(len(df1) * 0.65)
-        test_size = len(df1) - training_size
-        train_data, test_data = df1[0:training_size, :], df1[training_size:, :]
+        training_size = int(len(df1_scaled) * 0.65)
+        test_size = len(df1_scaled) - training_size
+        train_data, test_data = df1_scaled[0:training_size, :], df1_scaled[training_size:, :]
 
         def create_dataset(dataset, time_step=1):
             dataX, dataY = [], []
             for i in range(len(dataset) - time_step - 1):
-                a = dataset[i:(i + time_step), 0]
+                a = dataset[i:(i + time_step), :]  # Use all 4 features
                 dataX.append(a)
-                dataY.append(dataset[i + time_step, 0])
+                dataY.append(dataset[i + time_step, 3])  # Predicting the 'Close' price
             return np.array(dataX), np.array(dataY)
 
         time_step = 100
         X_train, y_train = create_dataset(train_data, time_step)
         X_test, y_test = create_dataset(test_data, time_step)
 
-        X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
-        X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
+        X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 4)  # 4 features: Open, High, Low, Close
+        X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 4)
 
         await websocket.send_text("Training model...")
         print("Training model...")
 
         tf.keras.backend.clear_session()
 
-        early_stopping = tf.keras.callbacks.EarlyStopping(monitor = "val_loss", patience = 10,restore_best_weights = True,verbose = 1)
-
-        reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor = "val_loss", factor = 0.5,patience = 5,verbose = 1, min_lr = 1e-6)
-
         model = tf.keras.Sequential([
-            tf.keras.layers.LSTM(128, return_sequences=True, input_shape=(time_step, 1)),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.LSTM(64, return_sequences=True),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.GRU(64, return_sequences=True),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.GRU(32, return_sequences=False),
+            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(50, return_sequences=True), input_shape=(100, 4)),
+            tf.keras.layers.LSTM(50, return_sequences=True),
+            tf.keras.layers.GRU(50, return_sequences=True),  # GRU layer
+            tf.keras.layers.Dropout(0.2),  # Dropout layer
             tf.keras.layers.Dense(1)
         ])
-
-        # model.compile(loss='mean_squared_error', optimizer='adam')
-        model.compile(loss='mean_squared_error',optimizer=tf.keras.optimizers.AdamW(learning_rate=0.01,weight_decay=1e-4))
+        model.compile(loss='mean_squared_error', optimizer='adam')
 
         loop = asyncio.get_running_loop()
 
@@ -153,122 +142,124 @@ async def websocket_endpoint(websocket: WebSocket):
                 validation_data=(X_test, y_test),
                 epochs=50,
                 batch_size=64,
-                verbose=1,
-                callbacks=[callback, early_stopping, reduce_lr]
+                verbose=1,  # Enable TF logs
+                callbacks=[callback]
             ))
 
         await websocket.send_text("Making predictions...")
+        # After training and predicting
         train_predict = model.predict(X_train)
         test_predict = model.predict(X_test)
-        train_predict = scaler.inverse_transform(train_predict)
-        test_predict = scaler.inverse_transform(test_predict)
+
+        # Reshape the predictions to match the original data shape (1 feature for Close price)
+        train_predict = train_predict.reshape(-1, 1)
+        test_predict = test_predict.reshape(-1, 1)
+
+        # Step 1: Create full copies of the original scaled data
+        train_predict_full = np.copy(df1_scaled)  # Create a copy of the scaled data for the train set
+        test_predict_full = np.copy(df1_scaled)  # Same for the test set
+
+        # Step 2: Replace the 'Close' column (index 3) with the predicted 'Close' prices
+        train_predict_full[:, 3] = train_predict.reshape(-1)
+        test_predict_full[:, 3] = test_predict.reshape(-1)
+
+        # Step 3: Apply inverse_transform on the full array
+        train_predict_inv = scaler.inverse_transform(train_predict_full)
+        test_predict_inv = scaler.inverse_transform(test_predict_full)
+
+        # Extract the 'Close' price from the inverse-transformed data
+        train_predict_inv = train_predict_inv[:, 3]
+        test_predict_inv = test_predict_inv[:, 3]
 
         y_train_inv = scaler.inverse_transform(y_train.reshape(-1, 1))
         y_test_inv = scaler.inverse_transform(y_test.reshape(-1, 1))
 
-        await websocket.send_text("Calculating RMSE & MAPE...")
-        train_rmse = math.sqrt(mean_squared_error(y_train_inv, train_predict))
-        test_rmse = math.sqrt(mean_squared_error(y_test_inv, test_predict))
+        await websocket.send_text("Calculating RMSE...")
+        train_rmse = math.sqrt(mean_squared_error(y_train_inv, train_predict_inv))
+        test_rmse = math.sqrt(mean_squared_error(y_test_inv, test_predict_inv))
         await websocket.send_text(f"Train RMSE: {train_rmse:.2f}, Test RMSE: {test_rmse:.2f}")
         print(f"Train RMSE: {train_rmse:.2f}, Test RMSE: {test_rmse:.2f}")
-        train_mape = mean_absolute_percentage_error(y_train_inv, train_predict)
-        test_mape = mean_absolute_percentage_error(y_test_inv, test_predict)
-
-        await websocket.send_text(f"Train MAPE: {train_mape:.2f}%, Test MAPE: {test_mape:.2f}%")
-        print(f"Train MAPE: {train_mape:.2f}%, Test MAPE: {test_mape:.2f}%")
 
         output_dir = os.path.abspath("../frontend/public/plots")
         os.makedirs(output_dir, exist_ok=True)
 
-        # === Train/Test Plot ===
         try:
             await websocket.send_text("Generating train/test prediction plot...")
+
             look_back = 100
-            trainPredictPlot = np.empty_like(df1)
-            trainPredictPlot[:, :] = np.nan
-            trainPredictPlot[look_back:len(train_predict)+look_back, :] = train_predict
 
-            testPredictPlot = np.empty_like(df1)
-            testPredictPlot[:, :] = np.nan
-            testPredictPlot[len(train_predict)+(look_back*2)+1:len(df1)-1, :] = test_predict
+            # Ensure that the prediction arrays have the same length as the 'Close' price column
+            trainPredictPlot = np.full_like(df1_scaled[:, 3], np.nan)  # Initialize with NaNs
+            testPredictPlot = np.full_like(df1_scaled[:, 3], np.nan)  # Initialize with NaNs
 
+            # Assign the predictions to the appropriate positions in the plot arrays
+            trainPredictPlot[look_back:len(train_predict_inv) + look_back] = train_predict_inv.flatten()
+            testPredictPlot[len(train_predict_inv) + (look_back * 2):len(df1_scaled)] = test_predict_inv.flatten()
+
+            # Plotting the results
             plt.figure(figsize=(10, 6))
-            plt.plot(scaler.inverse_transform(df1), label="Original")
+            plt.plot(scaler.inverse_transform(df1_scaled[:, 3].reshape(-1, 1)), label="Original Data")
             plt.plot(trainPredictPlot, label="Train Prediction")
             plt.plot(testPredictPlot, label="Test Prediction")
             plt.title(f"{stock_name} - Stock Price Prediction")
             plt.legend()
+
+            # Save the plot
             train_test_path = os.path.join(output_dir, "train_test_predictions.png")
             plt.savefig(train_test_path)
             plt.close()
-            print(f"Saved train/test plot at: {train_test_path}")
+
             await websocket.send_text("Train/test plot saved.")
         except Exception as e:
             await websocket.send_text(f"Failed to save train/test plot: {e}")
             print(f"Error saving train/test plot: {e}")
 
-        # === Future Forecast Plot ===
+
+
         try:
             await websocket.send_text("Forecasting future...")
-            x_input = test_data[len(test_data) - 100:].reshape(1, -1)
+            x_input = test_data[len(test_data) - 100:].reshape(1, 100, 4)  # Reshaping correctly for LSTM input (1, time_step, features)
             temp_input = list(x_input[0])
             lst_output = []
 
-            for i in range(60):
-                x_input = np.array(temp_input[-100:]).reshape((1, time_step, 1))
+            for i in range(30):
+                x_input = np.array(temp_input[-100:]).reshape((1, 100, 4))  # Use all 4 features (Open, High, Low, Close)
                 yhat = model.predict(x_input, verbose=0)
-                temp_input.append(yhat[0][0])
+                temp_input.append(yhat[0][0])  # Only append the predicted Close price
                 lst_output.append(yhat[0])
-                await websocket.send_text(f"Forecasting day {i+1} / 60...")
+                await websocket.send_text(f"Forecasting day {i+1}/30...")
 
-            await websocket.send_text("Generating future forecast plot...")
-            
-            forecast_values = scaler.inverse_transform(np.array(lst_output).reshape(-1, 1))
-            
+            # Step 1: Prepare the forecast values and reshape for inverse transform
+            forecast_values = np.array(lst_output).reshape(-1, 1)  # Reshape to 2D for scaler
+
+            # Step 2: Create a copy of the last 100 days for future forecasting and replace Close column with forecast
+            forecast_values_full = np.copy(df1_scaled[-30:])  # Use the last 30 days of data
+            forecast_values_full[:, 3] = forecast_values.reshape(-1)
+
+            # Step 3: Inverse transform the forecast values
+            forecast_values_full_inv = scaler.inverse_transform(forecast_values_full)
+
+            # Step 4: Plotting the forecasted future prices
             day_new = np.arange(1, 101)
-            day_pred = np.arange(101, 101 + len(forecast_values))
+            day_pred = np.arange(101, 131)
 
             plt.figure(figsize=(10, 6))
-            plt.plot(day_new, scaler.inverse_transform(df1[-100:]), label="Last 100 Days")
-            plt.plot(day_pred, forecast_values, label="Next 60 Days")
+            plt.plot(day_new, scaler.inverse_transform(df1_scaled[-100:, 3].reshape(-1, 1)), label="Last 100 Days")  # Close prices
+            plt.plot(day_pred, forecast_values_full_inv[:, 3], label="Next 30 Days")  # Only plotting the forecasted Close price
             plt.title(f"{stock_name} - Future Forecasting")
             plt.legend()
-            
             future_path = os.path.join(output_dir, "future_forecasting.png")
             plt.savefig(future_path)
             plt.close()
-            print(f"Saved future forecast plot at: {future_path}")
             await websocket.send_text("Future forecast plot saved.")
+
         except Exception as e:
-            await websocket.send_text(f"Failed to save future forecast plot: {e}")
-            print(f"Error saving future forecast plot: {e}")
-
-
-        # === Extended Forecast Plot ===
-        try:
-            await websocket.send_text("Generating extended forecast plot...")
-            df3 = df1.tolist()
-            df3.extend(np.array(lst_output).reshape(-1, 1).tolist())
-            plt.figure(figsize=(10, 6))
-            plt.plot(df3[1000:])
-            plt.title(f"{stock_name} - Extended Forecasting")
-            extended_path = os.path.join(output_dir, "extended_forecasting.png")
-            plt.savefig(extended_path)
-            plt.close()
-            print(f"Saved extended forecast plot at: {extended_path}")
-            await websocket.send_text("Extended forecast plot saved.")
-        except Exception as e:
-            await websocket.send_text(f"Failed to save extended forecast plot: {e}")
-            print(f"Error saving extended forecast plot: {e}")
-
-        await websocket.send_text("Done")
-        print("Done")
+            await websocket.send_text(f"Failed to save forecast plot: {e}")
+            print(f"Error saving forecast plot: {e}")
 
     except Exception as e:
-        await websocket.send_text(f"Error occurred: {str(e)}")
-        print(f"Error occurred: {str(e)}")
-        await websocket.close()
-
+        await websocket.send_text(f"An error occurred: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
     uvicorn.run("stock:app", host="127.0.0.1", port=8080, reload=True)

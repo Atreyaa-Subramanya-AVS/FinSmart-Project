@@ -71,6 +71,7 @@ const PageClient = () => {
 
       if (!res.ok) throw new Error(data.message || `${option} failed`);
 
+      localStorage.setItem("ID", data.ID || null);
       localStorage.setItem("username", data.username || name);
       localStorage.setItem("email", data.email || email);
 

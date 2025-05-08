@@ -20,7 +20,7 @@ const Footer = () => {
           className="w-full h-full object-cover z-0 hidden md:block"
         />
         <Image src={bgImageSmall} alt="FooterSmall-Bg" className="w-full h-full object-cover z-0 block md:hidden"/>
-        <div className="absolute top-[40%] left-1/3 sm:top-1/2 sm:left-[35%] md:top-[7%] xl:top-[15%] xl:left-1/2 2xl:-mt-4 2xl:-ml-20 z-0">
+        <div className="absolute top-[40%] left-1/3 sm:top-1/2 sm:scale-125 md:scale-100 sm:left-[35%] md:top-[12%] md:left-1/2 xl:top-[15%] xl:left-1/2 2xl:-mt-4 2xl:-ml-20 z-0">
           <h1 className="text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl pr-1 z-30 max-w-xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tight font-semibold leading-[0.9]">
             Join the <br /> Movement
           </h1>
@@ -28,7 +28,7 @@ const Footer = () => {
             Unlock the future of finance with FinSmart. Remember, this journey
             is just getting started.
           </p>
-          <Link href={"/dashboard?refresh=true"}>
+          <Link href={"/signin"}>
             <button className="relative py-2 px-8 mt-5 2xl:mt-10 overflow-hidden rounded-full border border-white/60 bg-[#d1d1d1] space-x-1 lg:px-10 lg:mt-18 max-sm:text-xs max-sm:px-6">
               <div className="absolute top-1/2 h-[103px] w-[204px] translate-x-1/4 -translate-y-1/2 bg-[radial-gradient(43.3%_44.23%_at_50%_49.51%,_#FFFFF7_29%,_#FFFACD_48.5%,_#F4D2BF_60.71%,rgba(214,211,210,0.00)_100%)] blur-[5px]"></div>
               <h1 className="z-10 relative text-sm flex text-black font-bold">
@@ -37,7 +37,7 @@ const Footer = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 17 9"
-                  className="h-[9px] w-[17px] text-[#5A250A] flex mt-[0.3rem] ml-2"
+                  className="h-[9px] w-[17px] text-[#5A250A] flex mt-[0.4rem] ml-2"
                 >
                   <path
                     fill="currentColor"

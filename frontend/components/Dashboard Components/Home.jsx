@@ -46,9 +46,9 @@ import {
 } from "@/components/ui/chart";
 
 import CircleProgressBar from "./CircleProgressBar";
-import DashboardAI from "./DashboardAI";
-import Data from "./dummy2.json";
+// import Data from "./dummy2.json";
 import clsx from "clsx";
+import axios from "axios";
 
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -112,71 +112,105 @@ const chartConfig3 = {
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 0);
+    axios
+      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .then((response) => {
+        const ID = response.data.ID;
+        if (ID) {
+          axios
+            .get(`http://localhost:5000/api/details/${ID}`)
+            .then((response) => {
+              if (response.data.data) {
+                setData(response.data.data);
+              } else {
+                console.error("Data field is missing in response");
+              }
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+              setIsLoading(false);
+            });
+        } else {
+          console.error("User ID not found");
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setIsLoading(false);
+      });
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      console.log(Data._id);
-    }
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="flex w-full justify-center items-center h-[89svh] bg-[#333] rounded-md">
+        <Loading_Dashboard />
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex h-[89vh] w-full justify-center items-center">
+        No Data Available. Add your Details from the "Details" Tab.
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[89vh] bg-[#333] rounded-lg overflow-x-hidden">
-      {/* {isLoading ? (
+      {isLoading ? (
         <div className="flex w-full justify-center items-center h-[89svh]">
           <Loading_Dashboard />
         </div>
-      ) : ( */}
-      <div className="grid grid-cols-3 gap-2 max-lg:grid-cols-2 pb-4">
-        <div className="w-full max-lg:col-span-3 max-lg:px-6 max-w-screen-md mx-auto">
-          <BalanceTracker />
-          <MoneyInMoneyOut />
-          <p className="inline-flex gap-2 justify-center w-full text-sm items-center mt-2">
-            <ArrowUpDown />
-            Spending and Saving Rates
-          </p>
-          <SpendingSaving />
-        </div>
-        {/* -------- Money Distribution ------ */}
-        <div className="max-lg:w-full col-span-2 max-lg:col-span-3 max-lg:p-4">
-          <MoneyDistribution />
-        </div>
-        {/* -------- End of Money Distribution ------ */}
-        <div className="grid grid-cols-3 col-span-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-          <ExpectedIncome className="p-2" />
-          <ExpectedBudget />
-          <BillsBudget />
-          <DebtsPaymentGoal />
-          <SavingsGoal />
-          <MiscellaneousExpenses />
-        </div>
-        <div className="col-span-3 grid grid-cols-2 gap-4 px-2 max-md:grid-cols-1">
-          <IncomeSources className="bg-[#444] h-fit" />
-          <InvestmentDistribution className="bg-[#444] h-fit" />
-        </div>
-        <div className="grid grid-cols-3 col-span-3 max-lg:grid-cols-2 max-md:grid-cols-1">
-          <div className="p-2">
-            <ExpenseCategories className="" />
+      ) : (
+        <div className="grid grid-cols-3 gap-2 max-lg:grid-cols-2 pb-4">
+          <div className="w-full max-lg:col-span-3 max-lg:px-6 max-lg:max-w-screen-md max-w-screen-xl mx-auto">
+            <BalanceTracker Data={data} />
+            <MoneyInMoneyOut Data={data} />
+            <p className="inline-flex gap-2 justify-center w-full text-sm items-center mt-2">
+              <ArrowUpDown />
+              Spending and Saving Rates
+            </p>
+            <SpendingSaving Data={data} />
           </div>
-          <div className="p-2">
-            <BillsCategories />
+          {/* -------- Money Distribution ------ */}
+          <div className="max-lg:w-full col-span-2 max-lg:col-span-3 max-lg:p-4">
+            <MoneyDistribution Data={data} />
           </div>
-          <div className="p-2">
-            <DebtsCategories />
+          {/* -------- End of Money Distribution ------ */}
+          <div className="grid grid-cols-3 col-span-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+            <ExpectedIncome className="p-2" Data={data} />
+            <ExpectedBudget Data={data} />
+            <BillsBudget Data={data} />
+            <DebtsPaymentGoal Data={data} />
+            <SavingsGoal Data={data} />
+            <MiscellaneousExpenses Data={data} />
           </div>
-          <div className="col-span-3 max-md:col-span-1 max-lg:col-span-2 max-lg:p-4 mx-auto bg-black md:px-12 py-3 rounded-md my-5 max-lg:w-[80%]">
-            <Notes />
+          <div className="col-span-3 grid grid-cols-2 gap-4 px-2 max-md:grid-cols-1">
+            <IncomeSources className="bg-[#444] h-fit" Data={data} />
+            <InvestmentDistribution className="bg-[#444] h-fit" Data={data} />
+          </div>
+          <div className="grid grid-cols-3 col-span-3 max-lg:grid-cols-2 max-md:grid-cols-1">
+            <div className="p-2">
+              <ExpenseCategories className="" Data={data} />
+            </div>
+            <div className="p-2">
+              <BillsCategories Data={data} />
+            </div>
+            <div className="p-2">
+              <DebtsCategories Data={data} />
+            </div>
+            <div className="col-span-3 max-md:col-span-1 max-lg:col-span-2 max-lg:p-4 mx-auto bg-black md:px-12 py-3 rounded-md my-5 max-lg:w-[80%]">
+              <Notes Data={data} />
+            </div>
           </div>
         </div>
-      </div>
-      {/* <DashboardAI /> */}
-      {/* )} */}
+      )}
     </div>
   );
 }
@@ -188,81 +222,89 @@ const formatRupees = (amount) => {
   }).format(amount);
 };
 
-const BalanceTracker = () => (
-  <div className="bg-[#1E2646] p-4 m-2 rounded-md relative w-full">
-    <div className="flex">
-      <h1 className="text-base font-bold pb-1">Available Balance:</h1>
+// Done
+const BalanceTracker = ({ Data }) => {
+  const currentBalance = Data?.balanceTracker?.currentBalance ?? 0;
+  const totalAmount = Data?.balanceTracker?.totalAmount ?? 0;
+
+  return (
+    <div className="bg-[#1E2646] p-4 m-2 rounded-md relative w-full">
+      <div className="flex">
+        <h1 className="text-base font-bold pb-1">Available Balance:</h1>
+      </div>
+      <div>
+        <p className="text-2xl">
+          <span className="font-semibold">{formatRupees(currentBalance)}</span>{" "}
+          <span className="text-sm text-neutral-400">
+            / {formatRupees(totalAmount)}
+          </span>
+        </p>
+      </div>
+      <div className="absolute right-5 bottom-5">
+        <Coins className="scale-150 text-neutral-400" />
+      </div>
     </div>
-    <div>
-      <p className="text-2xl">
-        <span className="font-semibold">
-          {formatRupees(Data.balanceTracker.currentBalance)}
-        </span>{" "}
-        <span className="text-sm text-neutral-400">
-          / {formatRupees(Data.balanceTracker.totalBalance)}
-        </span>
-      </p>
-    </div>
-    <div className="absolute right-5 bottom-5">
-      <Coins className="scale-150 text-neutral-400" />
-    </div>
-  </div>
-);
+  );
+};
 
 // Done
-const MoneyInMoneyOut = () => (
-  <div className="grid grid-cols-2 m-2 gap-4 w-full justify-between rounded-md">
-    <div className="bg-[#444] relative px-2 flex flex-col gap-4 py-4 rounded-md">
-      <div>
-        <h1 className="text-green-500 text-md">Money In:</h1>
-        <p className="font-bold text-2xl">
-          {formatRupees(Data.moneyInMoneyOut.moneyIn)}
-        </p>
-      </div>
-      <div className="absolute top-1 right-2">
-        <Banknote className="text-neutral-300" />
-      </div>
-      <div>
-        <p className="text-sm">Previous Balance:</p>
-        <p>{formatRupees(Data.moneyInMoneyOut.previousBalance)}</p>
-      </div>
-    </div>
-    <div className="bg-[#444] relative px-2 rounded-md flex flex-col gap-4 py-4">
-      <div>
-        <h1 className="text-red-500 text-md">Money Out:</h1>
-        <p className="font-bold text-2xl">
-          {formatRupees(Data.moneyInMoneyOut.moneyOut)}
-        </p>
-      </div>
-      <div className="absolute top-1 right-2">
-        <ShoppingBag className="scale-90 text-neutral-300" />
-      </div>
-      <div className="text-xs text-pretty">
-        <p>(Expenses + Bills + Savings + Debts)</p>
-      </div>
-    </div>
-  </div>
-);
+const MoneyInMoneyOut = ({ Data }) => {
+  const moneyIn = Data?.moneyInMoneyOut?.moneyIn ?? 0;
+  const moneyOut = Data?.moneyInMoneyOut?.moneyOut ?? 0;
+  const previousBalance = Data?.moneyInMoneyOut?.previousBalance ?? 0;
 
-//Done
-const SpendingSaving = () => {
-  const spending = Data.moneyInMoneyOut.moneyOut;
-  const saving = Data.moneyInMoneyOut.moneyIn - spending;
-  const total = Data.balanceTracker.totalBalance || 1; // Avoid division by 0
+  return (
+    <div className="grid grid-cols-2 m-2 gap-4 w-full justify-between rounded-md">
+      <div className="bg-[#444] relative px-2 flex flex-col gap-4 py-4 rounded-md">
+        <div>
+          <h1 className="text-green-500 text-md">Money In:</h1>
+          <p className="font-bold text-2xl">{formatRupees(moneyIn)}</p>
+        </div>
+        <div className="absolute top-1 right-2">
+          <Banknote className="text-neutral-300" />
+        </div>
+        <div>
+          <p className="text-sm">Previous Balance:</p>
+          <p>{formatRupees(previousBalance)}</p>
+        </div>
+      </div>
+
+      <div className="bg-[#444] relative px-2 rounded-md flex flex-col gap-4 py-4">
+        <div>
+          <h1 className="text-red-500 text-md">Money Out:</h1>
+          <p className="font-bold text-2xl">{formatRupees(moneyOut)}</p>
+        </div>
+        <div className="absolute top-1 right-2">
+          <ShoppingBag className="scale-90 text-neutral-300" />
+        </div>
+        <div className="text-xs text-pretty">
+          <p>(Expenses + Bills + Savings + Debts)</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Done
+const SpendingSaving = ({ Data }) => {
+  const spending = Data?.moneyInMoneyOut?.moneyOut ?? 0;
+  const moneyIn = Data?.moneyInMoneyOut?.moneyIn ?? 0;
+  const saving = moneyIn - spending;
+  const total = Data?.balanceTracker?.totalAmount || 1; // Avoid division by 0
 
   return (
     <div className="flex bg-[#444] justify-between px-4 py-3 m-2 rounded-md w-full">
       <div className="flex flex-col">
         <p className="text-red-500">You are spending</p>
         <p className="font-bold text-xl">
-          {((spending / total) * 100).toFixed(1)}%
+          {((spending / total) * 100).toFixed(2)}%
         </p>
         <p className="text-sm text-neutral-400">of your income</p>
       </div>
       <div className="flex flex-col">
         <p className="text-green-500">You are saving</p>
         <p className="font-bold text-xl">
-          {((saving / total) * 100).toFixed(1)}%
+          {((saving / total) * 100).toFixed(2)}%
         </p>
         <p className="text-sm text-neutral-400">of your income</p>
       </div>
@@ -270,10 +312,10 @@ const SpendingSaving = () => {
   );
 };
 
-//Done
-const ExpectedIncome = () => {
-  const income = Data.expectedIncome.moneyIn;
-  const expected = Data.expectedIncome.expected;
+// Done
+const ExpectedIncome = ({ Data }) => {
+  const income = Data?.expectedIncome?.moneyIn ?? 0;
+  const expected = Data?.expectedIncome?.expected ?? 1; // Avoid division by 0
   const isIncomeUnderExpected = income < expected;
 
   return (
@@ -339,10 +381,10 @@ const ExpectedIncome = () => {
   );
 };
 
-//Done
-const ExpectedBudget = () => {
-  const expenses = Data.expectedBudget.expenses;
-  const budget = Data.expectedBudget.budget;
+// Done
+const ExpectedBudget = ({ Data }) => {
+  const expenses = Data?.expectedBudget?.expenses ?? 0;
+  const budget = Data?.expectedBudget?.budget ?? 1; // Avoid division by 0
   const isExpensesUnderBudget = expenses <= budget;
 
   return (
@@ -406,37 +448,38 @@ const ExpectedBudget = () => {
   );
 };
 
-//Done
-const MoneyDistribution = () => {
-  const moneyDistribution = Data.moneyDistribution;
+// Done
+const MoneyDistribution = ({ Data }) => {
+  const moneyDistribution = Data?.moneyDistribution ?? [];
+  const moneyIn = Data?.moneyInMoneyOut?.moneyIn ?? 0;
+  const previousBalance = Data?.moneyInMoneyOut?.previousBalance ?? 0;
+
   const totalAmount = moneyDistribution.reduce(
     (sum, item) => sum + item.amount,
     0
   );
+  const difference = moneyIn - previousBalance;
 
   return (
     <div className="grid lg:col-span-2 m-2 relative">
       <div className="flex justify-between flex-1 bg-black rounded-md max-md:flex-col">
         <div className="m-4 text-lg text-[#ccc] relative">
           <p className="font-bold">Money Distribution</p>
+
           <div className="flex text-white my-4 gap-4 whitespace-nowrap">
             <div className="text-stone-500 text-md font-semibold">
               <p>Money In:</p>
               <p>Previous Balance:</p>
             </div>
             <div>
-              <p className="">{formatRupees(Data.moneyInMoneyOut.moneyIn)}</p>
+              <p>{formatRupees(moneyIn)}</p>
               <p className="border-b-2 border-[#ccc]">
-                {formatRupees(Data.moneyInMoneyOut.previousBalance)}
+                {formatRupees(previousBalance)}
               </p>
-              <p>
-                {formatRupees(
-                  Data.moneyInMoneyOut.moneyIn -
-                    Data.moneyInMoneyOut.previousBalance
-                )}
-              </p>
+              <p>{formatRupees(difference)}</p>
             </div>
           </div>
+
           <div className="my-4 mx-auto w-full">
             <p className="text-md font-bold my-2">Categories</p>
             <div className="flex flex-col">
@@ -449,8 +492,7 @@ const MoneyDistribution = () => {
                       : ""
                   }`}
                 >
-                  <p className="">{((item.amount / totalAmount) * 100).toFixed(2)}%</p>
-
+                  <p>{((item.amount / totalAmount) * 100).toFixed(2)}%</p>
                   <p className="inline-flex justify-start items-center -mt-[0.4rem] gap-1 -ml-2">
                     <span
                       className="p-1 rounded-lg mt-5 my-4 inline-block"
@@ -458,19 +500,15 @@ const MoneyDistribution = () => {
                     ></span>
                     {item.category}
                   </p>
-
-                  <p>₹ {item.amount.toLocaleString()}</p>
+                  <p className="justify-self-end">
+                    ₹ {item.amount.toLocaleString()}
+                  </p>
                 </div>
               ))}
 
               <div className="flex justify-between w-full">
                 <p>100%</p>
-                <p>
-                  ₹{" "}
-                  {moneyDistribution
-                    .reduce((sum, item) => sum + item.amount, 0)
-                    .toLocaleString()}
-                </p>
+                <p>₹ {totalAmount.toLocaleString()}</p>
               </div>
             </div>
           </div>
@@ -497,12 +535,12 @@ const MoneyDistribution = () => {
                     content={<ChartTooltipContent hideLabel />}
                   />
                   <Pie
-                    data={Data.moneyDistribution}
+                    data={moneyDistribution}
                     dataKey="amount"
                     nameKey="category"
                     innerRadius={40}
                   >
-                    {Data.moneyDistribution.map((entry, index) => (
+                    {moneyDistribution.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
@@ -524,71 +562,75 @@ const MoneyDistribution = () => {
   );
 };
 
-//Done
-const BillsBudget = () => (
-  <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
-    <div className="flex flex-col justify-between w-full p-2 rounded-md">
-      <div className="flex gap-1">
-        <Triangle
-          className={clsx(
-            `scale-75 rotate-180 pb-1 border-none stroke-none ${
-              Data.billsBudget.bills > Data.billsBudget.budget
-                ? "fill-red-500"
-                : "rotate-0 fill-green-500"
-            }`
-          )}
-        />
-        <h1 className="pb-2 inline-flex text-lg font-bold">Bills Budget</h1>
+// Done
+const BillsBudget = ({ Data }) => {
+  const bills = Data?.billsBudget?.bills ?? 0;
+  const budget = Data?.billsBudget?.budget ?? 0;
+
+  // Avoid division by zero
+  const percentage = budget > 0 ? ((bills / budget) * 100).toFixed(1) : 0;
+  const remaining = budget - bills;
+
+  return (
+    <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
+      <div className="flex flex-col justify-between w-full p-2 rounded-md">
+        <div className="flex gap-1">
+          <Triangle
+            className={clsx(
+              `scale-75 rotate-180 pb-1 border-none stroke-none ${
+                bills > budget ? "fill-red-500" : "rotate-0 fill-green-500"
+              }`
+            )}
+          />
+          <h1 className="pb-2 inline-flex text-lg font-bold">Bills Budget</h1>
+        </div>
+        <div className="flex justify-between w-full">
+          <div>
+            <p className="text-md">Bills:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(bills)}
+            </p>
+          </div>
+          <div>
+            <p className="text-md">Budget:</p>
+            <p className="text-lg font-semibold max-md:text-base">
+              {formatRupees(budget)}
+            </p>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-between w-full">
-        {/* Money In */}
-        <div>
-          <p className="text-md">Bills:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.billsBudget.bills)}
+      <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
+        <div className="md:col-span-1 w-fit max-md:mt-5">
+          <CircleProgressBar
+            percentage={percentage}
+            strokeColor="hsl(var(--chart-11))"
+            className="contrast-200"
+            circleWidth={100}
+          />
+        </div>
+        <div className="md:col-span-2 col-span-1">
+          <p className="text-sm font-medium py-2">Progress this year</p>
+          <p className="text-lg font-bold leading-none">
+            Bills in Budget {formatRupees(remaining)}
           </p>
         </div>
+      </div>
+      <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
+        <ReceiptIndianRupee />
+      </div>
+    </div>
+  );
+};
 
-        {/* Expected */}
-        <div>
-          <p className="text-md">Budget:</p>
-          <p className="text-lg font-semibold max-md:text-base">
-            {formatRupees(Data.billsBudget.budget)}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
-      <div className="md:col-span-1 w-fit max-md:mt-5">
-        <CircleProgressBar
-          percentage={(
-            (Data.billsBudget.bills / Data.billsBudget.budget) *
-            100
-          ).toFixed(1)}
-          strokeColor="hsl(var(--chart-11))"
-          className="contrast-200"
-          circleWidth={100}
-        />
-      </div>
-      <div className="md:col-span-2 col-span-1">
-        <p className="text-sm font-medium py-2">Progress this year</p>
-        <p className="text-lg font-bold leading-none">
-          Bills in Budget{" "}
-          {formatRupees(Data.billsBudget.budget - Data.billsBudget.bills)}
-        </p>
-      </div>
-    </div>
-    <div className="absolute right-0 bottom-0 bg-neutral-600 p-2 rounded-md rounded-tr-none rounded-bl-none">
-      <ReceiptIndianRupee />
-    </div>
-  </div>
-);
+// Done
+const DebtsPaymentGoal = ({ Data }) => {
+  const debtsPaid = Data?.debtsPaymentGoal?.debtsPaid ?? 0;
+  const goal = Data?.debtsPaymentGoal?.goal ?? 0;
 
-//Done
-const DebtsPaymentGoal = () => {
-  const debtsPaid = Data.debtsPaymentGoal.debtsPaid;
-  const goal = Data.debtsPaymentGoal.goal;
   const isDebtsPaidUnderGoal = debtsPaid < goal;
+  const difference = Math.abs(goal - debtsPaid);
+  const percentage =
+    goal > 0 ? Math.min((debtsPaid / goal) * 100, 100).toFixed(1) : 0;
 
   return (
     <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
@@ -610,15 +652,12 @@ const DebtsPaymentGoal = () => {
           </h1>
         </div>
         <div className="flex justify-between w-full">
-          {/* Debts Paid */}
           <div>
             <p className="text-md">Debts Paid:</p>
             <p className="text-lg font-semibold max-md:text-base">
               {formatRupees(debtsPaid)}
             </p>
           </div>
-
-          {/* Goal */}
           <div>
             <p className="text-md">Goal:</p>
             <p className="text-lg font-semibold max-md:text-base">
@@ -631,7 +670,7 @@ const DebtsPaymentGoal = () => {
       <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
         <div className="md:col-span-1 w-fit max-md:mt-5">
           <CircleProgressBar
-            percentage={Math.min((debtsPaid / goal) * 100, 100).toFixed(1)}
+            percentage={percentage}
             strokeColor="hsl(var(--chart-12))"
             className="contrast-200"
             circleWidth={100}
@@ -641,7 +680,7 @@ const DebtsPaymentGoal = () => {
           <p className="text-sm font-medium py-2">Progress this year</p>
           <p className="text-lg font-bold leading-none">
             Debts {isDebtsPaidUnderGoal ? "unpaid" : "over"} goal{" "}
-            <span>{formatRupees(Math.abs(goal - debtsPaid))}</span>
+            <span>{formatRupees(difference)}</span>
           </p>
         </div>
       </div>
@@ -653,11 +692,15 @@ const DebtsPaymentGoal = () => {
   );
 };
 
-//Done
-const SavingsGoal = () => {
-  const moneySaved = Data.savingsGoal.moneySaved;
-  const goal = Data.savingsGoal.goal;
+// Done
+const SavingsGoal = ({ Data }) => {
+  const moneySaved = Data?.savingsGoal?.moneySaved ?? 0;
+  const goal = Data?.savingsGoal?.goal ?? 0;
+
   const isSavingsUnderGoal = moneySaved < goal;
+  const difference = Math.abs(goal - moneySaved);
+  const percentage =
+    goal > 0 ? Math.min((moneySaved / goal) * 100, 100).toFixed(1) : 0;
 
   return (
     <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
@@ -673,15 +716,12 @@ const SavingsGoal = () => {
           <h1 className="pb-2 inline-flex text-lg font-bold">Savings Goal</h1>
         </div>
         <div className="flex justify-between w-full">
-          {/* Money Saved */}
           <div>
             <p className="text-md">Money Saved:</p>
             <p className="text-lg font-semibold max-md:text-base">
               {formatRupees(moneySaved)}
             </p>
           </div>
-
-          {/* Goal */}
           <div>
             <p className="text-md">Goal:</p>
             <p className="text-lg font-semibold max-md:text-base">
@@ -694,7 +734,7 @@ const SavingsGoal = () => {
       <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
         <div className="md:col-span-1 w-fit max-md:mt-5">
           <CircleProgressBar
-            percentage={Math.min((moneySaved / goal) * 100, 100).toFixed(1)}
+            percentage={percentage}
             strokeColor="hsl(var(--chart-14))"
             className="contrast-200"
             circleWidth={100}
@@ -704,7 +744,7 @@ const SavingsGoal = () => {
           <p className="text-sm font-medium py-2">Progress this year</p>
           <p className="text-lg font-bold leading-none">
             Savings {isSavingsUnderGoal ? "under" : "over"} goal{" "}
-            {formatRupees(Math.abs(goal - moneySaved))}
+            {formatRupees(difference)}
           </p>
         </div>
       </div>
@@ -716,16 +756,20 @@ const SavingsGoal = () => {
   );
 };
 
-//Done
-const MiscellaneousExpenses = () => {
-  const expenses = Data.miscellaneousExpenses.expenses;
-  const budget = Data.miscellaneousExpenses.budget;
+// Done
+const MiscellaneousExpenses = ({ Data }) => {
+  const expenses = Data?.miscellaneousExpenses?.expenses ?? 0;
+  const budget = Data?.miscellaneousExpenses?.budget ?? 0;
+
   const isOverBudget = expenses > budget;
+  const difference = Math.abs(budget - expenses);
+  const percentage =
+    budget > 0 ? Math.min((expenses / budget) * 100, 100).toFixed(1) : 0;
 
   return (
     <div className="m-2 bg-[#444] p-4 max-md:pb-12 rounded-md h-[fit-content] relative">
       <div className="flex flex-col justify-between w-full p-2 rounded-md">
-        <div className={`flex gap-1 ${!isOverBudget && ""}`}>
+        <div className={`flex gap-1 ${isOverBudget && "items-center"}`}>
           <Triangle
             className={clsx(
               `scale-75 rotate-180 pb-1 border-none stroke-none ${
@@ -754,7 +798,7 @@ const MiscellaneousExpenses = () => {
       <div className="grid grid-cols-3 items-center md:gap-12 lg:p-4 max-md:grid-cols-2">
         <div className="md:col-span-1 w-fit max-md:mt-5">
           <CircleProgressBar
-            percentage={Math.min((expenses / budget) * 100, 100).toFixed(1)}
+            percentage={percentage}
             strokeColor="hsl(var(--chart-20))"
             className="contrast-200"
             circleWidth={100}
@@ -764,7 +808,7 @@ const MiscellaneousExpenses = () => {
           <p className="text-sm font-medium py-2">Progress this year</p>
           <p className="text-lg font-bold leading-none">
             Misc. Costs {isOverBudget ? "over" : "under"} budget{" "}
-            {formatRupees(Math.abs(budget - expenses))}
+            {formatRupees(difference)}
           </p>
         </div>
       </div>
@@ -776,8 +820,8 @@ const MiscellaneousExpenses = () => {
   );
 };
 
-//Done
-const IncomeSources = ({ className }) => {
+// Done
+const IncomeSources = ({ className, Data }) => {
   const chartData = Data?.incomeSourcesGraph || [];
 
   return (
@@ -788,51 +832,58 @@ const IncomeSources = ({ className }) => {
       </CardHeader>
       <CardContent>
         <div className="w-full">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-            >
-              <CartesianGrid vertical={false} strokeDasharray="5 5" />
-              <XAxis
-                dataKey="source"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={10}
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                height={60}
-                tick={{
-                  fill: "#eee",
-                  fontSize: 12,
-                  fontWeight: "bold",
-                }}
-              />
-              <Bar
-                dataKey="amount"
-                fill="hsl(var(--chart-3))"
-                radius={[8, 8, 0, 0]}
+          {/* If no data, show a placeholder */}
+          {chartData.length === 0 ? (
+            <p className="text-center text-gray-400">
+              No income sources available.
+            </p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
               >
-                <LabelList
-                  dataKey="amount"
-                  position="top"
-                  offset={10}
-                  className="fill-foreground"
-                  fontSize={12}
-                  fontWeight={"500"}
+                <CartesianGrid vertical={false} strokeDasharray="5 5" />
+                <XAxis
+                  dataKey="source"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                  interval={0}
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                  tick={{
+                    fill: "#eee",
+                    fontSize: 12,
+                    fontWeight: "bold",
+                  }}
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <Bar
+                  dataKey="amount"
+                  fill="hsl(var(--chart-3))"
+                  radius={[8, 8, 0, 0]}
+                >
+                  <LabelList
+                    dataKey="amount"
+                    position="top"
+                    offset={10}
+                    className="fill-foreground"
+                    fontSize={12}
+                    fontWeight={"500"}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </CardContent>
     </Card>
   );
 };
 
-//Done
-const InvestmentDistribution = ({ className }) => {
+// Done
+const InvestmentDistribution = ({ className, Data }) => {
   const chartData = Data?.investmentDistributionGraph || [];
 
   return (
@@ -843,54 +894,76 @@ const InvestmentDistribution = ({ className }) => {
       </CardHeader>
       <CardContent>
         <div className="w-full">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-            >
-              <CartesianGrid vertical={false} strokeDasharray="5 5" />
-
-              <XAxis
-                dataKey="type"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={10}
-                interval={0}
-                angle={-45}
-                height={60}
-                textAnchor="end"
-                tick={{
-                  fill: "#eee",
-                  fontSize: 12,
-                  fontWeight: "bold",
-                }}
-              />
-
-              <Bar
-                dataKey="amount"
-                fill="hsl(var(--chart-4))"
-                radius={[8, 8, 0, 0]}
+          {/* Show a message when no data is available */}
+          {chartData.length === 0 ? (
+            <p className="text-center text-gray-400">
+              No investment data available.
+            </p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
               >
-                <LabelList
-                  dataKey="amount"
-                  position="top"
-                  offset={10}
-                  className="fill-foreground"
-                  fontSize={12}
-                  fontWeight={"500"}
+                <CartesianGrid vertical={false} strokeDasharray="5 5" />
+                <XAxis
+                  dataKey="type"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                  interval={0}
+                  angle={-45}
+                  height={60}
+                  textAnchor="end"
+                  tick={{
+                    fill: "#eee",
+                    fontSize: 12,
+                    fontWeight: "bold",
+                  }}
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+                <Bar
+                  dataKey="amount"
+                  fill="hsl(var(--chart-4))"
+                  radius={[8, 8, 0, 0]}
+                >
+                  <LabelList
+                    dataKey="amount"
+                    position="top"
+                    offset={10}
+                    className="fill-foreground"
+                    fontSize={12}
+                    fontWeight={"500"}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </CardContent>
     </Card>
   );
 };
 
-const ExpenseCategories = ({ className }) => {
-  const expenseCategories = Data.expenseCategories;
+// Done
+const ExpenseCategories = ({ className, Data }) => {
+  const expenseCategories = Data?.expenseCategories || [];
   const total = expenseCategories.reduce((sum, item) => sum + item.amount, 0);
+
+  // Handle case where no expense categories data is available
+  if (expenseCategories.length === 0) {
+    return (
+      <Card className={`${className} flex flex-col h-full bg-[#222]`}>
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Expense Categories</CardTitle>
+          <CardDescription>Distribution:</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex-1 pb-0">
+          <p className="text-center text-gray-500">No expense data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className={`${className} flex flex-col h-full bg-[#222]`}>
@@ -979,9 +1052,25 @@ const ExpenseCategories = ({ className }) => {
   );
 };
 
-//Done
-const BillsCategories = ({ className }) => {
-  const billsCategoriesData = Data.billsCategories;
+// Done
+const BillsCategories = ({ className, Data }) => {
+  const billsCategoriesData = Data?.billsCategories || [];
+
+  if (billsCategoriesData.length === 0) {
+    return (
+      <Card className={`${className} flex flex-col h-full bg-[#222]`}>
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Bills Categories</CardTitle>
+          <CardDescription>Distribution:</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex-1 pb-0">
+          <p className="text-center text-gray-500">No bills data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const total = billsCategoriesData.reduce((sum, item) => sum + item.amount, 0);
 
   const billsCategoriesPie = billsCategoriesData.map((item) => ({
@@ -1073,10 +1162,25 @@ const BillsCategories = ({ className }) => {
   );
 };
 
-//Done
-const DebtsCategories = ({ className }) => {
-  const debtsCategoriesData = Data.debtsCategories;
+// Done
+const DebtsCategories = ({ className, Data }) => {
+  const debtsCategoriesData = Data?.debtsCategories || [];
   const total = debtsCategoriesData.reduce((sum, item) => sum + item.amount, 0);
+
+  if (debtsCategoriesData.length === 0) {
+    return (
+      <Card className={`${className} flex flex-col h-full bg-[#222]`}>
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Debts Categories</CardTitle>
+          <CardDescription>Distribution:</CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex-1 pb-0">
+          <p className="text-center text-gray-500">No debts data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const debtsCategoriesPie = debtsCategoriesData.map((item) => ({
     browser: item.category,
@@ -1090,6 +1194,7 @@ const DebtsCategories = ({ className }) => {
         <CardTitle>Debts Categories</CardTitle>
         <CardDescription>Distribution:</CardDescription>
       </CardHeader>
+
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig3}
@@ -1130,9 +1235,9 @@ const DebtsCategories = ({ className }) => {
                           className="fill-foreground text-3xl font-bold"
                         >
                           ₹
-                          {Data.debtsPaymentGoal.debtsPaid.toLocaleString(
+                          {Data?.debtsPaymentGoal?.debtsPaid?.toLocaleString(
                             "en-IN"
-                          )}
+                          ) || 0}
                         </tspan>
                       </text>
                     );
@@ -1143,6 +1248,7 @@ const DebtsCategories = ({ className }) => {
           </PieChart>
         </ChartContainer>
       </CardContent>
+
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center justify-between gap-2 font-medium leading-none w-full">
           <div className="space-y-2">
@@ -1168,10 +1274,13 @@ const DebtsCategories = ({ className }) => {
   );
 };
 
-const Notes = ({ className }) => {
+// Done
+const Notes = ({ className, Data }) => {
+  const notes = Data?.notes || "No notes available";
+
   return (
-    <div className="cols-span-1 md:col-span-2 lg:col-span-3 ">
-      <h1>{Data.notes}</h1>
+    <div className={`cols-span-1 md:col-span-2 lg:col-span-3 ${className}`}>
+      <h1 className="text-md font-semibold">{notes}</h1>
     </div>
   );
 };

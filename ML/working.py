@@ -10,7 +10,6 @@ import math
 import uvicorn
 from fastapi import FastAPI, WebSocket
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_percentage_error
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import json
@@ -110,23 +109,13 @@ async def websocket_endpoint(websocket: WebSocket):
 
         tf.keras.backend.clear_session()
 
-        early_stopping = tf.keras.callbacks.EarlyStopping(monitor = "val_loss", patience = 10,restore_best_weights = True,verbose = 1)
-
-        reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor = "val_loss", factor = 0.5,patience = 5,verbose = 1, min_lr = 1e-6)
-
         model = tf.keras.Sequential([
-            tf.keras.layers.LSTM(128, return_sequences=True, input_shape=(time_step, 1)),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.LSTM(64, return_sequences=True),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.GRU(64, return_sequences=True),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.GRU(32, return_sequences=False),
+            tf.keras.layers.LSTM(50, return_sequences=True, input_shape=(100, 1)),
+            tf.keras.layers.LSTM(50, return_sequences=True),
+            tf.keras.layers.LSTM(50),
             tf.keras.layers.Dense(1)
         ])
-
-        # model.compile(loss='mean_squared_error', optimizer='adam')
-        model.compile(loss='mean_squared_error',optimizer=tf.keras.optimizers.AdamW(learning_rate=0.01,weight_decay=1e-4))
+        model.compile(loss='mean_squared_error', optimizer='adam')
 
         loop = asyncio.get_running_loop()
 
@@ -153,8 +142,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 validation_data=(X_test, y_test),
                 epochs=50,
                 batch_size=64,
-                verbose=1,
-                callbacks=[callback, early_stopping, reduce_lr]
+                verbose=1,  # Enable TF logs
+                callbacks=[callback]
             ))
 
         await websocket.send_text("Making predictions...")
@@ -166,16 +155,11 @@ async def websocket_endpoint(websocket: WebSocket):
         y_train_inv = scaler.inverse_transform(y_train.reshape(-1, 1))
         y_test_inv = scaler.inverse_transform(y_test.reshape(-1, 1))
 
-        await websocket.send_text("Calculating RMSE & MAPE...")
+        await websocket.send_text("Calculating RMSE...")
         train_rmse = math.sqrt(mean_squared_error(y_train_inv, train_predict))
         test_rmse = math.sqrt(mean_squared_error(y_test_inv, test_predict))
         await websocket.send_text(f"Train RMSE: {train_rmse:.2f}, Test RMSE: {test_rmse:.2f}")
         print(f"Train RMSE: {train_rmse:.2f}, Test RMSE: {test_rmse:.2f}")
-        train_mape = mean_absolute_percentage_error(y_train_inv, train_predict)
-        test_mape = mean_absolute_percentage_error(y_test_inv, test_predict)
-
-        await websocket.send_text(f"Train MAPE: {train_mape:.2f}%, Test MAPE: {test_mape:.2f}%")
-        print(f"Train MAPE: {train_mape:.2f}%, Test MAPE: {test_mape:.2f}%")
 
         output_dir = os.path.abspath("../frontend/public/plots")
         os.makedirs(output_dir, exist_ok=True)
@@ -214,26 +198,23 @@ async def websocket_endpoint(websocket: WebSocket):
             temp_input = list(x_input[0])
             lst_output = []
 
-            for i in range(60):
+            for i in range(30):
                 x_input = np.array(temp_input[-100:]).reshape((1, time_step, 1))
                 yhat = model.predict(x_input, verbose=0)
                 temp_input.append(yhat[0][0])
                 lst_output.append(yhat[0])
-                await websocket.send_text(f"Forecasting day {i+1} / 60...")
+                await websocket.send_text(f"Forecasting day {i+1}/30...")
 
             await websocket.send_text("Generating future forecast plot...")
-            
             forecast_values = scaler.inverse_transform(np.array(lst_output).reshape(-1, 1))
-            
             day_new = np.arange(1, 101)
-            day_pred = np.arange(101, 101 + len(forecast_values))
+            day_pred = np.arange(101, 131)
 
             plt.figure(figsize=(10, 6))
             plt.plot(day_new, scaler.inverse_transform(df1[-100:]), label="Last 100 Days")
-            plt.plot(day_pred, forecast_values, label="Next 60 Days")
+            plt.plot(day_pred, forecast_values, label="Next 30 Days")
             plt.title(f"{stock_name} - Future Forecasting")
             plt.legend()
-            
             future_path = os.path.join(output_dir, "future_forecasting.png")
             plt.savefig(future_path)
             plt.close()
@@ -242,7 +223,6 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             await websocket.send_text(f"Failed to save future forecast plot: {e}")
             print(f"Error saving future forecast plot: {e}")
-
 
         # === Extended Forecast Plot ===
         try:

@@ -15,7 +15,7 @@ const Hero = () => {
 
     // If user is logged in (data present), force dashboard to refresh and fetch user info
     if (username && email && picture) {
-      setDashboardUrl("/dashboard?refresh=true");
+      setDashboardUrl("/signin");
     }
   }, []);
 
@@ -40,7 +40,7 @@ const Hero = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 17 9"
-                  className="h-[9px] w-[17px] text-[#5A250A] flex mt-[0.3rem] ml-2"
+                  className="h-[9px] w-[17px] text-[#5A250A] flex mt-[0.4rem] ml-2"
                 >
                   <path
                     fill="currentColor"

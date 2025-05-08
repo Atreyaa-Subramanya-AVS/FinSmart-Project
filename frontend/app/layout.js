@@ -22,12 +22,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <title>FinSmart</title>
-        <link
-          rel="preload"
-          as="video"
-          href="/videos/hero.mp4"
-          type="video/mp4"
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}

@@ -13,7 +13,7 @@ const sendOTP = async (email, otp) => {
     from: `"FinSmart Auth" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Your OTP for FinSmart Login",
-    text: `Your OTP is: ${otp}. It expires in 5 minutes.`,
+    text: `Your OTP is: ${otp}. It expires in next 2 minutes.`,
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #2d2d2d;">
         <div style="max-width: 500px; margin: auto; background-color: #1a1a1a; padding: 30px; border-radius: 10px; border: 1px solid #444; color: #fff;">

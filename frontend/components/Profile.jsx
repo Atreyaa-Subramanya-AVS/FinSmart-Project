@@ -25,22 +25,25 @@ import {
 
 export default function Profile({ username, email, profilePicture }) {
   const router = useRouter();
-
-  console.log(profilePicture);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="dark">
         <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
           <Avatar>
             {/* Use the profile picture passed as a prop */}
-            <AvatarPrimitive.Root className="w-16 h-16 rounded-full overflow-hidden">
-              <AvatarImage
-                className="light"
-                src={profilePicture}
-                alt="Profile image"
-              />
-            </AvatarPrimitive.Root>
+            {profilePicture ? (
+              <AvatarPrimitive.Root className="w-16 h-16 rounded-full overflow-hidden">
+                <AvatarImage
+                  className="light"
+                  src={profilePicture}
+                  alt="Profile image"
+                />
+              </AvatarPrimitive.Root>
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gray-700 text-white flex items-center justify-center">
+                A
+              </div>
+            )}
 
             <img src={profilePicture} alt="" />
             <AvatarFallback>{username?.[0] ?? "U"}</AvatarFallback>
@@ -72,7 +75,11 @@ export default function Profile({ username, email, profilePicture }) {
             window.location.href = "/signin"; // 🔁 Redirect to login page
           }}
         >
-          <LogOutIcon size={16} className="opacity-60 text-red-600 contrast-150" aria-hidden="true" />
+          <LogOutIcon
+            size={16}
+            className="opacity-60 text-red-600 contrast-150"
+            aria-hidden="true"
+          />
           <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

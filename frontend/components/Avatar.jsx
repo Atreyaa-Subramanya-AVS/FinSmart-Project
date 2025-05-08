@@ -7,15 +7,17 @@ import {
 export default function AvatarDashboard({ username, email, profilePicture }) {
   return (
     <HoverCard>
-      <div className="flex items-center gap-3 mb-1">
-        <div
-          className="shrink-0 rounded-full w-[30px] h-[30px] bg-cover bg-center text-sm flex items-center justify-center bg-gray-700 text-white"
-          style={{
-            backgroundImage: profilePicture ? `url(${profilePicture})` : "none",
-          }}
-        >
-          {!profilePicture && "A"}
-        </div>
+      <div className="flex items-center gap-3 mb-1 max-md:hidden">
+        {profilePicture ? (
+          <div
+            className="shrink-0 rounded-full w-[30px] h-[30px] bg-cover bg-center text-sm flex items-center justify-center"
+            style={{ backgroundImage: `url(${profilePicture})` }}
+          />
+        ) : (
+          <div className="shrink-0 rounded-full w-[30px] h-[30px] bg-gray-700 text-sm flex items-center justify-center">
+            {(String(username))[0]}
+          </div>
+        )}
 
         <div className="space-y-0.5">
           <HoverCardTrigger asChild>

@@ -34,7 +34,7 @@ const Chatbot = () => {
     if (!input.trim()) return;
 
     const newUserMessage = { role: "User", text: input };
-    const updatedMessages = [...messages, newUserMessage ];
+    const updatedMessages = [...messages, newUserMessage];
 
     setMessages(updatedMessages);
     setInput("");
@@ -99,10 +99,53 @@ const Chatbot = () => {
             className={`p-3 rounded-lg max-w-[75%] ${
               msg.role === "User"
                 ? "bg-[#303030] text-white self-end"
-                : "bg-gray-700 text-white self-start"
+                : "bg-black text-white self-start"
             }`}
           >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p: ({ node, ...props }) => (
+                  <p className="text-md" {...props} />
+                ),
+                h1: ({ node, ...props }) => (
+                  <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />
+                ),
+                h2: ({ node, ...props }) => (
+                  <h2 className="text-xl font-semibold mt-4 mb-2" {...props} />
+                ),
+                h3: ({ node, ...props }) => (
+                  <h3 className="text-lg font-semibold mt-3 mb-1" {...props} />
+                ),
+                ul: ({ node, ...props }) => (
+                  <ul className="list-disc ml-5 my-2" {...props} />
+                ),
+                ol: ({ node, ...props }) => (
+                  <ol className="list-decimal ml-5 my-2" {...props} />
+                ),
+                li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                strong: ({ node, ...props }) => (
+                  <strong className="font-bold" {...props} />
+                ),
+                em: ({ node, ...props }) => (
+                  <em className="italic" {...props} />
+                ),
+                code: ({ node, ...props }) => (
+                  <code
+                    className="bg-gray-800 text-green-400 px-1 py-0.5 rounded"
+                    {...props}
+                  />
+                ),
+                blockquote: ({ node, ...props }) => (
+                  <blockquote
+                    className="border-l-4 border-gray-500 pl-4 italic text-gray-300"
+                    {...props}
+                  />
+                ),
+              }}
+            >
+              {msg.text}
+            </ReactMarkdown>
           </div>
         ))}
         {loading && (

@@ -12,11 +12,11 @@ import Details from "@/components/Dashboard Components/Details";
 import FinancialAnalysis from "@/components/Dashboard Components/FinancialAnalysis";
 
 const Dashboard = () => {
+  const [ID, setID] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
 
-  // Function to fetch user data from the backend
   const fetchUserData = async () => {
     try {
       const response = await axios.get("http://localhost:5000/auth/user", {
@@ -26,14 +26,16 @@ const Dashboard = () => {
       console.log("Response from /auth/user:", response.data);
 
       if (response.status === 200) {
-        const { username, email, profilePicture } = response.data;
+        const { ID, username, email, profilePicture } = response.data;
 
         // Update state with the user data
+        setID(ID);
         setUsername(username);
         setEmail(email);
         setProfilePicture(profilePicture);
 
         // Save data to localStorage
+        localStorage.setItem("ID", ID);
         localStorage.setItem("username", username);
         localStorage.setItem("email", email);
         localStorage.setItem("profilePicture", profilePicture);
@@ -45,20 +47,17 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Check if user data is already in localStorage
+    const storedID = localStorage.getItem("ID");
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
     const storedPicture = localStorage.getItem("profilePicture");
 
-    // If the data is found in localStorage, update the state
+    if (storedID) setID(storedID);
     if (storedUsername) setUsername(storedUsername);
     if (storedEmail) setEmail(storedEmail);
     if (storedPicture) setProfilePicture(storedPicture);
 
-    // If data is not in localStorage, fetch from the backend
-    // if (!storedUsername || !storedEmail || !storedPicture) {
-      fetchUserData();
-    // }
+    fetchUserData();
 
     // Handle refresh query parameter
     const url = new URL(window.location.href);
@@ -70,13 +69,6 @@ const Dashboard = () => {
       window.location.reload();
     }
   }, []);
-
-  // Log the user data when it changes for debugging
-  useEffect(() => {
-    console.log("Username:", username);
-    console.log("Email:", email);
-    console.log("Profile Picture:", profilePicture);
-  }, [username, email, profilePicture]);
 
   return (
     <div className="min-h-screen text-white bg-black absolute inset-0">

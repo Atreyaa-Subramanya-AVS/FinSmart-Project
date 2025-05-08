@@ -1,0 +1,35 @@
+{
+    "news": [
+      {
+        "headline": "India's Axis Bank, J.P. Morgan roll out anytime dollar payments for clients",
+        "text": "MUMBAI (Reuters) - India's Axis Bank has partnered with J.P. Morgan to offer real-time U.S. dollar payment capabilities to commercial clients in the country, facilitated by Kinexys, the U.S-based lender's blockchain and digital assets unit. This is the first instance where an Indian company will have the flexibility to make or receive dollar payments at any time, J.P. Morgan said in a statement on Thursday. Axis Bank will deliver the 24/7 dollar clearing capability for clients out of Gujarat International Finance Tec-City, or GIFT city, an international financial services center. The collaboration with Kinexys will offer \"significant value\" to clients by streamlining payments, unlocking liquidity and adding further optionality on cross-border payments, Neeraj Gambhir, group executive & head - treasury, markets & wholesale banking products, at Axis Bank said. Currently, companies can make cross-border payments that are settled on the same day. Naveen Mallela, global co-head at Kinexys, illustrated the anytime payment capability by saying that Indian companies can now make dollar payments to Middle Eastern clients on Sundays, which are standard working days in that region."
+      },
+      {
+        "headline": "Axis Bank partners with Privy by IDfy to ensure DPDP Act compliance.",
+        "text": "Indian private sector lender Axis Bank has forged a partnership with Privy by IDfy to ensure compliance with the Digital Personal Data Protection Act (DPDP Act) 2023. The DPDP Act 2023 sets a new benchmark for data protection and accountability, introducing legal requirements such as privacy notices in multiple languages, consent artifacts, verifiable parental consent for minors, privacy breach notifications, and consent nominations. Axis Bank, as a Data Fiduciary, will leverage Privy's solutions to meet these obligations comprehensively. Privy's partnership will enable Axis Bank to offer regulatory reporting and create dashboards for the Data Protection Officer (DPO) to oversee customer consent activities."
+      },
+      {
+        "headline": "Axis Bank Ltd (STU:UZC) Q3 2025 Earnings Call Highlights: Strong Profit Growth Amidst ...",
+        "text": "Core Operating Profit: Up 14% year on year and 5% quarter on quarter. Deposit Growth: 13% year on year and 3% quarter on quarter. Loan Growth: Small business, SME, and mid-corporate segments grew 16% year on year and 4% quarter on quarter. Consolidated ROA: 1.71% for Q3 FY25. Consolidated ROE: 15.8% for Q3 FY25. CET1 Ratio: 14.61% with a net accretion of 49 basis points in Q3 FY25. Net Interest Income: INR13,606 crores, 9% year on year growth. Operating Expenses: INR9,044 crores, 1% year on year growth. Net Profit (PAT): INR6,304 crores for the quarter, 4% year on year increase. Gross NPA: 1.46%, declined by 12 basis points year on year. Net NPA: 0.35%, largely flat year on year. Provision Coverage Ratio (PCR): 76%. Branches Opened: 130 new branches in the last three months, 330 in the first nine months of the fiscal year. Retail Fee Growth: 5% year on year. Transaction Banking Fee Growth: 16% year on year. Subsidiaries' Contribution: 7 basis points to consolidated annualized ROA and 41 basis points to consolidated annualized ROE.",
+        "positivePoints": [
+          "14% year-on-year increase in core operating profit",
+          "13% year-on-year increase in deposit growth",
+          "CET1 ratio of 14.61%",
+          "26% year-on-year growth in Burgundy AUM",
+          "Recognized with Best Indian Bank at Financial Times Bank of the Year 2024 Awards"
+        ],
+        "negativePoints": [
+          "Loan growth slower than some private sector peers",
+          "Heightened delinquency in unsecured retail products",
+          "Net interest margin declined by 6 basis points QoQ",
+          "Operating expenses grew 1% YoY, suggesting limited cost optimization",
+          "Challenges in deposit growth vs peers in retail LCR"
+        ]
+      },
+      {
+        "headline": "India's Axis Bank misses profit view on bad loan provisions, slow loan growth.",
+        "text": "BENGALURU (Reuters) -India's Axis Bank reported a smaller-than-expected rise in quarterly profit on Thursday, as loan growth slowed and it set aside more funds against potential bad loans. The country's fourth-largest private lender by market capitalisation said its standalone net profit - which excludes earnings of its subsidiaries - rose 4% to 63.04 billion rupees ($728.48 million) for three months to December-end. Analysts had expected, on average, a profit of 65.16 billion rupees, according to estimates compiled by LSEG. Indian lenders have been grappling with higher bad loans in segments such as microfinance and in the unsecured portfolio, forcing them to set aside more funds for potential losses. Axis Bank's provisions and contingencies, or funds kept aside for potential bad loans, more than doubled to 21.56 billion rupees year-on-year. The bank made provisions \"largely towards unsecured retail portfolio that has slipped in the current market environment,\" Chief Financial Officer Puneet Sharma said in a conference call."
+      }
+    ]
+  }
+  

@@ -34,13 +34,13 @@ const Features = () => {
             Smart Solution for your Investments
           </h1>
           <p className="text-balance py-4 text-sm md:text-base 2xl:text-lg font-medium text-slate-600">
-            FinSmart leverages the power of AI and real-time data from Yahoo
+            FinSmart leverages the power of AI and stock market data from Yahoo
             Finance to deliver deeper insights, smarter predictions, and better
             investment decisions.
           </p>
 
           <div className="h-svh max-lg:h-[60vh] max-md:h-[50vh] flex items-center justify-center">
-            <div className="grid h-[90%] w-full grid-cols-4 grid-rows-4 gap-1 relative bg-transparent">
+            <div className="grid h-[90%] w-[80%] lg:w-full grid-cols-4 grid-rows-4 gap-1 relative bg-transparent">
               {Array.from({ length: numberOfDivs }).map((_, index) => {
                 const cardRef = useRef(null);
                 const row = Math.floor(index / 4);

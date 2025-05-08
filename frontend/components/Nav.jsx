@@ -109,14 +109,14 @@ const Nav = () => {
                 Sign In
               </button>
             </Link>
-            <Link href={"/dashboard?refresh=true"}>
+            <Link href={"/signin"}>
               <button className="py-1 px-4 border rounded-lg transition-all max-md:-ml-4 max-sm:scale-75 bg-white text-black max-md:px-3 max-sm:py-1 flex items-center max-sm:text-base">
                 Get Started
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 17 9"
-                  className="h-[9px] w-[17px] text-[#5A250A] flex ml-2"
+                  className="h-[9px] w-[17px] text-[#5A250A] flex ml-2 mt-[3px]"
                 >
                   <path
                     fill="currentColor"

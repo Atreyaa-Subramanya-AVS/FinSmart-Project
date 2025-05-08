@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-const User = require("../models/User"); // adjust path if needed
+const User = require("../models/User");
 const sendOTP = require("../utils/sendOTP");
 
 // --- GOOGLE AUTH ROUTES ---
@@ -41,7 +41,6 @@ router.get(
       email,
     };
 
-    // Force session save (ensure it’s written before redirecting)
     req.session.save((err) => {
       if (err) {
         console.log("Session save error:", err);
@@ -82,7 +81,6 @@ router.post("/otp/verify", async (req, res) => {
     user.otpExpires = undefined;
     await user.save();
 
-    // Promote tempUser to full user in session
     req.session.user = {
       username: user.username,
       email: user.email,
@@ -206,6 +204,7 @@ router.get("/user", (req, res) => {
 
   if (req.user) {
     return res.status(200).json({
+      ID: req.user._id.toString(),
       username: req.user.username,
       email: req.user.email,
       profilePicture: req.user.profilePicture || "",

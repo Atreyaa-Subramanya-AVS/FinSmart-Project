@@ -31,7 +31,7 @@ export default function VerticalTab({
             size={16}
             aria-hidden="true"
           />
-          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full max-md:hidden">
             Home
           </h1>
         </TabsTrigger>
@@ -44,7 +44,7 @@ export default function VerticalTab({
             size={16}
             aria-hidden="true"
           />
-          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full max-md:hidden">
             Details
           </h1>
         </TabsTrigger>
@@ -57,7 +57,7 @@ export default function VerticalTab({
             size={16}
             aria-hidden="true"
           />
-          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full max-md:hidden">
             Financial Analysis
           </h1>
         </TabsTrigger>
@@ -70,7 +70,7 @@ export default function VerticalTab({
             size={16}
             aria-hidden="true"
           />
-          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full max-md:hidden">
             Stock Analysis
           </h1>
         </TabsTrigger>
@@ -83,7 +83,7 @@ export default function VerticalTab({
             size={16}
             aria-hidden="true"
           />
-          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full">
+          <h1 className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 group-hover:after:w-full max-md:hidden">
             Chatbot
           </h1>
         </TabsTrigger>

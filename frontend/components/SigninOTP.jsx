@@ -14,6 +14,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [ID, setID] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
@@ -29,16 +30,20 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
       console.log("Response from /auth/user:", response.data);
 
       if (response.status === 200) {
-        const { username, email, profilePicture } = response.data;
+        const { ID, username, email, profilePicture } = response.data;
 
+        setID(ID);
         setUsername(username);
         setEmail(email);
         setProfilePicture(profilePicture);
         setEmailToParent(email);
 
+        localStorage.setItem("ID", ID);
         localStorage.setItem("username", username);
         localStorage.setItem("email", email);
         localStorage.setItem("profilePicture", profilePicture);
+
+        console.log("Profile Pic from Signin: ",profilePicture);
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -46,11 +51,13 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
   };
 
   useEffect(() => {
+    const storedID = localStorage.getItem("ID");
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
     const storedPicture = localStorage.getItem("profilePicture");
 
-    if (storedUsername && storedEmail && storedPicture) {
+    if (storedID && storedUsername && storedEmail && storedPicture) {
+      setID(storedID);
       setUsername(storedUsername);
       setEmail(storedEmail);
       setProfilePicture(storedPicture);
@@ -89,7 +96,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }), // Use the email from the form or state
+        body: JSON.stringify({ email }),
       });
 
       console.log("Resend OTP: ", email);
@@ -101,7 +108,6 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
       toast.success("OTP resent successfully!");
 
-      // Reset resetTimer to false after a short delay to stop triggering countdown
       setTimeout(() => setResetTimer(false), 100);
     } catch (err) {
       toast.error(err.message || "Failed to resend OTP.");
@@ -110,7 +116,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6 || !email || timeLeft === 0) {
-      toast.error("Invalid OTP, missing email, or OTP expired");
+      toast.error("Incorrect OTP, missing email, or OTP expired");
       return;
     }
 
@@ -129,7 +135,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
       if (!res.ok) throw new Error(data.message || "OTP verification failed");
 
-      toast.success("OTP verified!");
+      toast.success("OTP verified! Redirecting....");
       router.push("http://localhost:3000/dashboard?refresh=true");
     } catch (err) {
       toast.error(err.message || "Something went wrong");
@@ -141,11 +147,17 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
       <Label htmlFor={id} className="text-neutral-200 text-center text-base">
         An OTP has been sent to <br />
         <div className="flex w-fit mx-auto p-3 gap-3 bg-neutral-500 rounded-lg my-2 scale-90">
-          <img
-            src={profilePicture}
-            alt="profilePic"
-            className="w-10 h-10 rounded-full my-auto"
-          />
+          {profilePicture ? (
+            <img
+              src={profilePicture}
+              alt="profilePic"
+              className="w-10 h-10 rounded-full my-auto"
+            />
+            
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-400 my-auto" />
+          )}
+
           <div className="flex flex-col">
             <h1 className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
               {username}
@@ -211,7 +223,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         >
           {isLoading ? "Verifying..." : "Submit"}
         </Button>
-        <p className="text-center text-sm mt-2">
+        <p className="text-center text-sm mt-6 mb-3">
           Didn't Receive?{" "}
           <span
             className={`underline cursor-pointer ${

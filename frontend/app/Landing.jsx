@@ -206,6 +206,7 @@ const Landing = () => {
       <Hero />
       <Features />
       <Illustration />
+      <Feat />
       <Footer />
     </>
   );

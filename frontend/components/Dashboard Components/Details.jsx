@@ -6,9 +6,14 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import DashboardDropDown from "../DashboardDropDown";
 import Data from "./dummy.json";
+import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
+import Loading_Dashboard from "./Loading_Dashboard";
 
 const Details = () => {
   const [sampleData, setSampleData] = useState("");
+  const [ID,setID] = useState();
+  const [isLoading, setIsLoading] = useState(true); // To manage loading state
 
   const [formData, setFormData] = useState({
     goals: [],
@@ -54,12 +59,42 @@ const Details = () => {
     notes: "",
   });
 
-  // Effect to load data from sessionStorage if available
   useEffect(() => {
-    const storedData = sessionStorage.getItem("details");
-    if (storedData) {
-      setFormData(JSON.parse(storedData));
-    } else if (sampleData === "Erase Data") {
+    axios
+      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .then((response) => {
+
+        const ID = response.data.ID;
+        setID(ID);
+        if (ID) {
+          axios
+            .get(`http://localhost:5000/api/details/${ID}`)
+            .then((response) => {
+              console.log("Fetched Data:", response.data); // Debugging log
+              if (response.data.data) {
+                setFormData(response.data.data);
+              } else {
+                console.error("Data field is missing in response");
+              }
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+              setIsLoading(false);
+            });
+        } else {
+          console.error("User ID not found");
+          setIsLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (sampleData === "Erase Data") {
       setFormData({
         goals: [],
         balanceTracker: { currentBalance: "", totalAmount: "" },
@@ -83,17 +118,77 @@ const Details = () => {
     }
   }, [sampleData]);
 
-  const handleDemo = () => {
-    // Save form data to sessionStorage
-    // sessionStorage.setItem("details", JSON.stringify(formData));
-    console.log(formData);
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!ID) return;
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/details/${ID}`
+        );
+        if (response.data?.data) {
+          setFormData(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchDetails();
+  }, [ID]);
+
+  const validateFormData = () => {
+    if (!formData.goals.length) {
+      toast.error("Please add at least one goal.");
+      return false;
+    }
+    if (!formData.balanceTracker.currentBalance) {
+      toast.error("Please enter your current balance.");
+      return false;
+    }
+    return true;
   };
+
+  const handleSave = async () => {
+    if (!validateFormData()) return;
+
+    const savePromise = axios.post("http://localhost:5000/api/details/store", {
+      ID,
+      ...formData,
+    });
+
+    toast.promise(savePromise, {
+      loading: "Saving details...",
+      success: "Details saved successfully!",
+      error: "Failed to save details.",
+    });
+
+    try {
+      const response = await savePromise;
+      console.log("Save response:", response.data);
+    } catch (error) {
+      console.error("Error saving details:", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full justify-center items-center h-[89svh]">
+        <Loading_Dashboard />
+      </div>
+    );
+  }
 
   return (
     <div className="relative z-50 max-w-screen-lg xl:max-w-screen-xl bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">
-      <div className="flex justify-between items-center text-4xl tracking-tight font-semibold border-b-2 overflow-x-hidden">
+      <Toaster />
+      <div className="flex justify-between items-center text-4xl tracking-tight font-semibold border-b-2 overflow-x-hidden md:mx-2">
         <h1 className="pt-2 pb-5">Details</h1>
-        <DashboardDropDown setSampleData={setSampleData} />
+        <div className="flex items-center mb-3">
+          <DashboardDropDown setSampleData={setSampleData} />
+        </div>
+        <div className="flex" onClick={handleSave}>
+          <Button className="tracking-normal py-1 w-full">Save</Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 max-lg:grid-cols-2 max-md:grid-cols-1">
@@ -177,9 +272,6 @@ const Details = () => {
       </div>
       <div className="mx-12 my-6">
         <Notes notes={formData.notes} setFormData={setFormData} />
-      </div>
-      <div className="flex mx-32 my-5" onClick={handleDemo}>
-        <Button className="tracking-normal py-1 w-full">Save</Button>
       </div>
       <div className="text-sm text-neutral-400 text-center py-4">
         "Do not save what is left after spending, but spend what is left after
@@ -286,20 +378,22 @@ const Goals = ({ goals = [], setFormData }) => {
   );
 };
 
-const BalanceTracker = ({ balanceTracker, setFormData }) => {
+const BalanceTracker = ({ balanceTracker = {}, setFormData }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleChange();
     }
   };
 
   const handleChange = (field, value) => {
+    const numericFields = ["currentBalance", "totalAmount"];
+    const newValue = numericFields.includes(field) ? Number(value) : value;
+
     setFormData((prev) => ({
       ...prev,
       balanceTracker: {
         ...prev.balanceTracker,
-        [field]: value,
+        [field]: newValue,
       },
     }));
   };
@@ -310,13 +404,13 @@ const BalanceTracker = ({ balanceTracker, setFormData }) => {
       <div className="flex flex-col gap-2">
         <DashboardInput
           placeholder="Current Balance"
-          value={balanceTracker.currentBalance}
+          value={balanceTracker.currentBalance || ""}
           setinput={(val) => handleChange("currentBalance", val)}
           onKeyDown={handleKeyDown}
         />
         <DashboardInput
           placeholder="Total Amount"
-          value={balanceTracker.totalAmount}
+          value={balanceTracker.totalAmount || ""}
           setinput={(val) => handleChange("totalAmount", val)}
           onKeyDown={handleKeyDown}
         />

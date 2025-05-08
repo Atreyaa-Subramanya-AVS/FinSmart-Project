@@ -1,0 +1,21 @@
+{
+    "news": [
+      {
+        "headline": "TCS Reports Q4 FY25 Results: Revenue Grows, Profit Declines",
+        "text": "Tata Consultancy Services (TCS) reported a 5.3% year-on-year increase in revenue to ₹64,479 crore for Q4 FY25. However, net profit declined by 1.6% to ₹12,224 crore. The company achieved a total contract value of $12.2 billion for the quarter, contributing to a full-year TCV of $39.4 billion. Despite the revenue growth, TCS missed analysts' estimates due to continued weakness in its key North American market."
+      },
+      {
+        "headline": "TCS Cuts Variable Pay for Senior Employees for Third Consecutive Quarter",
+        "text": "TCS has reduced variable pay for senior employees for the third straight quarter, citing global economic uncertainties and an attendance-linked policy introduced in April 2024. Some senior staff received as low as 20% of their eligible variable pay. Additionally, the company has delayed annual salary hikes, which were expected in April 2025."
+      },
+      {
+        "headline": "TCS Partners with Google Cloud to Enhance AI-led Transformation",
+        "text": "TCS announced a partnership with Google Cloud to accelerate AI-led transformation in the retail sector. This collaboration aims to leverage Google's AI capabilities and TCS's industry expertise to deliver innovative solutions for retail businesses."
+      },
+      {
+        "headline": "TCS Launches Next-Gen Capabilities to Support India's Deep-Tech Ambitions",
+        "text": "TCS has launched next-generation capabilities to support India's aspirations in deep-tech. This initiative focuses on advancing technologies such as artificial intelligence, machine learning, and quantum computing to drive innovation and economic growth in the country."
+      }
+    ]
+  }
+  

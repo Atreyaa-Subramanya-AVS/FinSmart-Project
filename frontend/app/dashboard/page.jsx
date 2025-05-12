@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/auth/user`, {
+      const response = await axios.get("https://finsmart-backend-380l.onrender.com/auth/user", {
         withCredentials: true,
       });
 

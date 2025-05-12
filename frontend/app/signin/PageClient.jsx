@@ -53,8 +53,8 @@ const PageClient = () => {
 
     const endpoint =
     option === "Register"
-    ? `${process.env.BACKEND_URL}/auth/local/register`
-    : `${process.env.BACKEND_URL}/auth/local/login`;
+    ? `https://finsmart-backend-380l.onrender.com/auth/local/register`
+    : `https://finsmart-backend-380l.onrender.com/auth/local/login`;
 
 
     const payload =
@@ -96,7 +96,7 @@ const PageClient = () => {
 
   const resendOTP = async () => {
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/auth/otp/resend`, {
+      const response = await fetch(`https://finsmart-backend-380l.onrender.com/auth/otp/resend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -82,7 +82,7 @@ const FinancialAnalysis = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.BACKEND_URL}/auth/user`, {
+      .get(`https://finsmart-backend-380l.onrender.com/auth/user`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -90,7 +90,7 @@ const FinancialAnalysis = () => {
         setID(ID);
         if (ID) {
           axios
-            .get(`${process.env.BACKEND_URL}/api/financial-analysis/${ID}`)
+            .get(`https://finsmart-backend-380l.onrender.com/api/financial-analysis/${ID}`)
             .then((response) => {
               console.log(response.data);
               const financialAnalysis = response.data.financialAnalysis;
@@ -123,7 +123,7 @@ const FinancialAnalysis = () => {
 
       const fetchRecommendation = async () => {
         const response = await axios.post(
-          `${process.env.BACKEND_URL}/api/recommend`,
+          `https://finsmart-backend-380l.onrender.com/api/recommend`,
           {
             Data: data,
             message: userMessage,
@@ -138,7 +138,7 @@ const FinancialAnalysis = () => {
 
         // Save to backend
         if (ID) {
-          await axios.post(`${process.env.BACKEND_URL}/api/financial-analysis`, {
+          await axios.post(`https://finsmart-backend-380l.onrender.com/api/financial-analysis`, {
             ID: ID,
             financialAnalysis: {
               prompt: userMessage,

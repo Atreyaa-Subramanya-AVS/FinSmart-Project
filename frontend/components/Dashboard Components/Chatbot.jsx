@@ -48,7 +48,7 @@ const Chatbot = () => {
       }));
 
     try {
-      const response = await axios.post(`${process.env.BACKEND_URL}/api/chat`, {
+      const response = await axios.post(`https://finsmart-backend-380l.onrender.com/api/chat`, {
         history: formattedHistory,
       });
 

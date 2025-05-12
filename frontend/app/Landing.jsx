@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import LoadingBg from "@/public/LoadBG.webp";
 import LoadingBg2 from "@/public/LoadBG2.jpg";
 import Image from "next/image";
+import News from "@/components/News";
 
 const Ldrs = dynamic(() => import("ldrs").then((mod) => mod.waveform), {
   ssr: false,
@@ -205,6 +206,7 @@ const Landing = () => {
       <Nav />
       <Hero />
       <Features />
+      <News />
       <Illustration />
       <Feat />
       <Footer />

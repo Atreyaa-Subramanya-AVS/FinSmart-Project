@@ -1,30 +1,27 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { ring } from "ldrs";
 import dynamic from "next/dynamic";
 
-const Ldrs = dynamic(() => import("ldrs").then((mod) => mod.waveform), {
+const Ldrs = dynamic(() => import("ldrs").then((mod) => mod.ring), {
   ssr: false,
 });
 
 const Loading_Dashboard = () => {
   useEffect(() => {
-    if (Ldrs && typeof window !== "undefined") {
-      ring.register();
+    if (typeof window !== "undefined") {
+      import("ldrs").then((mod) => {
+        if (typeof mod.ring?.register === "function") {
+          mod.ring.register();
+        }
+      });
     }
   }, []);
 
   return (
     <div className="relative h-fit">
       {/* l-ring as animated background */}
-      <l-ring
-        size="200"
-        stroke="5"
-        bg-opacity="0"
-        speed="2"
-        color="white"
-      ></l-ring>
+      <l-ring size="200" stroke="5" bg-opacity="0" speed="2" color="white" />
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[2.5]">
         <svg

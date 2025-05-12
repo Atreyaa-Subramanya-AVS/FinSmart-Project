@@ -63,7 +63,6 @@ const Chatbot = () => {
         return finalMessages;
       });
     } catch (error) {
-      console.error("Error:", error);
       const errMsg = {
         role: "AI",
         text: "Oops! Something went wrong. Please try again later.",

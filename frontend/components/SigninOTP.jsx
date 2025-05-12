@@ -27,7 +27,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         withCredentials: true,
       });
 
-      console.log("Response from /auth/user:", response.data);
+      // console.log("Response from /auth/user:", response.data);
 
       if (response.status === 200) {
         const { ID, username, email, profilePicture } = response.data;
@@ -42,8 +42,6 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         localStorage.setItem("username", username);
         localStorage.setItem("email", email);
         localStorage.setItem("profilePicture", profilePicture);
-
-        console.log("Profile Pic from Signin: ",profilePicture);
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -135,7 +133,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
       if (!res.ok) throw new Error(data.message || "OTP verification failed");
 
-      toast.success("OTP verified! Redirecting....");
+      toast.success("OTP verified! Redirecting to Dashboard....");
       router.push("http://localhost:3000/dashboard?refresh=true");
     } catch (err) {
       toast.error(err.message || "Something went wrong");
@@ -151,9 +149,9 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
             <img
               src={profilePicture}
               alt="profilePic"
+              referrerPolicy="no-referrer"
               className="w-10 h-10 rounded-full my-auto"
             />
-            
           ) : (
             <div className="w-10 h-10 rounded-full bg-gray-400 my-auto" />
           )}

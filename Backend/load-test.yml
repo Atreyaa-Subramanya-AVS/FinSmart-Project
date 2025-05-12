@@ -1,0 +1,18 @@
+config:
+  target: "http://localhost:5000"
+  phases:
+    - duration: 60
+      arrivalRate: 10  # 10 users per second
+
+scenarios:
+  - name: "Login and Get AI Insight"
+    flow:
+      - get:
+          url: "/auth/google/callback"
+      - post:
+          url: "/api/ai/insight"
+          headers:
+            Content-Type: "application/json"
+            Authorization: "Bearer mock-token"  # optional depending on your logic
+          json:
+            question: "What’s my monthly spending trend?"

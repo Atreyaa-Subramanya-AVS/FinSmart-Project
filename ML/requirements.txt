@@ -1,4 +1,9 @@
 fastapi
 uvicorn
-pydantic
-yfinance==0.2.55
+tensorflow
+numpy
+pandas
+matplotlib
+scikit-learn
+python-multipart
+pandas-ta

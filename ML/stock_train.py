@@ -154,7 +154,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 epochs=50,
                 batch_size=64,
                 verbose=1,
-                callbacks=[callback, early_stopping, reduce_lr]
+                callbacks=[callback, reduce_lr]
             ))
 
         await websocket.send_text("Making predictions...")

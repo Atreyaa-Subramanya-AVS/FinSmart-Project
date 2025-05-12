@@ -6,7 +6,7 @@ import Link from "next/link";
 import HeroImage from "../public/images/finbgfinal.png";
 
 const Hero = () => {
-  const [dashboardUrl, setDashboardUrl] = useState("/dashboard");
+  const [dashboardUrl, setDashboardUrl] = useState("/signin");
 
   useEffect(() => {
     const username = localStorage.getItem("username");
@@ -21,7 +21,7 @@ const Hero = () => {
 
   return (
     <div className="w-full bg-gradient-to-r from-[#090B0D] via-[#090B0D] via-50% to-[#010103]">
-      <div className="hero-content relative md:max-w-screen-2xl w-full mx-auto h-fit max-md:-mt-24">
+      <div className="hero-content relative md:max-w-screen-2xl w-full mx-auto h-fit max-md:-mt-24 max-lg:-mt-12">
         <div className="absolute z-10 top-40 max-md:mt-10 ml-8 max-md:ml-4">
           <h1 className="relative scale-y-100 text-[#F6F7FD] text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl pr-1 z-30 max-w-2xl bg-gradient-to-br from-white from-30% via-[#d5d8f6] via-80% to-[#fdf7fe] bg-clip-text text-transparent tracking-tighter leading-[0.9] font-bold pb-2">
             Everything App <br /> for your finance
@@ -59,7 +59,7 @@ const Hero = () => {
               autoPlay
               muted
               loop
-              className="z-0 pt-52 max-lg:pt-40 max-sm:pt-52 scale-150 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.7]"
+              className="z-0 pt-44 max-lg:pt-32 max-sm:pt-52 max-md:pt-48 scale-150 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.7]"
               src="/videos/hero.mp4"
             ></video>
             {/* <Image src={HeroImage} className="z-0 max-lg:pt-0 max-lg:left-24 max-sm:pt-24 max-sm:scale-125 scale-125 max-md:ml-10 relative md:-mt-6 max-md:scale-[1.4] max-md:pt-20 left-48 top-[7rem] pb-32" alt="Hero"/>

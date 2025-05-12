@@ -15,9 +15,9 @@ export default {
 		keyframes:{
 			heartbeat: {
 				'0%, 100%': { transform: 'scale(1)' },
-				'14%': { transform: 'scale(1.3)' },
+				'14%': { transform: 'scale(0.9)' },
 				'28%': { transform: 'scale(1)' },
-				'42%': { transform: 'scale(1.3)' },
+				'42%': { transform: 'scale(0.9)' },
 				'70%': { transform: 'scale(1)' },
 			  },
 		},

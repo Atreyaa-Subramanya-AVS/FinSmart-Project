@@ -7,8 +7,8 @@ const Page = () => {
   return (
     <Suspense
       fallback={
-        <div className="w-screen h-screen grid place-items-center">
-          Loading...
+        <div className="w-screen h-screen grid place-items-center text-3xl">
+          <Loading_Dashboard />
         </div>
       }
     >

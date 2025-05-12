@@ -11,10 +11,11 @@ import TrainTestPredictions from "../../public/plots/train_test_predictions.png"
 import Loading_Dashboard from "./Loading_Dashboard";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-// import stockData from "./stockData";
+import stockData from "./stockData";
 
 const ML = () => {
   const [query, setQuery] = useState("");
+  const [displayQuery, setDisplayQuery] = useState("");
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -23,20 +24,20 @@ const ML = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [aiInsights, setAiInsights] = useState("");
   const [loadingDataFromAPI, setLoadingDataFromAPI] = useState("Done");
+  const [savePlot, setSavePlot] = useState("");
 
-  const socketRef = useRef(null);
   const wrapperRef = useRef(null);
 
-  const stockData = [
-    { id: 1, name: "HDFC Bank Ltd.", yfinName: "HDFCBANK.NS" },
-    { id: 2, name: "ICICI Bank Ltd.", yfinName: "ICICIBANK.NS" },
-    { id: 3, name: "Reliance Industries Ltd.", yfinName: "RELIANCE.NS" },
-    { id: 4, name: "Infosys Ltd.", yfinName: "INFY.NS" },
-    { id: 5, name: "Tata Consultancy Services Ltd.", yfinName: "TCS.NS" },
-    { id: 6, name: "Larsen & Toubro Ltd.", yfinName: "LT.NS" },
-    { id: 7, name: "Axis Bank Ltd.", yfinName: "AXISBANK.NS" },
-    { id: 8, name: "State Bank of India", yfinName: "SBIN.NS" },
-  ];
+  // const stockData = [
+  //   { id: 1, name: "HDFC Bank Ltd.", yfinName: "HDFCBANK.NS" },
+  //   { id: 2, name: "ICICI Bank Ltd.", yfinName: "ICICIBANK.NS" },
+  //   { id: 3, name: "Reliance Industries Ltd.", yfinName: "RELIANCE.NS" },
+  //   { id: 4, name: "Infosys Ltd.", yfinName: "INFY.NS" },
+  //   { id: 5, name: "Tata Consultancy Services Ltd.", yfinName: "TCS.NS" },
+  //   { id: 6, name: "Larsen & Toubro Ltd.", yfinName: "LT.NS" },
+  //   { id: 7, name: "Axis Bank Ltd.", yfinName: "AXISBANK.NS" },
+  //   { id: 8, name: "State Bank of India", yfinName: "SBIN.NS" },
+  // ];
 
   useEffect(() => {
     if (highlightedIndex >= 0 && itemRefs.current[highlightedIndex]) {
@@ -89,30 +90,41 @@ const ML = () => {
     return () => clearTimeout(timer);
   });
 
-  const fetchAIInsights = async (stockName) => {
+  const useMockAI = false;
+
+  const fetchAIInsights = async (companyName,stockName) => {
+    setDisplayQuery(companyName);
     setLoading(true);
     setLoadingDataFromAPI("Processing...");
     setLoadingDataFromAPI("Fetching News & Insights from Gemini...");
-    sessionStorage.setItem("query", stockName);
+    sessionStorage.setItem("query", companyName);
 
     try {
-      // First, fetch the AI insights using Axios
-      const response = await axios.post(
-        "http://localhost:5000/api/stockOpinion",
-        { symbol: stockName }
-      );
-      console.log("AI Opinion Response:", response.data);
+      let responseData;
 
-      // Save the response in sessionStorage
-      const rawResponse = response.data.response || "No Response received.";
+      if (useMockAI) {
+        responseData = {
+          response: `Mocked AI insights for ${stockName}. This is for testing.`,
+        };
+      } else {
+        const response = await axios.post(
+          "http://localhost:5000/api/stockOpinion",
+          {
+            symbol: stockName,
+          }
+        );
+        responseData = response.data;
+      }
+
+      const rawResponse = responseData.response || "No Response received.";
       const formatted = formatResponse(rawResponse);
       sessionStorage.setItem("aiInsights", formatted);
 
-      setAiInsights(response.data.response);
+      setAiInsights(rawResponse);
       setLoadingDataFromAPI("Fetched Insights Successfully..!");
 
-      // Once Axios request is done, initialize the WebSocket connection
-      initiateWebSocket(stockName);
+      // Call new prediction API instead of WebSocket
+      await fetchPredictionData(stockName);
     } catch (error) {
       console.error("Error fetching AI insights:", error);
       setLoading(false);
@@ -120,66 +132,47 @@ const ML = () => {
     }
   };
 
-  useEffect(() => {
-    const storedInsights = sessionStorage.getItem("aiInsights");
-    if (storedInsights) {
-      setAiInsights(storedInsights);
-    }
-    setIsLoading(false);
-  }, []);
+  const fetchPredictionData = async (stockName) => {
+    try {
+      setLoadingDataFromAPI("Fetching prediction data...");
+      const response = await axios.get(
+        `http://127.0.0.1:8083/predict?stock=${encodeURIComponent(stockName)}`
+      );
+      const predictionData = response.data;
 
-  // Function to handle WebSocket connection and communication
-  const initiateWebSocket = (stockName) => {
-    // const sessionId =
-    // sessionStorage.getItem("session_id") || Date.now().toString();
-    // sessionStorage.setItem("session_id", sessionId);
+      setSavePlot(`data:image/png;base64,${predictionData.plot_base64}`);
 
-    const socket = new WebSocket("ws://127.0.0.1:8080/ws/progress");
-    // const socket = new WebSocket(`ws://127.0.0.1:8080/ws/train/${sessionId}`);
-    socketRef.current = socket;
-
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-      socket.send(stockName); // Send stock name to the WebSocket server
-    };
-
-    socket.onmessage = (event) => {
-      console.log("Message from server:", event.data);
-      setLoadingDataFromAPI(event.data); // Update loading message
-      sessionStorage.setItem("loadingStatus", event.data);
-
-      if (event.data === "Done") {
-        setLoading(false);
-        socket.close();
-        sessionStorage.removeItem("loadingStatus");
-      }
-    };
-
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      sessionStorage.setItem("predictionData", JSON.stringify(predictionData));
+      setLoadingDataFromAPI("Prediction data received!");
       setLoading(false);
-      socket.close();
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket closed");
-    };
+    } catch (error) {
+      console.error("Error fetching prediction data:", error);
+      setLoadingDataFromAPI("Failed to fetch prediction data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
+    const storedInsights = sessionStorage.getItem("aiInsights");
+    const storedPredictionData = sessionStorage.getItem("predictionData");
     const storedQuery = sessionStorage.getItem("query");
-    const storedStatus = sessionStorage.getItem("loadingStatus");
-  
-    if (storedQuery) {
-      setQuery(storedQuery);
+
+    if(storedQuery){
+      setDisplayQuery(storedQuery);
     }
-  
-    if (storedStatus && storedStatus !== "Done") {
-      setLoading(true);
-      setLoadingDataFromAPI(storedStatus);
-      initiateWebSocket(storedQuery);
+
+    if (storedInsights) {
+      setAiInsights(storedInsights);
     }
-  }, []);  
+
+    if (storedPredictionData) {
+      const predictionData = JSON.parse(storedPredictionData);
+      setSavePlot(`data:image/png;base64,${predictionData.plot_base64}`);
+    }
+
+    setIsLoading(false);
+  }, []);
 
   // Handle stock input change
   const handleInputChange = (e) => {
@@ -221,7 +214,7 @@ const ML = () => {
         const selectedStock = filteredStocks[highlightedIndex];
         setQuery(selectedStock.yfinName);
         setShowSuggestions(false);
-        fetchAIInsights(selectedStock.yfinName);
+        fetchAIInsights(selectedStock.name,selectedStock.yfinName);
       } else {
         handleSubmit();
       }
@@ -301,22 +294,16 @@ const ML = () => {
               </div>
             </div>
           </div>
-          {loadingDataFromAPI !== "Done" ? (
+          {loading ? (
             <div className="flex flex-col w-full justify-center items-center h-[80svh]">
               <Loading_Dashboard />
               <p className="mt-2">{loadingDataFromAPI}</p>
-              {/* <p className="inline-flex items-center my-1 text-neutral-300">
-                <span className="scale-75">
-                  <Info />
-                </span>
-                Background Training is Supported.
-              </p> */}
             </div>
           ) : (
             <div className="mt-4 max-w-screen-md mx-auto w-full max-lg:px-12 flex flex-col">
               <div className="min-h-40">
                 <h1 className="text-2xl md:text-4xl font-bold mb-5 text-center">
-                  {query}
+                  {displayQuery}
                 </h1>
                 <div className="flex gap-3 items-center border-b-[1px] border-[#ccc] pb-2">
                   <Image
@@ -373,30 +360,18 @@ const ML = () => {
                   <h1 className="inline-flex self-center text-2xl md:text-3xl font-semibold">
                     LSTM Prediction:{" "}
                     <span className="text-sm pt-2 inline-flex items-center text-neutral-400 ml-2">
-                      (For the next 30 Days.)
+                      (For the next 200 Days.)
                     </span>
                   </h1>
                 </div>
                 <div className="visuals flex flex-col gap-3 w-fit pb-12">
-                  {TrainTestPredictions && aiInsights !== "" && (
+                  {savePlot && (
                     <Image
-                      src={TrainTestPredictions}
-                      alt="Train and Test Predictions"
+                      src={savePlot}
+                      alt="Stock Prediction Plot"
                       className="max-w-full rounded-md"
-                    />
-                  )}
-                  {FutureForecasting && aiInsights !== "" && (
-                    <Image
-                      src={FutureForecasting}
-                      alt="Future Forecasting"
-                      className="max-w-full rounded-md"
-                    />
-                  )}
-                  {ExtendedForecasting && aiInsights !== "" && (
-                    <Image
-                      src={ExtendedForecasting}
-                      alt="Extended Forecasting"
-                      className="max-w-full rounded-md"
+                      width={700}
+                      height={700}
                     />
                   )}
                 </div>

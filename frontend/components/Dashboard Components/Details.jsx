@@ -12,7 +12,8 @@ import Loading_Dashboard from "./Loading_Dashboard";
 
 const Details = () => {
   const [sampleData, setSampleData] = useState("");
-  const [ID,setID] = useState();
+  const [initialData, setInitialData] = useState(null);
+  const [ID, setID] = useState();
   const [isLoading, setIsLoading] = useState(true); // To manage loading state
 
   const [formData, setFormData] = useState({
@@ -63,16 +64,16 @@ const Details = () => {
     axios
       .get("http://localhost:5000/auth/user", { withCredentials: true })
       .then((response) => {
-
         const ID = response.data.ID;
         setID(ID);
         if (ID) {
           axios
             .get(`http://localhost:5000/api/details/${ID}`)
             .then((response) => {
-              console.log("Fetched Data:", response.data); // Debugging log
+              // console.log("Fetched Data:", response.data); // Debugging log
               if (response.data.data) {
                 setFormData(response.data.data);
+                setInitialData(response.data.data);
               } else {
                 console.error("Data field is missing in response");
               }
@@ -125,8 +126,9 @@ const Details = () => {
         const response = await axios.get(
           `http://localhost:5000/api/details/${ID}`
         );
-        if (response.data?.data) {
+        if (response.data.data) {
           setFormData(response.data.data);
+          setInitialData(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -165,29 +167,53 @@ const Details = () => {
     try {
       const response = await savePromise;
       console.log("Save response:", response.data);
+
+      setInitialData(formData);
     } catch (error) {
       console.error("Error saving details:", error);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex w-full justify-center items-center h-[89svh]">
-        <Loading_Dashboard />
-      </div>
-    );
-  }
+  const isDataChanged = () => {
+    if (!initialData) return false; // No changes if nothing was loaded initially
+    return JSON.stringify(formData) !== JSON.stringify(initialData);
+  };
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex w-full justify-center items-center h-[89svh]">
+  //       <Loading_Dashboard />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="relative z-50 max-w-screen-lg xl:max-w-screen-xl bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">
       <Toaster />
-      <div className="flex justify-between items-center text-4xl tracking-tight font-semibold border-b-2 overflow-x-hidden md:mx-2">
+      <div className="flex justify-between items-start text-4xl tracking-tight font-semibold border-b-2 overflow-x-hidden md:mx-2">
         <h1 className="pt-2 pb-5">Details</h1>
         <div className="flex items-center mb-3">
           <DashboardDropDown setSampleData={setSampleData} />
         </div>
-        <div className="flex" onClick={handleSave}>
-          <Button className="tracking-normal py-1 w-full">Save</Button>
+        <div className="flex flex-col items-center py-2">
+          <Button
+            onClick={handleSave}
+            disabled={!isDataChanged()}
+            className={`${
+              isDataChanged()
+                ? "bg-red-600 hover:bg-red-700 text-white w-fit"
+                : "opacity-50 cursor-not-allowed w-fit"
+            }`}
+          >
+            Save
+          </Button>
+          <p
+            className={`text-red-600 text-sm mb-2 transition-opacity duration-300 pointer-events-none ${
+              isDataChanged() ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            Save your changes.
+          </p>
         </div>
       </div>
 
@@ -326,6 +352,7 @@ const Goals = ({ goals = [], setFormData }) => {
           <div className="flex flex-col gap-1">
             <DashboardInput
               placeholder="Goal"
+              value={inputGoal}
               setinput={setInputGoal}
               onKeyDown={handleKeyDown}
             />
@@ -336,6 +363,7 @@ const Goals = ({ goals = [], setFormData }) => {
           <div className="flex flex-col gap-1">
             <DashboardInput
               placeholder="Value (Approx.)"
+              value={inputValue}
               setinput={setInputValue}
               onKeyDown={handleKeyDown}
             />

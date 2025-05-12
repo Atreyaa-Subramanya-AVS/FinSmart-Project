@@ -1,0 +1,45 @@
+{
+  "consumer": {
+    "name": "FinSmartBackend"
+  },
+  "interactions": [
+    {
+      "description": "a request for AI insight",
+      "providerState": "Gemini has a valid AI reply",
+      "request": {
+        "body": {
+          "input": "Show me savings"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/v1/ai/reply"
+      },
+      "response": {
+        "body": {
+          "reply": "Insight: Your savings increased by 20%."
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "15.0.1"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "GeminiAPI"
+  }
+}

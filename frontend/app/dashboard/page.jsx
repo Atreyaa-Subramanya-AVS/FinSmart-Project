@@ -10,6 +10,8 @@ import VerticalTab from "@/components/VerticalTabs";
 import Link from "next/link";
 import Details from "@/components/Dashboard Components/Details";
 import FinancialAnalysis from "@/components/Dashboard Components/FinancialAnalysis";
+import Logo from "../../public/valorant-3.svg";
+import Image from "next/image";
 
 const Dashboard = () => {
   const [ID, setID] = useState("");
@@ -74,13 +76,13 @@ const Dashboard = () => {
     <div className="min-h-screen text-white bg-black absolute inset-0">
       <div className="wrapper bg-black flex">
         <div
-          className="flex justify-between w-fit mx-auto bg-gradient-to-r from-black via-red-900 to-black
-          py-2 rounded-md my-2 gap-48 items-center max-lg:gap-32 max-md:gap-16 px-12 max-sm:gap-48 border border-[#ddd]"
+          className="flex justify-between w-fit mx-auto bg-gradient-to-r from-black via-red-900 to-black rounded-md my-2 gap-48 items-center max-lg:gap-32 max-md:gap-16 px-12 max-sm:gap-48 border border-[#ddd]"
         >
-          <div>
+          <div className="flex items-center gap-2">
+            <Image src={Logo} alt="FinSmart Logo" width={50} height={50} />
             <Link href={"/"}>
               <h1 className="whitespace-nowrap font-semibold text-md lg:text-lg">
-                FinSmart Inc.
+                FinSmart
               </h1>
             </Link>
           </div>

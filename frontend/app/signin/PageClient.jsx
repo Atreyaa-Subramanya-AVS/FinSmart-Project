@@ -20,8 +20,11 @@ const PageClient = () => {
 
   const [option, setOption] = useState("Login");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [allow, setAllow] = useState(false);
   const [showOTPScreen, setShowOTPScreen] = useState(false);
   const [googleLogin, setGoogleLogin] = useState(false);
@@ -55,8 +58,8 @@ const PageClient = () => {
 
     const payload =
       option === "Register"
-        ? { username: name, email, password }
-        : { email, password };
+        ? { username: name, email: registerEmail, password: registerPassword }
+        : { email: loginEmail, password: loginPassword };
 
     try {
       const res = await fetch(endpoint, {
@@ -74,6 +77,7 @@ const PageClient = () => {
       localStorage.setItem("ID", data.ID || null);
       localStorage.setItem("username", data.username || name);
       localStorage.setItem("email", data.email || email);
+      localStorage.setItem("profilePicture", data.profilePicture);
 
       toast.success(
         option === "Register"
@@ -83,7 +87,7 @@ const PageClient = () => {
 
       router.push("/dashboard?refresh=true");
     } catch (err) {
-      if(!googleLogin){
+      if (!googleLogin) {
         toast.error(err.message || "Authentication failed.");
       }
     }
@@ -131,7 +135,7 @@ const PageClient = () => {
             {option}
           </h1>
           <p className="text-sm text-center my-4 font-light">
-            {option} to access real-time market data, AI-powered insights, and a
+            {option} to access stock market data, AI-powered insights, and a
             personalized dashboard.
           </p>
           <Image
@@ -190,16 +194,22 @@ const PageClient = () => {
                 <EmailInput
                   placeholder="Email"
                   type="email"
-                  value={email}
-                  onChange={setEmail}
+                  value={option === "Login" ? loginEmail : registerEmail}
+                  onChange={
+                    option === "Login" ? setLoginEmail : setRegisterEmail
+                  }
                   required
                   className="mt-3"
                 />
 
                 <PasswordStrengthIndicator
                   option={option}
-                  password={password}
-                  setPassword={setPassword}
+                  password={
+                    option === "Login" ? loginPassword : registerPassword
+                  }
+                  setPassword={
+                    option === "Login" ? setLoginPassword : setRegisterPassword
+                  }
                   setAllow={setAllow}
                 />
 
@@ -229,9 +239,10 @@ const PageClient = () => {
                     <h1 className="text-xl md:text-2xl xl:text-3xl font-semibold text-center underline">
                       Enter OTP
                     </h1>
-                    <SigninOTP setEmailToParent={setEmail} showOTP={showOTPScreen} />
-
-
+                    <SigninOTP
+                      setEmailToParent={option == "Login" ? setLoginEmail : setRegisterEmail}
+                      showOTP={showOTPScreen}
+                    />
                   </div>
                 </motion.div>
               </div>

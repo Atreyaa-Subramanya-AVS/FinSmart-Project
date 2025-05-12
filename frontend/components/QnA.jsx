@@ -9,8 +9,8 @@ import Image from "next/image";
 const Feat = () => {
   const finSmartFeatures = [
     {
-      title: "Real-Time Stock Trends",
-      description: "Stay ahead with live market movements and recent news.",
+      title: "Stock Market Trends",
+      description: "Stay ahead with recent market movements and news.",
       icon: <LineChart className="h-8 w-8 text-primary" />,
     },
     {
@@ -58,10 +58,10 @@ const Feat = () => {
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:2rem_2rem] brightness-90"></div>
       <div className="container mx-auto px-4 py-24">
         <div className="flex justify-center items-center flex-col">
-          <h1 className="text-[#000] text-5xl md:text-6xl lg:text-6xl xl:text-8xl tracking-tighter leading-[0.9] font-bold pb-2 text-center">
+          <h1 className="text-[#000] text-5xl md:text-6xl lg:text-6xl xl:text-7xl 2xl:text-8xl tracking-tighter leading-[0.9] font-bold pb-2 text-center text-pretty max-md:leading-[1]">
             Future of <span className="underline pointer-events-none">Investing</span> is Here!
           </h1>
-          <p className="text-lg lg:text-xl 2xl:text-2xl text-neutral-600 mt-5 text-center">
+          <p className="text-lg lg:text-lg 2xl:text-2xl text-neutral-600 mt-5 text-center">
             AI Insights, Stock Market Trends & Smart Insights to Supercharge Your
             Portfolio!
           </p>

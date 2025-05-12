@@ -11,6 +11,8 @@ const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const recommendRoutes = require("./routes/recommendRoutes");
 const detailsRoutes = require("./routes/detailsRoutes");
+const financialAnalysisRoutes = require("./routes/financialAnalysisRoutes");
+const stockAnalysisRoutes = require("./routes/stockAnalysisRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -49,6 +51,8 @@ app.use("/auth", authRoutes); // Authentication routes
 app.use("/api", chatRoutes); // Chat-related routes
 app.use("/api", recommendRoutes); // Recommendation-related routes
 app.use("/api/details", detailsRoutes); // Detils-related routes
+app.use("/api/financial-analysis", financialAnalysisRoutes);
+app.use("/api/stock-analysis", stockAnalysisRoutes);
 
 // Local authentication routes
 const localAuthRoutes = require("./routes/localAuth");

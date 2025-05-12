@@ -11,6 +11,18 @@ const news = {
   "LT.NS": "Larsen_and_Toubro_Ltd.json",
   "AXISBANK.NS": "Axis_Bank_Ltd.json",
   "SBIN.NS": "State_Bank_of_India.json",
+  "BHARTIARTL.NS": "Bharti_Airtel_Ltd.json",
+  "HINDUNILVR.NS": "Hindustan_Unilever_Ltd.json",
+  "BAJFINANCE.NS": "Bajaj_Finance_Ltd.json",
+  "ITC.NS": "ITC_Ltd.json",
+  "HCLTECH.NS": "HCL_Technologies_Ltd.json",
+  "SUNPHARMA.NS": "Sun_Pharmaceutical_Industries_Ltd.json",
+  "KOTAKBANK.NS": "Kotak_Mahindra_Bank_Ltd.json",
+  "MARUTI.NS": "Maruti_Suzuki_India_Ltd.json",
+  "M&M.NS": "Mahindra_and_Mahindra_Ltd.json",
+  "ULTRACEMCO.NS": "UltraTech_Cement_Ltd.json",
+  "ADANIENT.NS": "Adani_Enterprises_Ltd.json",
+  "BAJAJFINSV.NS": "Bajaj_Finserv_Ltd.json",
 };
 
 exports.getStockOpinion = async (req, res) => {
@@ -29,7 +41,6 @@ exports.getStockOpinion = async (req, res) => {
 
   const newsFolderPath = path.resolve("", "News");
   const filePath = path.join(newsFolderPath, fileName);
-  
 
   let Data;
   try {

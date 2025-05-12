@@ -1,0 +1,28 @@
+{
+  "news": [
+    {
+      "headline": "Bajaj Finserv Q4 FY25 Net Profit Jumps 16% to ₹4,756 Crore",
+      "text": "Bajaj Finserv reported a 16.4% year-on-year increase in consolidated net profit for Q4 FY25, amounting to ₹4,756 crore. Revenue for the quarter grew by 14.2% to ₹36,596 crore, driven by strong performance across its lending, insurance, and wealth management segments. The company's profit before tax rose by 8.6% to ₹6,002 crore.",
+      "positivePoints": [
+        "16.4% YoY increase in net profit",
+        "14.2% YoY growth in revenue",
+        "8.6% YoY rise in profit before tax"
+      ],
+      "negativePoints": [
+        "Sequential decline in net profit"
+      ]
+    },
+    {
+      "headline": "Bajaj Finserv Declares ₹1 Final Dividend for FY25",
+      "text": "The board of Bajaj Finserv has recommended a final dividend of ₹1 per equity share for the financial year 2024-25, subject to shareholder approval at the upcoming Annual General Meeting. This dividend reflects the company's commitment to rewarding its shareholders amidst strong financial performance."
+    },
+    {
+      "headline": "Bajaj Finserv's FY25 Net Profit Increases 9% to ₹8,872 Crore",
+      "text": "For the full fiscal year 2024-25, Bajaj Finserv reported a consolidated net profit of ₹8,872 crore, a 9% increase over the previous year. Total income for the year reached ₹1,33,822 crore, reflecting a 21% rise from the previous fiscal year. The company's diversified business model contributed to its steady growth amidst a dynamic economic landscape."
+    },
+    {
+      "headline": "Bajaj Finserv Share Price Rises 4% Amid Positive Earnings",
+      "text": "As of May 12, 2025, Bajaj Finserv's share price rose by 4.1%, trading at ₹2,051. This increase follows the company's strong Q4 FY25 earnings report, which showcased robust financial performance across its business segments. The stock has delivered a 30.46% return over the past year, indicating positive investor sentiment."
+    }
+  ]
+}

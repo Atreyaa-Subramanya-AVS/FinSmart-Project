@@ -64,8 +64,15 @@ const DetailsSchema = new mongoose.Schema({
     },
   ],
   notes: { type: String },
-  aiSuggestions: { type: String },
-  plots: [{ type: String }], // base64 images as strings
+  financialAnalysis: {
+    prompt: {type : String},
+    aiFeedBack: { type: String },
+  },
+  stockAnalysis: {
+    query: { type: String },
+    aiStockInsights: { type: String },
+    plots: [{ type: String }],
+  },
 });
 
 module.exports = mongoose.model("Details", DetailsSchema);

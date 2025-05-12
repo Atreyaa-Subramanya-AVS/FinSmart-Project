@@ -29,25 +29,19 @@ export default function Profile({ username, email, profilePicture }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="dark">
         <Button variant="ghost" className="h-auto p-0 hover:bg-transparent">
-          <Avatar>
-            {/* Use the profile picture passed as a prop */}
+          <AvatarPrimitive.Root className="w-8 h-8 rounded-full overflow-hidden bg-gray-700 text-white flex items-center justify-center">
             {profilePicture ? (
-              <AvatarPrimitive.Root className="w-16 h-16 rounded-full overflow-hidden">
-                <AvatarImage
-                  className="light"
-                  src={profilePicture}
-                  alt="Profile image"
-                />
-              </AvatarPrimitive.Root>
+              <AvatarPrimitive.Image
+                className="w-8 h-8 rounded-full overflow-hidden"
+                src={profilePicture}
+                alt="Profile image"
+              />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gray-700 text-white flex items-center justify-center">
-                A
-              </div>
+              <AvatarPrimitive.Fallback>
+                {username?.[0] ?? "U"}
+              </AvatarPrimitive.Fallback>
             )}
-
-            <img src={profilePicture} alt="" />
-            <AvatarFallback>{username?.[0] ?? "U"}</AvatarFallback>
-          </Avatar>
+          </AvatarPrimitive.Root>
           <ChevronDownIcon
             size={16}
             className="opacity-60"
@@ -72,7 +66,10 @@ export default function Profile({ username, email, profilePicture }) {
           onClick={() => {
             localStorage.removeItem("username");
             localStorage.removeItem("email");
-            window.location.href = "/signin"; // 🔁 Redirect to login page
+            localStorage.removeItem("ID");
+            localStorage.removeItem("profilePicture");
+            sessionStorage.clear();
+            window.location.href = "/";
           }}
         >
           <LogOutIcon

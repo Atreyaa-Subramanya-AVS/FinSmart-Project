@@ -40,7 +40,7 @@ const Features = () => {
           </p>
 
           <div className="h-svh max-lg:h-[60vh] max-md:h-[50vh] flex items-center justify-center">
-            <div className="grid h-[90%] w-[80%] lg:w-full grid-cols-4 grid-rows-4 gap-1 relative bg-transparent">
+            <div className="grid h-[90%] md:w-[70%] w-[80%] lg:w-full max-sm:w-[150%] grid-cols-4 grid-rows-4 gap-1 relative bg-transparent">
               {Array.from({ length: numberOfDivs }).map((_, index) => {
                 const cardRef = useRef(null);
                 const row = Math.floor(index / 4);

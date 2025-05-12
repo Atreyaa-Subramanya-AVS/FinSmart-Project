@@ -12,34 +12,39 @@ const FinancialAnalysis = () => {
   const [responseData, setResponseData] = useState("");
   const [generatingAnalysis, setGeneratingAnalysis] = useState(false);
   const textAreaRef = useRef(null);
-  const ID = localStorage.getItem("ID");
-  const [data, setData] = useState();
+  const [ID, setID] = useState();
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/api/details/${ID}`
-        );
-        if (response.data?.data) {
-          setData(response.data.data);
+    axios
+      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .then((response) => {
+        const ID = response.data.ID;
+        if (ID) {
+          axios
+            .get(`http://localhost:5000/api/details/${ID}`)
+            .then((response) => {
+              if (response.data.data) {
+                setData(response.data.data);
+              }
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+              setIsLoading(false);
+            });
+        } else {
+          console.error("User ID not found");
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching user details:", error);
-      }
-    };
-
-    if (ID) {
-      fetchDetails();
-    }
-  }, [ID]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 0);
-
-    return () => clearTimeout(timer);
+        if (ID == null) {
+          toast.error("User ID not found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+        setIsLoading(false);
+      });
   }, []);
 
   const formatResponse = (raw) => {
@@ -75,41 +80,96 @@ const FinancialAnalysis = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleClick = async () => {
-    const userMessage = textAreaRef.current?.value || "";
-    setGeneratingAnalysis(true);
-  
-    const fetchRecommendation = async () => {
-      const response = await axios.post("http://localhost:5000/api/recommend", {
-        Data: data,
-        message: userMessage,
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/auth/user", {
+        withCredentials: true,
+      })
+      .then((response) => {
+        const ID = response.data.ID;
+        setID(ID);
+        if (ID) {
+          axios
+            .get(`http://localhost:5000/api/financial-analysis/${ID}`)
+            .then((response) => {
+              console.log(response.data);
+              const financialAnalysis = response.data.financialAnalysis;
+
+              console.log("lolll:",financialAnalysis)
+              if (response.data.financialAnalysis) {
+                textAreaRef.current.value =
+                  financialAnalysis.prompt || "";
+                setResponseData(formatResponse(financialAnalysis.aiFeedBack));
+              } else {
+                console.error("stockAnalysis field is missing in response.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching financial analysis: ", error);
+            });
+        } else {
+          console.error("User ID not found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user data: ", error);
       });
-      const rawResponse = response.data.response || "No response received.";
-      const formatted = formatResponse(rawResponse);
-      setResponseData(formatted);
-      sessionStorage.setItem("financialAnalysisResponse", formatted);
-      return formatted;
-    };
-  
-    await toast.promise(
-      fetchRecommendation(),
-      {
-        loading: "Analyzing your data...",
-        success: "Financial insights ready!",
-        error: "Failed to fetch recommendation",
-      },
-      {
-        success: {
-          duration: 5000,
+  }, []);
+
+  const handleClick = async () => {
+    try {
+      const userMessage = textAreaRef.current?.value || "";
+      setGeneratingAnalysis(true);
+
+      const fetchRecommendation = async () => {
+        const response = await axios.post(
+          "http://localhost:5000/api/recommend",
+          {
+            Data: data,
+            message: userMessage,
+          }
+        );
+
+        const rawResponse = response.data.response || "No response received.";
+        const formatted = formatResponse(rawResponse);
+
+        setResponseData(formatted);
+        sessionStorage.setItem("financialAnalysisResponse", formatted);
+
+        // Save to backend
+        if (ID) {
+          await axios.post("http://localhost:5000/api/financial-analysis", {
+            ID: ID,
+            financialAnalysis: {
+              prompt: userMessage,
+              aiFeedBack: formatted,
+            },
+          });
+        }
+
+        // console.log("Successfully sent to DB.");
+
+        return formatted;
+      };
+
+      await toast.promise(
+        fetchRecommendation(),
+        {
+          loading: "Analyzing your data...",
+          success: "Financial insights ready!",
+          error: "Failed to fetch recommendation",
         },
-        error: {
-          duration: 6000,
-        },
-      }
-    );
-  
-    setGeneratingAnalysis(false);
-  };  
+        {
+          success: { duration: 5000 },
+          error: { duration: 6000 },
+        }
+      );
+    } catch (error) {
+      console.error("Error during financial analysis process:", error);
+    } finally {
+      setGeneratingAnalysis(false);
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -139,7 +199,7 @@ const FinancialAnalysis = () => {
             <textarea
               ref={textAreaRef}
               className="bg-[#333] w-full p-3 resize-none leading-relaxed text-white rounded-md focus:outline-none"
-              placeholder="Type your message..."
+              placeholder="Ask for insights..."
               onKeyDown={handleKeyDown}
               rows={2}
             />

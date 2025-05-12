@@ -1,7 +1,7 @@
 const geminiClient = require("../utils/geminiClient");
 
 exports.getFinancialRecommendation = async (req, res) => {
-  const { Data, message: userMessage } = req.body; // Get user message from request
+  const { Data, message: userMessage } = req.body;
   // console.log(Data)
   if (!Data) {
     return res.status(400).json({ error: "No financial data provided" });
@@ -9,7 +9,6 @@ exports.getFinancialRecommendation = async (req, res) => {
 
   let prompt = `The user has the following financial data: ${JSON.stringify(Data, null, 2)}`;
 
-  // Add the user message only if it's provided
   if (userMessage && userMessage.trim() !== "") {
     prompt += `
     The user also provided the following message: 

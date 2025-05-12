@@ -23,7 +23,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/auth/user", {
+      const response = await axios.get("https://finsmart-backend-380l.onrender.com/auth/user", {
         withCredentials: true,
       });
 
@@ -89,7 +89,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
       setResetTimer(true);
       setTimeLeft(120);
 
-      const response = await fetch("http://localhost:5000/auth/otp/resend", {
+      const response = await fetch("https://finsmart-backend-380l.onrender.com/auth/otp/resend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
 
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:5000/auth/otp/verify", {
+      const res = await fetch("https://finsmart-backend-380l.onrender.com/auth/otp/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
       if (!res.ok) throw new Error(data.message || "OTP verification failed");
 
       toast.success("OTP verified! Redirecting to Dashboard....");
-      router.push("http://localhost:3000/dashboard?refresh=true");
+      router.push("https://fin-smart-project.vercel.app//dashboard?refresh=true");
     } catch (err) {
       toast.error(err.message || "Something went wrong");
     }

@@ -27,7 +27,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         withCredentials: true,
       });
 
-      // console.log("Response from /auth/user:", response.data);
+       console.log("Response from /auth/user:", response.data);
 
       if (response.status === 200) {
         const { ID, username, email, profilePicture } = response.data;

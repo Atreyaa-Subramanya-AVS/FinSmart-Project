@@ -52,9 +52,10 @@ const PageClient = () => {
     }
 
     const endpoint =
-      option === "Register"
-        ? "http://localhost:5000/auth/local/register"
-        : "http://localhost:5000/auth/local/login";
+    option === "Register"
+    ? `${process.env.BACKEND_URL}/auth/local/register`
+    : `${process.env.BACKEND_URL}/auth/local/login`;
+
 
     const payload =
       option === "Register"
@@ -95,7 +96,7 @@ const PageClient = () => {
 
   const resendOTP = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/otp/resend", {
+      const response = await fetch(`${process.env.BACKEND_URL}/auth/otp/resend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

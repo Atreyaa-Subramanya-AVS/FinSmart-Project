@@ -3,12 +3,8 @@ import { RiGithubFill, RiGoogleFill } from "@remixicon/react";
 
 export default function Component({ setGoogleLogin }) {
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/auth/google"; // Redirect to backend Google OAuth
+    window.location.href = `${process.env.BACKEND_URL}/auth/google`; // Redirect to backend Google OAuth
     setGoogleLogin(true);
-  };
-
-  const handleGitHubLogin = () => {
-    window.location.href = "http://localhost:5000/auth/github"; // Redirect to backend GitHub OAuth
   };
 
   return (

@@ -17,12 +17,12 @@ const FinancialAnalysis = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .get(`${process.env.BACKEND_URL}/auth/user`, { withCredentials: true })
       .then((response) => {
         const ID = response.data.ID;
         if (ID) {
           axios
-            .get(`http://localhost:5000/api/details/${ID}`)
+            .get(`${process.env.BACKEND_URL}/api/details/${ID}`)
             .then((response) => {
               if (response.data.data) {
                 setData(response.data.data);
@@ -82,7 +82,7 @@ const FinancialAnalysis = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/auth/user", {
+      .get(`${process.env.BACKEND_URL}/auth/user`, {
         withCredentials: true,
       })
       .then((response) => {
@@ -90,7 +90,7 @@ const FinancialAnalysis = () => {
         setID(ID);
         if (ID) {
           axios
-            .get(`http://localhost:5000/api/financial-analysis/${ID}`)
+            .get(`${process.env.BACKEND_URL}/api/financial-analysis/${ID}`)
             .then((response) => {
               console.log(response.data);
               const financialAnalysis = response.data.financialAnalysis;
@@ -123,7 +123,7 @@ const FinancialAnalysis = () => {
 
       const fetchRecommendation = async () => {
         const response = await axios.post(
-          "http://localhost:5000/api/recommend",
+          `${process.env.BACKEND_URL}/api/recommend`,
           {
             Data: data,
             message: userMessage,
@@ -138,7 +138,7 @@ const FinancialAnalysis = () => {
 
         // Save to backend
         if (ID) {
-          await axios.post("http://localhost:5000/api/financial-analysis", {
+          await axios.post(`${process.env.BACKEND_URL}/api/financial-analysis`, {
             ID: ID,
             financialAnalysis: {
               prompt: userMessage,

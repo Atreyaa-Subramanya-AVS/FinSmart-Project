@@ -108,12 +108,12 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .get(`${process.env.BACKEND_URL}/auth/user`, { withCredentials: true })
       .then((response) => {
         const ID = response.data.ID;
         if (ID) {
           axios
-            .get(`http://localhost:5000/api/details/${ID}`)
+            .get(`${process.env.BACKEND_URL}/api/details/${ID}`)
             .then((response) => {
               if (response.data.data) {
                 setData(response.data.data);

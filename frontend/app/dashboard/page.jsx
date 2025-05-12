@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/auth/user", {
+      const response = await axios.get(`${BACKEND_URL}/auth/user`, {
         withCredentials: true,
       });
 

@@ -62,13 +62,13 @@ const Details = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/auth/user", { withCredentials: true })
+      .get(`${process.env.BACKEND_URL}/auth/user`, { withCredentials: true })
       .then((response) => {
         const ID = response.data.ID;
         setID(ID);
         if (ID) {
           axios
-            .get(`http://localhost:5000/api/details/${ID}`)
+            .get(`${process.env.BACKEND_URL}/api/details/${ID}`)
             .then((response) => {
               // console.log("Fetched Data:", response.data); // Debugging log
               if (response.data.data) {
@@ -124,7 +124,7 @@ const Details = () => {
       if (!ID) return;
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/details/${ID}`
+          `${process.env.BACKEND_URL}/api/details/${ID}`
         );
         if (response.data.data) {
           setFormData(response.data.data);
@@ -153,7 +153,7 @@ const Details = () => {
   const handleSave = async () => {
     if (!validateFormData()) return;
 
-    const savePromise = axios.post("http://localhost:5000/api/details/store", {
+    const savePromise = axios.post(`${process.env.BACKEND_URL}/api/details/store`, {
       ID,
       ...formData,
     });

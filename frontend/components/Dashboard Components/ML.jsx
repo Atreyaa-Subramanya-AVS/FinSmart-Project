@@ -107,7 +107,7 @@ const ML = () => {
           response: `Mocked AI insights for ${stockName}. This is for testing.`,
         };
       } else {
-        const response = await axios.post(`${process.env.BACKEND_URL}/api/stockOpinion`,
+        const response = await axios.post("https://finsmart-backend-380l.onrender.com/api/stockOpinion",
           {
             symbol: stockName,
           }

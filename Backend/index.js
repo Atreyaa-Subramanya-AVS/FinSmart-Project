@@ -44,5 +44,5 @@ app.listen(PORT, () => {
 });
 
 app.get("/", (req, res) => {
-  res.send("FinSmart Gemini API is running");
+  res.send("FinSmart Gemini API is running ");
 });

@@ -44,11 +44,11 @@ router.get(
     req.session.save((err) => {
       if (err) {
         console.log("Session save error:", err);
-        return res.redirect(`${process.env.FRONTEND_URL}/login`);
+        return res.redirect("https://fin-smart-project.vercel.app/login");
       }
 
       // Redirect to OTP input page on frontend
-      res.redirect(`${process.env.FRONTEND_URL}/signin?showOTP=true`);
+      res.redirect("https://fin-smart-project.vercel.app/signin?showOTP=true");
     });
   }
 );
@@ -220,7 +220,7 @@ router.get("/logout", (req, res) => {
     if (err) return res.status(500).json({ error: "Logout failed" });
 
     req.session.destroy(() => {
-      res.redirect(`${process.env.FRONTEND_URL}`);
+      res.redirect("https://fin-smart-project.vercel.app/");
     });
   });
 });

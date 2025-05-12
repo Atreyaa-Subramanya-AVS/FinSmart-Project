@@ -16,6 +16,13 @@ FinSmart is an AI-powered personal finance management system designed to help us
 
 ---
 
+##  Project Management by Agile Scrum
+
+Track our development progress and tasks on Jira:  
+[Finsmart Jira Board](https://finsmart-project.atlassian.net/jira/core/projects/FIN/pages)
+
+---
+
 ##  Test Traceability Matrix
 
 To ensure quality and requirement coverage, we have developed and validated the following backend and frontend test cases. For detailed mapping, refer to the markdown file below:

@@ -13,7 +13,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${GEMINI_API_KEY}`;
 
 // Middleware
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 app.use(
   session({
@@ -44,7 +44,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -99,13 +99,13 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: `${process.env.FRONTEND_URL}/login`,
   }),
   (req, res) => {
     const { username, email, profilePicture } = req.user; // Extract from the user object
     console.log("Redirecting with:", { username, email, profilePicture }); // Debugging line
     res.redirect(
-      `http://localhost:3000/dashboard?username=${encodeURIComponent(
+      `${process.env.FRONTEND_URL}/dashboard?username=${encodeURIComponent(
         username
       )}&email=${encodeURIComponent(email)}&picture=${encodeURIComponent(
         profilePicture
@@ -118,7 +118,7 @@ app.get("/auth/user", (req, res) => res.json(req.user || null));
 app.get("/auth/logout", (req, res) => {
   req.logout((err) => {
     if (err) return res.status(500).json({ error: "Logout failed" });
-    res.redirect("http://localhost:3000");
+    res.redirect(process.env.FRONTEND_URL);
   });
 });
 

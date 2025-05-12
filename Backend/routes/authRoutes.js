@@ -16,7 +16,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: `${process.env.FRONTEND_URL}/login`,
   }),
   async (req, res) => {
     const { username, email, profilePicture } = req.user;
@@ -44,11 +44,11 @@ router.get(
     req.session.save((err) => {
       if (err) {
         console.log("Session save error:", err);
-        return res.redirect("http://localhost:3000/login");
+        return res.redirect(`${process.env.FRONTEND_URL}/login`);
       }
 
       // Redirect to OTP input page on frontend
-      res.redirect("http://localhost:3000/signin?showOTP=true");
+      res.redirect(`${process.env.FRONTEND_URL}/signin?showOTP=true`);
     });
   }
 );
@@ -220,7 +220,7 @@ router.get("/logout", (req, res) => {
     if (err) return res.status(500).json({ error: "Logout failed" });
 
     req.session.destroy(() => {
-      res.redirect("http://localhost:3000");
+      res.redirect(`${process.env.FRONTEND_URL}`);
     });
   });
 });

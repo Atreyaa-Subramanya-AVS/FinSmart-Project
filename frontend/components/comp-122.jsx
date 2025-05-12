@@ -3,7 +3,7 @@ import { RiGithubFill, RiGoogleFill } from "@remixicon/react";
 
 export default function Component({ setGoogleLogin }) {
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.BACKEND_URL}/auth/google`; // Redirect to backend Google OAuth
+    window.location.href = "https://finsmart-backend-380l.onrender.com/auth/google"; // Redirect to backend Google OAuth
     setGoogleLogin(true);
   };
 

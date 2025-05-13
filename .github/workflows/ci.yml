@@ -53,7 +53,7 @@ jobs:
           node-version: '18'
 
       - name: Install Frontend Dependencies
-        run: npm ci
+        run: npm i
 
       - name: Lint Frontend
         run: npm run lint

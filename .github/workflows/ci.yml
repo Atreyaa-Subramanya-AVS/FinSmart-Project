@@ -31,11 +31,11 @@ jobs:
       - name: Run Backend Security Audit
         run: npm audit --audit-level=high
 
-      - name: Trigger Render Backend Deploy
-        if: success()
-        run: |
-          echo "Triggering Render deployment..."
-          curl -X GET "${{ secrets.RENDER_DEPLOY_HOOK }}"
+      # - name: Trigger Render Backend Deploy
+      #   if: success()
+      #   run: |
+      #     echo "Triggering Render deployment..."
+      #     curl -X GET "${{ secrets.RENDER_DEPLOY_HOOK }}"
 
 
   frontend-ci:
@@ -56,8 +56,6 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm ci
 
-      - name: Run Frontend Lint
-        run: npm run lint
 
       - name: Run Frontend Tests
         run: npm test

@@ -24,17 +24,20 @@ app.use(
   })
 );
 
-// Middleware to parse JSON requests
-app.use(express.json());
-
-// Session configuration
 app.use(
   session({
     secret: process.env.JWT_SECRET || "defaultsecret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: true, // Required for HTTPS
+      sameSite: "none", // Required for cross-site cookie use
+    },
   })
 );
+
+// Middleware to parse JSON requests
+app.use(express.json());
 
 // Initialize Passport
 app.use(passport.initialize());
@@ -67,3 +70,4 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+

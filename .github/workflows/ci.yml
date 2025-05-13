@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Frontend  # Ensure your Frontend folder path is correct
+        working-directory: ./frontend  # Ensure your Frontend folder path is correct
 
     steps:
       - name: Checkout Code

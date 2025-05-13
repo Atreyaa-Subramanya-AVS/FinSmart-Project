@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Backend
+        working-directory: ./Backend  # Ensure your Backend folder path is correct
 
     steps:
       - name: Checkout Code
@@ -23,7 +23,7 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm i
+        run: npm ci
 
       - name: Run Backend Tests
         run: npm test
@@ -33,7 +33,9 @@ jobs:
 
       - name: Trigger Render Deploy
         if: success()
-        run: curl "$RENDER_DEPLOY_HOOK"
+        run: |
+          echo "Triggering Render deployment..."
+          curl -X GET "${RENDER_DEPLOY_HOOK}"
         env:
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
 
@@ -41,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Frontend
+        working-directory: ./Frontend  # Ensure your Frontend folder path is correct
 
     steps:
       - name: Checkout Code
@@ -53,7 +55,7 @@ jobs:
           node-version: '18'
 
       - name: Install Frontend Dependencies
-        run: npm i
+        run: npm ci
 
       - name: Lint Frontend
         run: npm run lint

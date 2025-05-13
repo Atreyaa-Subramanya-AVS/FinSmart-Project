@@ -6,6 +6,7 @@
         "dev": "nodemon app.js",
         "start": "node app.js",
         "test": "jest"
+        "lint": "eslint ."
     },
     "dependencies": {
         "@google/generative-ai": "^0.24.0",

@@ -13,7 +13,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-001:generateContent?key=${GEMINI_API_KEY}`;
 
 // Middleware
-app.use(cors({ origin: "https://fin-smart-project.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://fin-smart-project.vercel.app", credentials: true }));
 app.use(express.json());
 app.use(
   session({

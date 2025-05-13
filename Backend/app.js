@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "https://fin-smart-project.vercel.app/",
+    origin: "https://fin-smart-project.vercel.app",
     credentials: true,
   })
 );

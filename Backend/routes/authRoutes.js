@@ -220,7 +220,7 @@ router.get("/logout", (req, res) => {
     if (err) return res.status(500).json({ error: "Logout failed" });
 
     req.session.destroy(() => {
-      res.redirect("https://fin-smart-project.vercel.app/");
+      res.redirect("https://fin-smart-project.vercel.app");
     });
   });
 });

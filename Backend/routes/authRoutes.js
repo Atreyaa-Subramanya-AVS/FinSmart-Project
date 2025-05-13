@@ -16,7 +16,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: `${process.env.FRONTEND_URL}/login`,
+    failureRedirect: `https://fin-smart-project.vercel.app/login`,
   }),
   async (req, res) => {
     const { username, email, profilePicture } = req.user;

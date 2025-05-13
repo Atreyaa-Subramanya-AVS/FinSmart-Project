@@ -32,6 +32,9 @@
     },
     "devDependencies": {
         "@pact-foundation/pact": "^15.0.1",
+        "eslint": "^9.26.0",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^16.1.0",
         "mongodb-memory-server": "^10.1.4",
         "mongoose": "^8.14.2",
         "nodemon": "^3.1.9",

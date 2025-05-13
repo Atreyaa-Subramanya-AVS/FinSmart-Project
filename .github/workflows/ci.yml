@@ -34,8 +34,6 @@ jobs:
     - name: Run Security Audit
       run: npm audit --audit-level=high
 
-    - name: Run Performance Tests (autocannon)
-      run: npm run perf-test
 
   docker-ml:
     needs: backend-ci

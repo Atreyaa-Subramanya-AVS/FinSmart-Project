@@ -59,3 +59,5 @@ FinSmart-Project/
 │   └── ...
 └── FinSmart_Traceability_Matrix.md
 ```
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Atreyaa-Subramanya-AVS/FinSmart-Project)

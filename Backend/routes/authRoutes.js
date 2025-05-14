@@ -9,7 +9,7 @@ const sendOTP = require("../utils/sendOTP");
 // Google login route
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account",})
 );
 
 // Google callback route after authentication

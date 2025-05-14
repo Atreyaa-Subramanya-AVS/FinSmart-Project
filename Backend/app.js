@@ -24,17 +24,22 @@ app.use(
   })
 );
 
+app.set("trust proxy", 1); // Trust reverse proxy on Render
+
 app.use(
   session({
     secret: process.env.JWT_SECRET || "defaultsecret",
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
-      secure: true, // Required for HTTPS
-      sameSite: "none", // Required for cross-site cookie use
+      httpOnly: true,
+      secure: true,       // Required for Render HTTPS
+      sameSite: "none",   // Needed for cross-site cookie usage
     },
   })
 );
+
 
 // Middleware to parse JSON requests
 app.use(express.json());

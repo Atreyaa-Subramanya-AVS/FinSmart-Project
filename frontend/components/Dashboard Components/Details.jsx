@@ -1,138 +1,139 @@
 import React, { useEffect, useState } from "react";
 import DashboardInput from "../DashboardInput";
 import { Button } from "../ui/button";
+import { CirclePlus, PlusCircle } from "lucide-react";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import DashboardDropDown from "../DashboardDropDown";
-import { toast, Toaster } from "react-hot-toast";
+import Data from "./dummy.json";
 import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
 import Loading_Dashboard from "./Loading_Dashboard";
-import Data from "./dummy.json"; // Make sure this file exists and is structured properly
 
-const Details = () => {
-  const [sampleData, setSampleData] = useState("");
-  const [initialData, setInitialData] = useState(null);
-  const [ID, setID] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const Details = () => {
+    const [sampleData, setSampleData] = useState("");
+    const [initialData, setInitialData] = useState(null);
+    const [ID, setID] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-  const defaultFormData = {
-    goals: [],
-    balanceTracker: { currentBalance: "", totalAmount: "" },
-    moneyInMoneyOut: { moneyIn: "", moneyOut: "", previousBalance: "" },
-    moneyDistribution: [],
-    expectedIncome: { moneyIn: "", expected: "" },
-    expectedBudget: { expenses: "", budget: "" },
-    billsBudget: { bills: "", budget: "" },
-    debtsPaymentGoal: { debtsPaid: "", goal: "" },
-    savingsGoal: { moneySaved: "", goal: "" },
-    miscellaneousExpenses: { expenses: "", budget: "" },
-    expenseCategories: [],
-    billsCategories: [],
-    debtsCategories: [],
-    incomeSourcesGraph: [],
-    investmentDistributionGraph: [],
-    notes: "",
-  };
+    const defaultFormData = {
+      goals: [],
+      balanceTracker: { currentBalance: "", totalAmount: "" },
+      moneyInMoneyOut: { moneyIn: "", moneyOut: "", previousBalance: "" },
+      moneyDistribution: [],
+      expectedIncome: { moneyIn: "", expected: "" },
+      expectedBudget: { expenses: "", budget: "" },
+      billsBudget: { bills: "", budget: "" },
+      debtsPaymentGoal: { debtsPaid: "", goal: "" },
+      savingsGoal: { moneySaved: "", goal: "" },
+      miscellaneousExpenses: { expenses: "", budget: "" },
+      expenseCategories: [],
+      billsCategories: [],
+      debtsCategories: [],
+      incomeSourcesGraph: [],
+      investmentDistributionGraph: [],
+      notes: "",
+    };
 
-  const [formData, setFormData] = useState(defaultFormData);
+    const [formData, setFormData] = useState(defaultFormData);
 
-  useEffect(() => {
-    let isMounted = true;
+    useEffect(() => {
+      let isMounted = true;
 
-    const fetchUserAndData = async () => {
-      try {
-        const userResponse = await axios.get(
-          "https://finsmart-backend-380l.onrender.com/auth/user",
-          { withCredentials: true }
-        );
+      const fetchUserAndData = async () => {
+        try {
+          const userResponse = await axios.get(
+            "https://finsmart-backend-380l.onrender.com/auth/user",
+            { withCredentials: true }
+          );
 
-        console.log(userResponse);
+          console.log(userResponse);
 
-        const userID = userResponse.data.ID;
-        if (!userID) throw new Error("User ID not found");
+          const userID = userResponse.data.ID;
+          if (!userID) throw new Error("User ID not found");
 
-        if (isMounted) setID(userID);
+          if (isMounted) setID(userID);
 
-        const detailsResponse = await axios.get(
-          `https://finsmart-backend-380l.onrender.com/api/details/${userID}`
-        );
+          const detailsResponse = await axios.get(
+            `https://finsmart-backend-380l.onrender.com/api/details/${userID}`
+          );
 
-        console.log(detailsResponse);
+          console.log(detailsResponse);
 
-        if (detailsResponse.data.data && isMounted) {
-          setFormData(detailsResponse.data.data);
-          setInitialData(detailsResponse.data.data);
+          if (detailsResponse.data.data && isMounted) {
+            setFormData(detailsResponse.data.data);
+            setInitialData(detailsResponse.data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching user or details:", error);
+          toast.error("Failed to load user data.");
+        } finally {
+          if (isMounted) setIsLoading(false);
         }
+      };
+
+      fetchUserAndData();
+
+      return () => {
+        isMounted = false;
+      };
+    }, []);
+
+    useEffect(() => {
+      if (sampleData === "Erase Data") {
+        setFormData(defaultFormData);
+      } else if (Data && Data[sampleData]) {
+        setFormData(Data[sampleData]);
+      }
+    }, [sampleData]);
+
+    const validateFormData = () => {
+      if (!formData.goals.length) {
+        toast.error("Please add at least one goal.");
+        return false;
+      }
+      if (!formData.balanceTracker.currentBalance) {
+        toast.error("Please enter your current balance.");
+        return false;
+      }
+      return true;
+    };
+
+    const handleSave = async () => {
+      if (!validateFormData()) return;
+
+      const savePromise = axios.post(
+        "https://finsmart-backend-380l.onrender.com/api/details/store",
+        { ID, ...formData }
+      );
+
+      toast.promise(savePromise, {
+        loading: "Saving details...",
+        success: "Details saved successfully!",
+        error: "Failed to save details.",
+      });
+
+      try {
+        const response = await savePromise;
+        console.log("Save response:", response.data);
+        setInitialData(formData);
       } catch (error) {
-        console.error("Error fetching user or details:", error);
-        toast.error("Failed to load user data.");
-      } finally {
-        if (isMounted) setIsLoading(false);
+        console.error("Error saving details:", error);
       }
     };
 
-    fetchUserAndData();
-
-    return () => {
-      isMounted = false;
+    const isDataChanged = () => {
+      if (!initialData) return false;
+      return JSON.stringify(formData) !== JSON.stringify(initialData);
     };
-  }, []);
 
-  useEffect(() => {
-    if (sampleData === "Erase Data") {
-      setFormData(defaultFormData);
-    } else if (Data && Data[sampleData]) {
-      setFormData(Data[sampleData]);
+    if (isLoading) {
+      return (
+        <div className="flex w-full justify-center items-center h-[89svh]">
+          <Loading_Dashboard />
+        </div>
+      );
     }
-  }, [sampleData]);
-
-  const validateFormData = () => {
-    if (!formData.goals.length) {
-      toast.error("Please add at least one goal.");
-      return false;
-    }
-    if (!formData.balanceTracker.currentBalance) {
-      toast.error("Please enter your current balance.");
-      return false;
-    }
-    return true;
-  };
-
-  const handleSave = async () => {
-    if (!validateFormData()) return;
-
-    const savePromise = axios.post(
-      "https://finsmart-backend-380l.onrender.com/api/details/store",
-      { ID, ...formData }
-    );
-
-    toast.promise(savePromise, {
-      loading: "Saving details...",
-      success: "Details saved successfully!",
-      error: "Failed to save details.",
-    });
-
-    try {
-      const response = await savePromise;
-      console.log("Save response:", response.data);
-      setInitialData(formData);
-    } catch (error) {
-      console.error("Error saving details:", error);
-    }
-  };
-
-  const isDataChanged = () => {
-    if (!initialData) return false;
-    return JSON.stringify(formData) !== JSON.stringify(initialData);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex w-full justify-center items-center h-[89svh]">
-        <Loading_Dashboard />
-      </div>
-    );
-  }
 
   return (
     <div className="relative z-50 max-w-screen-lg xl:max-w-screen-xl bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">

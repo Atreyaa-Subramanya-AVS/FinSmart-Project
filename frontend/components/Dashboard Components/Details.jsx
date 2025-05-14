@@ -10,82 +10,96 @@ import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import Loading_Dashboard from "./Loading_Dashboard";
 
-  const Details = () => {
-    const [sampleData, setSampleData] = useState("");
-    const [initialData, setInitialData] = useState(null);
-    const [ID, setID] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+const Details = () => {
+  const [sampleData, setSampleData] = useState("");
+  const [initialData, setInitialData] = useState(null);
+  const [ID, setID] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    const defaultFormData = {
-      goals: [],
-      balanceTracker: { currentBalance: "", totalAmount: "" },
-      moneyInMoneyOut: { moneyIn: "", moneyOut: "", previousBalance: "" },
-      moneyDistribution: [],
-      expectedIncome: { moneyIn: "", expected: "" },
-      expectedBudget: { expenses: "", budget: "" },
-      billsBudget: { bills: "", budget: "" },
-      debtsPaymentGoal: { debtsPaid: "", goal: "" },
-      savingsGoal: { moneySaved: "", goal: "" },
-      miscellaneousExpenses: { expenses: "", budget: "" },
-      expenseCategories: [],
-      billsCategories: [],
-      debtsCategories: [],
-      incomeSourcesGraph: [],
-      investmentDistributionGraph: [],
-      notes: "",
-    };
+  const defaultFormData = {
+    goals: [],
+    balanceTracker: { currentBalance: "", totalAmount: "" },
+    moneyInMoneyOut: { moneyIn: "", moneyOut: "", previousBalance: "" },
+    moneyDistribution: [],
+    expectedIncome: { moneyIn: "", expected: "" },
+    expectedBudget: { expenses: "", budget: "" },
+    billsBudget: { bills: "", budget: "" },
+    debtsPaymentGoal: { debtsPaid: "", goal: "" },
+    savingsGoal: { moneySaved: "", goal: "" },
+    miscellaneousExpenses: { expenses: "", budget: "" },
+    expenseCategories: [],
+    billsCategories: [],
+    debtsCategories: [],
+    incomeSourcesGraph: [],
+    investmentDistributionGraph: [],
+    notes: "",
+  };
 
-    const [formData, setFormData] = useState(defaultFormData);
+  const [formData, setFormData] = useState(defaultFormData);
 
-    useEffect(() => {
-      let isMounted = true;
+  useEffect(() => {
+    let isMounted = true;
 
-      const fetchUserAndData = async () => {
+    const fetchUserAndData = async () => {
+      try {
+        const userResponse = await axios.get(
+          "https://finsmart-backend-380l.onrender.com/auth/user",
+          { withCredentials: true }
+        );
+
+        console.log(userResponse);
+
+        const userID = userResponse.data.ID;
+        if (!userID) throw new Error("User ID not found");
+
+        if (isMounted) setID(userID);
+
         try {
-          const userResponse = await axios.get(
-            "https://finsmart-backend-380l.onrender.com/auth/user",
-            { withCredentials: true }
-          );
-
-          console.log(userResponse);
-
-          const userID = userResponse.data.ID;
-          if (!userID) throw new Error("User ID not found");
-
-          if (isMounted) setID(userID);
-
           const detailsResponse = await axios.get(
             `https://finsmart-backend-380l.onrender.com/api/details/${userID}`
           );
-
-          console.log(detailsResponse);
 
           if (detailsResponse.data.data && isMounted) {
             setFormData(detailsResponse.data.data);
             setInitialData(detailsResponse.data.data);
           }
         } catch (error) {
-          console.error("Error fetching user or details:", error);
-          toast.error("Failed to load user data.");
-        } finally {
-          if (isMounted) setIsLoading(false);
+          if (error.response?.status === 404) {
+            // No data exists yet — use default form
+            console.warn(
+              "No details found for this user. Using default form data."
+            );
+            if (isMounted) {
+              setFormData(defaultFormData);
+              setInitialData(defaultFormData);
+            }
+          } else {
+            console.error("Error fetching details:", error);
+            toast.error("Failed to load user details.");
+          }
         }
-      };
-
-      fetchUserAndData();
-
-      return () => {
-        isMounted = false;
-      };
-    }, []);
-
-    useEffect(() => {
-      if (sampleData === "Erase Data") {
-        setFormData(defaultFormData);
-      } else if (Data && Data[sampleData]) {
-        setFormData(Data[sampleData]);
+      } catch (error) {
+        console.error("Error fetching user or details:", error);
+        toast.error("Failed to load user data.");
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
-    }, [sampleData]);
+    };
+
+    fetchUserAndData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (sampleData === "Erase Data") {
+      setFormData(defaultFormData);
+    } else if (Data && Data[sampleData]) {
+      setFormData(Data[sampleData]);
+    }
+  }, [sampleData]);
 
     const validateFormData = () => {
       if (!formData.goals.length) {
@@ -102,10 +116,10 @@ import Loading_Dashboard from "./Loading_Dashboard";
     const handleSave = async () => {
       if (!validateFormData()) return;
 
-      const savePromise = axios.post(
-        "https://finsmart-backend-380l.onrender.com/api/details/store",
-        { ID, ...formData }
-      );
+    const savePromise = axios.post(
+      "https://finsmart-backend-380l.onrender.com/api/details/store",
+      { ID, ...formData }
+    );
 
       toast.promise(savePromise, {
         loading: "Saving details...",
@@ -113,27 +127,27 @@ import Loading_Dashboard from "./Loading_Dashboard";
         error: "Failed to save details.",
       });
 
-      try {
-        const response = await savePromise;
-        console.log("Save response:", response.data);
-        setInitialData(formData);
-      } catch (error) {
-        console.error("Error saving details:", error);
-      }
-    };
-
-    const isDataChanged = () => {
-      if (!initialData) return false;
-      return JSON.stringify(formData) !== JSON.stringify(initialData);
-    };
-
-    if (isLoading) {
-      return (
-        <div className="flex w-full justify-center items-center h-[89svh]">
-          <Loading_Dashboard />
-        </div>
-      );
+    try {
+      const response = await savePromise;
+      console.log("Save response:", response.data);
+      setInitialData(formData);
+    } catch (error) {
+      console.error("Error saving details:", error);
     }
+  };
+
+  const isDataChanged = () => {
+    if (!initialData) return false;
+    return JSON.stringify(formData) !== JSON.stringify(initialData);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full justify-center items-center h-[89svh]">
+        <Loading_Dashboard />
+      </div>
+    );
+  }
 
   return (
     <div className="relative z-50 max-w-screen-lg xl:max-w-screen-xl bg-[#222] mx-auto min-h-screen rounded-md shadow-2xl p-2 px-4">

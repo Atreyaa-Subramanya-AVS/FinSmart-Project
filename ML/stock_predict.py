@@ -212,5 +212,5 @@ def predict(stock: str = Query(..., description="Stock symbol (e.g. RELIANCE.NS)
         return JSONResponse(status_code=500, content={"error": f"Internal server error: {str(e)}"})
 
 
-if __name__ == "__main__":
-    uvicorn.run("stock_predict:app", host="127.0.0.1", port=8083, reload=True)
+# if __name__ == "__main__":
+#     uvicorn.run("stock_predict:app", host="127.0.0.1", port=8083, reload=True)

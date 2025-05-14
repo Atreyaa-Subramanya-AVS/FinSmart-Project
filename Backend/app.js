@@ -24,7 +24,7 @@ app.use(
   })
 );
 
-// app.set("trust proxy", 1); // Trust reverse proxy on Render
+app.set("trust proxy", 1); // Trust reverse proxy on Render
 
 app.use(
   session({

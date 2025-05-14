@@ -82,6 +82,7 @@ router.post("/otp/verify", async (req, res) => {
     await user.save();
 
     req.session.user = {
+      ID: user._id.toString(),
       username: user.username,
       email: user.email,
       profilePicture: user.profilePicture || null,
@@ -90,6 +91,7 @@ router.post("/otp/verify", async (req, res) => {
 
     return res.status(200).json({
       message: "OTP verified",
+      ID: user._id.toString(),
       username: user.username,
       email: user.email,
     });
@@ -150,6 +152,7 @@ router.post("/", async (req, res) => {
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
+        ID: user._id.toString(),
         username: name,
         email,
         password: hashedPassword,
@@ -177,6 +180,7 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
 
     req.session.user = {
+      ID: user._id.toString(),
       username: user.username,
       email: user.email,
       profilePicture: null,

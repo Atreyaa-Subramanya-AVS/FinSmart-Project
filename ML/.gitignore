@@ -33,7 +33,6 @@ venv/
 *.joblib
 
 # Data files
-*.csv
 *.tsv
 *.json
 *.xlsx

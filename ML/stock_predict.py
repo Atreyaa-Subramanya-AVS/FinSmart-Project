@@ -44,7 +44,9 @@ csvs = {
     "ADANIENT.NS": "Adani_Enterprises_Ltd.csv",
     "BAJAJFINSV.NS": "Bajaj_Finserv_Ltd.csv", 
 }
-
+_ = ta.sma(pd.Series([1, 2, 3, 4, 5]), length=3)
+_ = ta.rsi(pd.Series([1, 2, 3, 4, 5]), length=3)
+_ = ta.macd(pd.Series([1, 2, 3, 4, 5]))
 # App init
 app = FastAPI()
 

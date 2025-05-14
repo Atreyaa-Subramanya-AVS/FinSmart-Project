@@ -135,7 +135,7 @@ const ML = () => {
     try {
       setLoadingDataFromAPI("Fetching prediction data...");
       const response = await axios.get(
-        `http://127.0.0.1:8083/predict?stock=${encodeURIComponent(stockName)}`
+        `https://finsmart-ml.onrender.com/predict?stock=${encodeURIComponent(stockName)}`
       );
       const predictionData = response.data;
 

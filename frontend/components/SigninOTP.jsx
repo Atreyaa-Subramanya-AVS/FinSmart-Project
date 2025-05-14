@@ -94,6 +94,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ email }),
       });
 
@@ -125,6 +126,7 @@ export default function SigninOTP({ setEmailToParent, showOTP }) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ email, otp }),
       });
 

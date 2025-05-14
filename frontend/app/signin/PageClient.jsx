@@ -68,6 +68,7 @@ const PageClient = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -96,13 +97,14 @@ const PageClient = () => {
 
   const resendOTP = async () => {
     try {
-      const response = await fetch(`https://finsmart-backend-380l.onrender.com/auth/otp/resend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }), // Use the email from the form or state
-      });
+    const response = await fetch(`https://finsmart-backend-380l.onrender.com/auth/otp/resend`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email }), // Use the email from the form or state
+    });
 
       console.log("Resend OTP: ", email);
 

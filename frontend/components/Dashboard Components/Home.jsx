@@ -108,12 +108,12 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.BACKEND_URL}/auth/user`, { withCredentials: true })
+      .get(`https://finsmart-backend-380l.onrender.com/auth/user`, { withCredentials: true })
       .then((response) => {
         const ID = response.data.ID;
         if (ID) {
           axios
-            .get(`${process.env.BACKEND_URL}/api/details/${ID}`)
+            .get(`https://finsmart-backend-380l.onrender.com/api/details/${ID}`)
             .then((response) => {
               if (response.data.data) {
                 setData(response.data.data);

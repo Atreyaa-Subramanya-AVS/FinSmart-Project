@@ -62,13 +62,13 @@ const Details = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.BACKEND_URL}/auth/user`, { withCredentials: true })
+      .get(`https://finsmart-backend-380l.onrender.com/auth/user`, { withCredentials: true })
       .then((response) => {
         const ID = response.data.ID;
         setID(ID);
         if (ID) {
           axios
-            .get(`${process.env.BACKEND_URL}/api/details/${ID}`)
+            .get(`https://finsmart-backend-380l.onrender.com/api/details/${ID}`)
             .then((response) => {
               // console.log("Fetched Data:", response.data); // Debugging log
               if (response.data.data) {
@@ -124,7 +124,7 @@ const Details = () => {
       if (!ID) return;
       try {
         const response = await axios.get(
-          `${process.env.BACKEND_URL}/api/details/${ID}`
+          `https://finsmart-backend-380l.onrender.com/api/details/${ID}`
         );
         if (response.data.data) {
           setFormData(response.data.data);
@@ -153,7 +153,7 @@ const Details = () => {
   const handleSave = async () => {
     if (!validateFormData()) return;
 
-    const savePromise = axios.post(`${process.env.BACKEND_URL}/api/details/store`, {
+    const savePromise = axios.post(`https://finsmart-backend-380l.onrender.com/api/details/store`, {
       ID,
       ...formData,
     });
